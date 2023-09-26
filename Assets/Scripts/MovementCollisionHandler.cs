@@ -25,7 +25,8 @@ public class MovementCollisionHandler : MonoBehaviour
     void Update()
     {
         raycastOrigins.topRight = new Vector2 (boxCollider.bounds.max.x, boxCollider.bounds.max.y);
-        Debug.DrawRay(raycastOrigins.topRight, Vector2.right * moveSpeed, Color.magenta);
+        raycastOrigins.topLeft = new Vector2 (boxCollider.bounds.min.x, boxCollider.bounds.max.y);
+        
         // CheckForCollisionRight();
     }
     void FixedUpdate() {
@@ -38,14 +39,24 @@ public class MovementCollisionHandler : MonoBehaviour
     }
 
     void Move(float speed) {
+        float direction = Mathf.Sign(speed);
+        Vector2 rayOrigin;
         
-        RaycastHit2D collision = Physics2D.Raycast(raycastOrigins.topRight, Vector2.right, speed, LayerMask.GetMask("Solid"));
+
+        if (direction > 0) {
+            rayOrigin = raycastOrigins.topRight;
+        }
+        else {
+            rayOrigin = raycastOrigins.topLeft;
+        }
+        Debug.DrawRay(rayOrigin, Vector2.right * moveSpeed, Color.magenta);
+        RaycastHit2D collision = Physics2D.Raycast(rayOrigin, new Vector2 (direction,0), speed, LayerMask.GetMask("Solid"));
         if (collision.collider) {
             Debug.Log("Hitting " + collision.collider.name + " at a distance of " + collision.distance);
-            transform.position += new Vector3 (collision.distance,0,0);
+            transform.position += (new Vector3 (collision.distance * direction,0,0));
         } 
         else {
-            transform.position += new Vector3 (speed,0,0);
+            transform.position += (new Vector3 (speed,0,0));
         }
     }
 
