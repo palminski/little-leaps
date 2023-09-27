@@ -132,11 +132,32 @@ public class MovementCollisionHandler : MonoBehaviour
         }
 
     }
+    //Public Methods
+    //====================================================================================================
+    public bool OnWallAtDist(float distance) {
+        //Detects if there is a wall to the left or the right at the specified distance away or closer
+        for (int i = 0; i < xRayCount; i++)
+        {
+            RaycastHit2D collision = Physics2D.Raycast(raycastOrigins.bottomRight + i * xRaySpacing * Vector2.up, Vector2.right, distance, LayerMask.GetMask("Solid"));
+            //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
+            if (collision.collider)
+            {
+                return true;
+            }
+            collision = Physics2D.Raycast(raycastOrigins.bottomLeft + i * xRaySpacing * Vector2.up, Vector2.left, distance, LayerMask.GetMask("Solid"));
+            //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
+            if (collision.collider)
+            {
+                return true;
+            }
+            
+        }
+        return false;
+    }
 
 
     //Calculating Spacing and Locations for Rays to Be Cast
     //====================================================================================================
-
     private void updateRaycastOrigins()
     {
         Bounds bounds = boxCollider.bounds;
@@ -160,6 +181,10 @@ public class MovementCollisionHandler : MonoBehaviour
         xRaySpacing = bounds.size.x / (xRayCount - 1);
         yRaySpacing = bounds.size.y / (yRayCount - 1);
     }
+
+//Structs
+//==============================================================================
+
 
     struct RaycastOrigins
     {

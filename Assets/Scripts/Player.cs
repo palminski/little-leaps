@@ -37,6 +37,10 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float gravity = 0.05f;
 
+    [Header("Wall Jump")]
+    [SerializeField]
+    private float distanceWallsDetectable = 0.5f;
+
     private void Awake()
     {
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
@@ -71,7 +75,7 @@ public class Player : MonoBehaviour
         
 
 
-        Debug.Log("Left => " + movementCollisionHandler.collisionInfo.left + " Right => " + movementCollisionHandler.collisionInfo.right + " Above => " + movementCollisionHandler.collisionInfo.above + " Below => " + movementCollisionHandler.collisionInfo.below);
+        
 
         //Y Axis Speed
         //=========================================================
@@ -81,7 +85,7 @@ public class Player : MonoBehaviour
         if (jumpPressed) velocity.y = jumpPower;
         jumpPressed = false;
 
-        Debug.Log(velocity);
+        
         //Pass the velocity to the movement and collision handler
         //=========================================================
         movementCollisionHandler.Move(velocity * moveSpeed);
@@ -92,6 +96,7 @@ public class Player : MonoBehaviour
     {
         // velocity.y = jumpPower;
         if (movementCollisionHandler.collisionInfo.below) jumpPressed = true;
+        Debug.Log(movementCollisionHandler.OnWallAtDist(distanceWallsDetectable));
     }
 
     void OnMove(InputValue value)
