@@ -9,8 +9,8 @@ public class MovementCollisionHandler : MonoBehaviour
     //====================================================================================================================
     private BoxCollider2D boxCollider;
 
-    [SerializeField]
-    private Vector3 velocity;
+    // [SerializeField]
+    // private Vector3 velocity;
 
     [SerializeField]
     private int xRayCount = 4;
@@ -23,6 +23,8 @@ public class MovementCollisionHandler : MonoBehaviour
     private float yRaySpacing;
 
     private RaycastOrigins raycastOrigins;
+
+    public CollisionInfo collisionInfo;
 
     //====================================================================================================================
     // Start is called before the first frame update
@@ -39,15 +41,17 @@ public class MovementCollisionHandler : MonoBehaviour
     }
     void FixedUpdate()
     {
-        Move(velocity);
+
     }
 
-    void Move(Vector3 velocity)
+    public void Move(Vector3 velocity)
     {
-        updateRaycastOrigins();
+        collisionInfo.Reset();
 
-        CollisionsXAxis(ref velocity);
-        CollisionsYAxis(ref velocity);
+        updateRaycastOrigins();
+        if (velocity.x != 0) CollisionsXAxis(ref velocity);
+        if (velocity.y != 0) CollisionsYAxis(ref velocity);
+
 
         transform.Translate(velocity);
     }
@@ -78,16 +82,20 @@ public class MovementCollisionHandler : MonoBehaviour
         {
             RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * xRaySpacing * Vector2.up, rayDirection, distanceToCast, LayerMask.GetMask("Solid"));
             //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
-            if (collision.collider & collision.collider)
+            if (collision.collider)
             {
-                
-                velocity.x = (collision.distance- 0.01f) * direction;
+                velocity.x = (collision.distance - 0.01f) * direction;
                 distanceToCast = collision.distance;
+                
+                collisionInfo.left = direction == -1;
+                collisionInfo.right = direction == 1;
             }
         }
+
     }
 
-    void CollisionsYAxis(ref Vector3 velocity) {
+    void CollisionsYAxis(ref Vector3 velocity)
+    {
         float yVelocity = velocity.y;
         if (yVelocity == 0) return;
         float direction = Mathf.Sign(yVelocity);
@@ -110,15 +118,19 @@ public class MovementCollisionHandler : MonoBehaviour
         for (int i = 0; i < yRayCount; i++)
         {
             RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * yRaySpacing * Vector2.right, rayDirection, distanceToCast, LayerMask.GetMask("Solid"));
-            
+
             //If there is a collision we will update velocity.y accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
             if (collision.collider)
             {
-                
-                velocity.y = (collision.distance- 0.01f) * direction;
+
+                velocity.y = (collision.distance - 0.01f) * direction;
                 distanceToCast = collision.distance;
+                
+                collisionInfo.above = direction == 1;
+                collisionInfo.below = direction == -1;
             }
         }
+
     }
 
 
@@ -128,7 +140,7 @@ public class MovementCollisionHandler : MonoBehaviour
     private void updateRaycastOrigins()
     {
         Bounds bounds = boxCollider.bounds;
-        bounds.Expand (0.01f * -2);
+        bounds.Expand(0.01f * -2);
 
         raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
         raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
@@ -140,7 +152,7 @@ public class MovementCollisionHandler : MonoBehaviour
     {
 
         Bounds bounds = boxCollider.bounds;
-        bounds.Expand (0.01f * -2);
+        bounds.Expand(0.01f * -2);
         //We need at least 2 rays per side
         xRayCount = Mathf.Clamp(xRayCount, 2, int.MaxValue);
         yRayCount = Mathf.Clamp(yRayCount, 2, int.MaxValue);
@@ -153,5 +165,18 @@ public class MovementCollisionHandler : MonoBehaviour
     {
         public Vector2 topLeft, topRight;
         public Vector2 bottomLeft, bottomRight;
+    }
+
+    public struct CollisionInfo
+    {
+        public bool above, below, left, right;
+
+        public void Reset()
+        {
+            above = false;
+            below = false;
+            left = false;
+            right = false;
+        }
     }
 }
