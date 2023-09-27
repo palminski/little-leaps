@@ -1,19 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
+using UnityEngine.Animations;
 
+[RequireComponent(typeof(PlayerInput))]
 public class Player : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
+
+    
+
+    private void Awake() {
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    void OnJump() {
+        Debug.Log("Jump");
+    }
+
+    void OnMove(InputValue value) {
+        float moveValue = value.Get<float>();
+        Debug.Log(moveValue);
     }
 }
