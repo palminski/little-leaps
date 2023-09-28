@@ -18,6 +18,9 @@ public class MovementCollisionHandler : MonoBehaviour
     [SerializeField]
     private int yRayCount = 4;
 
+    [SerializeField]
+    private float skinWidth = 0.001f;
+
     private float xRaySpacing;
 
     private float yRaySpacing;
@@ -174,7 +177,7 @@ public class MovementCollisionHandler : MonoBehaviour
     private void updateRaySpacing()
     {
         Bounds bounds = boxCollider.bounds;
-        bounds.Expand(0.01f * -2);
+        bounds.Expand(skinWidth * -2);
         //We need at least 2 rays per side
         xRayCount = Mathf.Clamp(xRayCount, 2, int.MaxValue);
         yRayCount = Mathf.Clamp(yRayCount, 2, int.MaxValue);
