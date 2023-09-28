@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
 {
 
     private MovementCollisionHandler movementCollisionHandler;
+
     private Vector3 velocity;
 
     private float xInput;
@@ -39,6 +40,9 @@ public class Player : MonoBehaviour
 
     [Header("Wall Jump")]
     [SerializeField]
+    private float wallJumpPower = 0.5f;
+
+    [SerializeField]
     private float distanceWallsDetectable = 0.5f;
 
     private void Awake()
@@ -64,28 +68,49 @@ public class Player : MonoBehaviour
         //Otherwise we will approach 0 by out friction ammount
         else
         {
-            hSpeed = Mathf.MoveTowards(hSpeed, 0, groundFriction);
+            //Determine weather to use air or ground friction
+            if (movementCollisionHandler.collisionInfo.below)
+            {
+                hSpeed = Mathf.MoveTowards(hSpeed, 0, groundFriction);
+            }
+            else
+            {
+                hSpeed = Mathf.MoveTowards(hSpeed, 0, airFriction);
+            }
         }
         //limit the hSpeed by out movement speed in both directions
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
 
+        if (movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) {
+            hSpeed = 0;
+        }
+
         //Update the x component of velocity by hSpeed
-        
-            velocity.x = hSpeed;
-        
+        velocity.x = hSpeed;
 
 
-        
+
+
 
         //Y Axis Speed
         //=========================================================
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
         velocity.y -= gravity;
 
-        if (jumpPressed) velocity.y = jumpPower;
+        if (jumpPressed) {
+            if (movementCollisionHandler.collisionInfo.below) {
+                velocity.y = jumpPower;
+            }
+            else{
+                int directionToJump = 0;
+            if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) 
+                velocity.y = wallJumpPower;
+                hSpeed = directionToJump;
+            }
+        }
         jumpPressed = false;
 
-        
+
         //Pass the velocity to the movement and collision handler
         //=========================================================
         movementCollisionHandler.Move(velocity * moveSpeed);
@@ -95,13 +120,17 @@ public class Player : MonoBehaviour
     void OnJump()
     {
         // velocity.y = jumpPower;
-        if (movementCollisionHandler.collisionInfo.below) jumpPressed = true;
-        Debug.Log(movementCollisionHandler.OnWallAtDist(distanceWallsDetectable));
+        jumpPressed = true;
+        
     }
 
     void OnMove(InputValue value)
     {
         float moveValue = value.Get<float>();
         xInput = moveValue;
+    }
+
+    void OnFastFall() {
+        print("fast fall");
     }
 }

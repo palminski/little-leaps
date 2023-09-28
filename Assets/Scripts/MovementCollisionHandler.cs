@@ -11,7 +11,7 @@ public class MovementCollisionHandler : MonoBehaviour
 
     // [SerializeField]
     // private Vector3 velocity;
-
+    [Header("Raycast Settings")]
     [SerializeField]
     private int xRayCount = 4;
 
@@ -84,6 +84,7 @@ public class MovementCollisionHandler : MonoBehaviour
             //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
             if (collision.collider)
             {
+
                 velocity.x = (collision.distance - 0.01f) * direction;
                 distanceToCast = collision.distance;
                 
@@ -134,7 +135,7 @@ public class MovementCollisionHandler : MonoBehaviour
     }
     //Public Methods
     //====================================================================================================
-    public bool OnWallAtDist(float distance) {
+    public bool OnWallAtDist(float distance, ref int outDirection) {
         //Detects if there is a wall to the left or the right at the specified distance away or closer
         for (int i = 0; i < xRayCount; i++)
         {
@@ -142,15 +143,16 @@ public class MovementCollisionHandler : MonoBehaviour
             //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
             if (collision.collider)
             {
+                outDirection = -1;
                 return true;
             }
             collision = Physics2D.Raycast(raycastOrigins.bottomLeft + i * xRaySpacing * Vector2.up, Vector2.left, distance, LayerMask.GetMask("Solid"));
             //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
             if (collision.collider)
             {
+                outDirection = 1;
                 return true;
             }
-            
         }
         return false;
     }
@@ -171,7 +173,6 @@ public class MovementCollisionHandler : MonoBehaviour
 
     private void updateRaySpacing()
     {
-
         Bounds bounds = boxCollider.bounds;
         bounds.Expand(0.01f * -2);
         //We need at least 2 rays per side
