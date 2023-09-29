@@ -52,11 +52,6 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-
-
-
-
-
         //X Axis Speed
         //=========================================================
         //First we will start by checking players input and updating movespeed accordingly
@@ -81,15 +76,13 @@ public class Player : MonoBehaviour
         //limit the hSpeed by out movement speed in both directions
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
 
-        if (movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) {
-            hSpeed = 0;
+        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && movementCollisionHandler.collisionInfo.below)
+        {
+           hSpeed = 0;
         }
 
         //Update the x component of velocity by hSpeed
         velocity.x = hSpeed;
-
-
-
 
 
         //Y Axis Speed
@@ -97,15 +90,19 @@ public class Player : MonoBehaviour
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
         velocity.y -= gravity;
 
-        if (jumpPressed) {
-            if (movementCollisionHandler.collisionInfo.below) {
+        if (jumpPressed)
+        {
+            
+            if (movementCollisionHandler.collisionInfo.below)
+            {
                 velocity.y = jumpPower;
             }
-            else{
+            else
+            {
                 int directionToJump = 0;
-            if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) 
-                velocity.y = wallJumpPower;
-                hSpeed = directionToJump;
+                if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) velocity.y = wallJumpPower;
+                print(directionToJump);
+                hSpeed = directionToJump * moveSpeed;
             }
         }
         jumpPressed = false;
@@ -121,7 +118,7 @@ public class Player : MonoBehaviour
     {
         // velocity.y = jumpPower;
         jumpPressed = true;
-        
+
     }
 
     void OnMove(InputValue value)
@@ -130,7 +127,8 @@ public class Player : MonoBehaviour
         xInput = moveValue;
     }
 
-    void OnFastFall() {
+    void OnFastFall()
+    {
         print("fast fall");
     }
 }
