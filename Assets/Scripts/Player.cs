@@ -43,7 +43,12 @@ public class Player : MonoBehaviour
     private float wallJumpPower = 0.5f;
 
     [SerializeField]
+    private float wallJumpXPower = 0.5f;
+
+    [SerializeField]
     private float distanceWallsDetectable = 0.5f;
+
+    private float extraForceX = 0;
 
     private void Awake()
     {
@@ -80,9 +85,13 @@ public class Player : MonoBehaviour
         {
            hSpeed = 0;
         }
-
+        if (movementCollisionHandler.collisionInfo.below)
+        {
+           extraForceX = 0;
+        }
+        extraForceX = Mathf.MoveTowards(extraForceX, 0, groundFriction);
         //Update the x component of velocity by hSpeed
-        velocity.x = hSpeed;
+        velocity.x = hSpeed + extraForceX;
 
 
         //Y Axis Speed
@@ -102,6 +111,7 @@ public class Player : MonoBehaviour
                 int directionToJump = 0;
                 if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) velocity.y = wallJumpPower;
                 print(directionToJump);
+                extraForceX = directionToJump * wallJumpXPower;
                 hSpeed = directionToJump * moveSpeed;
             }
         }
