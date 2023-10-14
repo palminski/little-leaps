@@ -21,13 +21,17 @@ public class MovementCollisionHandler : MonoBehaviour
     [SerializeField]
     private float skinWidth = 0.001f;
 
-    private float xRaySpacing;
+    private float verticalRaySpacing;
 
-    private float yRaySpacing;
+    private float horizontalRaySpacing;
 
     private RaycastOrigins raycastOrigins;
 
     public CollisionInfo collisionInfo;
+
+    //==debug==
+    [Header("Debug Settings")]
+    public bool shouldDrawRays = false;
 
     //====================================================================================================================
     // Start is called before the first frame update
@@ -37,25 +41,22 @@ public class MovementCollisionHandler : MonoBehaviour
         updateRaySpacing();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-    void FixedUpdate()
-    {
-
-    }
-
     public void Move(Vector3 velocity)
     {
+        //reset current collision info and find where we should be casting rays from
         collisionInfo.Reset();
-
         updateRaycastOrigins();
+
+        //cast horizontal rays to determine how far we are allowed to move horizontally and make that our x velocity
         if (velocity.x != 0) CollisionsXAxis(ref velocity);
+
+        //now we offset where we will cast our vertical rays by how much we plan to move on the x axis so that we dont go into a corner
+        addToRaycastOriginsX(velocity.x);
+
+        //cast vertical rays and adjust our y velocity accordingly
         if (velocity.y != 0) CollisionsYAxis(ref velocity);
-
-
+        
+        //update our actual position based on potentially updated velocity values
         transform.Translate(velocity);
     }
 
@@ -83,12 +84,13 @@ public class MovementCollisionHandler : MonoBehaviour
         //For loop runs however many times we have set rays to be cast in horizontal direction
         for (int i = 0; i < xRayCount; i++)
         {
-            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * xRaySpacing * Vector2.up, rayDirection, distanceToCast, LayerMask.GetMask("Solid"));
+            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * horizontalRaySpacing * Vector2.up, rayDirection, distanceToCast, LayerMask.GetMask("Solid"));
+            if (shouldDrawRays) Debug.DrawRay(rayOrigin + i * horizontalRaySpacing * Vector2.up, rayDirection, Color.red, distanceToCast);
             //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
             if (collision.collider)
             {
 
-                velocity.x = (collision.distance - 0.01f) * direction;
+                velocity.x = (collision.distance - skinWidth) * direction;
                 distanceToCast = collision.distance;
                 
                 collisionInfo.left = direction == -1;
@@ -121,13 +123,14 @@ public class MovementCollisionHandler : MonoBehaviour
         //For loop runs however many times we have set rays to be cast in vertical direction
         for (int i = 0; i < yRayCount; i++)
         {
-            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * yRaySpacing * Vector2.right, rayDirection, distanceToCast, LayerMask.GetMask("Solid"));
+            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, rayDirection, distanceToCast, LayerMask.GetMask("Solid"));
+            if (shouldDrawRays) Debug.DrawRay(rayOrigin + i * verticalRaySpacing * Vector2.right, rayDirection, Color.red, distanceToCast);
 
             //If there is a collision we will update velocity.y accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
             if (collision.collider)
             {
 
-                velocity.y = (collision.distance - 0.01f) * direction;
+                velocity.y = (collision.distance - skinWidth) * direction;
                 distanceToCast = collision.distance;
                 
                 collisionInfo.above = direction == 1;
@@ -142,14 +145,14 @@ public class MovementCollisionHandler : MonoBehaviour
         //Detects if there is a wall to the left or the right at the specified distance away or closer
         for (int i = 0; i < xRayCount; i++)
         {
-            RaycastHit2D collision = Physics2D.Raycast(raycastOrigins.bottomRight + i * xRaySpacing * Vector2.up, Vector2.right, distance, LayerMask.GetMask("Solid"));
+            RaycastHit2D collision = Physics2D.Raycast(raycastOrigins.bottomRight + i * horizontalRaySpacing * Vector2.up, Vector2.right, distance, LayerMask.GetMask("Solid"));
             //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
             if (collision.collider)
             {
                 outDirection = -1;
                 return true;
             }
-            collision = Physics2D.Raycast(raycastOrigins.bottomLeft + i * xRaySpacing * Vector2.up, Vector2.left, distance, LayerMask.GetMask("Solid"));
+            collision = Physics2D.Raycast(raycastOrigins.bottomLeft + i * horizontalRaySpacing * Vector2.up, Vector2.left, distance, LayerMask.GetMask("Solid"));
             //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
             if (collision.collider)
             {
@@ -166,12 +169,22 @@ public class MovementCollisionHandler : MonoBehaviour
     private void updateRaycastOrigins()
     {
         Bounds bounds = boxCollider.bounds;
-        bounds.Expand(0.01f * -2);
+        bounds.Expand(skinWidth * -2);
 
         raycastOrigins.topRight = new Vector2(bounds.max.x, bounds.max.y);
         raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
         raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
         raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
+    }
+
+    private void addToRaycastOriginsX(float ammountToAdd) {
+        Bounds bounds = boxCollider.bounds;
+        bounds.Expand(skinWidth * -2);
+
+        raycastOrigins.topRight = new Vector2(bounds.max.x + ammountToAdd, bounds.max.y);
+        raycastOrigins.topLeft = new Vector2(bounds.min.x+ ammountToAdd, bounds.max.y);
+        raycastOrigins.bottomRight = new Vector2(bounds.max.x+ ammountToAdd, bounds.min.y);
+        raycastOrigins.bottomLeft = new Vector2(bounds.min.x+ ammountToAdd, bounds.min.y);
     }
 
     private void updateRaySpacing()
@@ -182,8 +195,8 @@ public class MovementCollisionHandler : MonoBehaviour
         xRayCount = Mathf.Clamp(xRayCount, 2, int.MaxValue);
         yRayCount = Mathf.Clamp(yRayCount, 2, int.MaxValue);
 
-        xRaySpacing = bounds.size.x / (xRayCount - 1);
-        yRaySpacing = bounds.size.y / (yRayCount - 1);
+        verticalRaySpacing = bounds.size.x / (xRayCount - 1);
+        horizontalRaySpacing = bounds.size.y / (yRayCount - 1);
     }
 
 //Structs
