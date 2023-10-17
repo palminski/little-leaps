@@ -64,6 +64,7 @@ public class MovementCollisionHandler : RaycastController
         //For loop runs however many times we have set rays to be cast in horizontal direction
         for (int i = 0; i < xRayCount; i++)
         {
+            
             RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * horizontalRaySpacing * Vector2.up, rayDirection, distanceToCast, LayerMask.GetMask("Solid"));
             if (shouldDrawRays) Debug.DrawRay(rayOrigin + i * horizontalRaySpacing * Vector2.up, rayDirection, Color.red, distanceToCast);
             //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
@@ -103,6 +104,7 @@ public class MovementCollisionHandler : RaycastController
         //For loop runs however many times we have set rays to be cast in vertical direction
         for (int i = 0; i < yRayCount; i++)
         {
+            
             RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, rayDirection, distanceToCast, LayerMask.GetMask("Solid"));
             if (shouldDrawRays) Debug.DrawRay(rayOrigin + i * verticalRaySpacing * Vector2.right, rayDirection, Color.red, distanceToCast);
 
