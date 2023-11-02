@@ -124,7 +124,7 @@ public class Player : MonoBehaviour
             {
                 int directionToJump = 0;
                 if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) velocity.y = wallJumpPower;
-                print(directionToJump);
+                
                 extraForceX = directionToJump * wallJumpXPower;
                 hSpeed = directionToJump * moveSpeed;
             }
