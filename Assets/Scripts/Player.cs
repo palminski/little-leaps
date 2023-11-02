@@ -43,8 +43,15 @@ public class Player : MonoBehaviour
     private float wallJumpPower = 0.5f;
 
     [SerializeField]
+    private float wallJumpXPower = 0.5f;
+
+    [SerializeField]
     private float distanceWallsDetectable = 0.5f;
 
+
+    //
+    private float extraForceX = 0;
+    private float gravityModifier = 1;
     private void Awake()
     {
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
@@ -76,19 +83,35 @@ public class Player : MonoBehaviour
         //limit the hSpeed by out movement speed in both directions
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
 
+        //if we are hitting a wall we set the hspeed to 0 so we can accelerate away from it quickly
         if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && movementCollisionHandler.collisionInfo.below)
         {
            hSpeed = 0;
         }
 
-        //Update the x component of velocity by hSpeed
-        velocity.x = hSpeed;
+        //we dont want extra force once we are on the ground. we also want to continuously move it back to 0
+        if (movementCollisionHandler.collisionInfo.below)
+        {
+           extraForceX = 0;
+        }
+        extraForceX = Mathf.MoveTowards(extraForceX, 0, groundFriction);
+        
+        //Update the x component of velocity by hSpeed and any additional extra force
+        velocity.x = hSpeed + extraForceX;
 
 
         //Y Axis Speed
         //=========================================================
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
-        velocity.y -= gravity;
+        
+        gravityModifier = 1;
+        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && velocity.x!=0 && velocity.y<0)
+        {
+           gravityModifier = 0.4f;
+        }
+        
+        velocity.y -= gravity * gravityModifier;
+        
 
         if (jumpPressed)
         {
@@ -101,7 +124,8 @@ public class Player : MonoBehaviour
             {
                 int directionToJump = 0;
                 if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) velocity.y = wallJumpPower;
-                print(directionToJump);
+                
+                extraForceX = directionToJump * wallJumpXPower;
                 hSpeed = directionToJump * moveSpeed;
             }
         }
