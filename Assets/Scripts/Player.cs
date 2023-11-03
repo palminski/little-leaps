@@ -2,6 +2,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.UIElements.Experimental;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(MovementCollisionHandler))]
@@ -10,6 +11,9 @@ public class Player : MonoBehaviour
 
     private MovementCollisionHandler movementCollisionHandler;
 
+    private Animator animator;
+
+    
     private Vector3 velocity;
 
     private float xInput;
@@ -43,11 +47,19 @@ public class Player : MonoBehaviour
     private float wallJumpPower = 0.5f;
 
     [SerializeField]
+    private float wallJumpXPower = 0.5f;
+
+    [SerializeField]
     private float distanceWallsDetectable = 0.5f;
 
+
+    //
+    private float extraForceX = 0;
+    private float gravityModifier = 1;
     private void Awake()
     {
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
+        animator = GetComponent<Animator>();
     }
 
     private void FixedUpdate()
@@ -76,23 +88,39 @@ public class Player : MonoBehaviour
         //limit the hSpeed by out movement speed in both directions
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
 
+        //if we are hitting a wall we set the hspeed to 0 so we can accelerate away from it quickly
         if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && movementCollisionHandler.collisionInfo.below)
         {
-           hSpeed = 0;
+            hSpeed = 0;
         }
 
-        //Update the x component of velocity by hSpeed
-        velocity.x = hSpeed;
+        //we dont want extra force once we are on the ground. we also want to continuously move it back to 0
+        if (movementCollisionHandler.collisionInfo.below)
+        {
+            extraForceX = 0;
+        }
+        extraForceX = Mathf.MoveTowards(extraForceX, 0, groundFriction);
+
+        //Update the x component of velocity by hSpeed and any additional extra force
+        velocity.x = hSpeed + extraForceX;
 
 
         //Y Axis Speed
         //=========================================================
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
-        velocity.y -= gravity;
+
+        gravityModifier = 1;
+        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && velocity.x != 0 && velocity.y < 0)
+        {
+            gravityModifier = 0.4f;
+        }
+
+        velocity.y -= gravity * gravityModifier;
+
 
         if (jumpPressed)
         {
-            
+
             if (movementCollisionHandler.collisionInfo.below)
             {
                 velocity.y = jumpPower;
@@ -101,7 +129,8 @@ public class Player : MonoBehaviour
             {
                 int directionToJump = 0;
                 if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) velocity.y = wallJumpPower;
-                print(directionToJump);
+
+                extraForceX = directionToJump * wallJumpXPower;
                 hSpeed = directionToJump * moveSpeed;
             }
         }
@@ -114,6 +143,36 @@ public class Player : MonoBehaviour
 
     }
 
+    void Update()
+    {
+        int inputDirection = System.Math.Sign(xInput);
+        animator.SetInteger("input-direction", inputDirection);
+
+        int hDirection = System.Math.Sign(hSpeed);
+
+        if (hDirection != 0) {
+            Vector3 newScale = new(hDirection,1,1);
+            transform.localScale = newScale;
+        }
+
+        //falling animations 
+        if (velocity.y > 0) {
+            animator.SetBool("is-jumping", true);
+            animator.SetBool("is-falling",false);
+            print("jump");
+        }
+        else if (velocity.y < -gravity){
+            animator.SetBool("is-jumping",false);
+            animator.SetBool("is-falling",true);
+            print("fall");
+        }
+        else {
+            animator.SetBool("is-jumping",false);
+            animator.SetBool("is-falling",false);
+            print("grounded");
+        }
+    }
+
     void OnJump()
     {
         // velocity.y = jumpPower;
@@ -124,6 +183,7 @@ public class Player : MonoBehaviour
     void OnMove(InputValue value)
     {
         float moveValue = value.Get<float>();
+        
         xInput = moveValue;
     }
 
