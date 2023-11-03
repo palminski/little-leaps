@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
 
     private Animator animator;
 
+    
     private Vector3 velocity;
 
     private float xInput;
@@ -153,6 +154,23 @@ public class Player : MonoBehaviour
             Vector3 newScale = new(hDirection,1,1);
             transform.localScale = newScale;
         }
+
+        //falling animations 
+        if (velocity.y > 0) {
+            animator.SetBool("is-jumping", true);
+            animator.SetBool("is-falling",false);
+            print("jump");
+        }
+        else if (velocity.y < -gravity){
+            animator.SetBool("is-jumping",false);
+            animator.SetBool("is-falling",true);
+            print("fall");
+        }
+        else {
+            animator.SetBool("is-jumping",false);
+            animator.SetBool("is-falling",false);
+            print("grounded");
+        }
     }
 
     void OnJump()
@@ -165,9 +183,6 @@ public class Player : MonoBehaviour
     void OnMove(InputValue value)
     {
         float moveValue = value.Get<float>();
-        
-
-
         
         xInput = moveValue;
     }
