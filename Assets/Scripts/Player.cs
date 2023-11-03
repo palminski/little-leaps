@@ -2,6 +2,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.UIElements.Experimental;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(MovementCollisionHandler))]
@@ -9,6 +10,8 @@ public class Player : MonoBehaviour
 {
 
     private MovementCollisionHandler movementCollisionHandler;
+
+    private Animator animator;
 
     private Vector3 velocity;
 
@@ -55,6 +58,7 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
+        animator = GetComponent<Animator>();
     }
 
     private void FixedUpdate()
@@ -86,16 +90,16 @@ public class Player : MonoBehaviour
         //if we are hitting a wall we set the hspeed to 0 so we can accelerate away from it quickly
         if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && movementCollisionHandler.collisionInfo.below)
         {
-           hSpeed = 0;
+            hSpeed = 0;
         }
 
         //we dont want extra force once we are on the ground. we also want to continuously move it back to 0
         if (movementCollisionHandler.collisionInfo.below)
         {
-           extraForceX = 0;
+            extraForceX = 0;
         }
         extraForceX = Mathf.MoveTowards(extraForceX, 0, groundFriction);
-        
+
         //Update the x component of velocity by hSpeed and any additional extra force
         velocity.x = hSpeed + extraForceX;
 
@@ -103,19 +107,19 @@ public class Player : MonoBehaviour
         //Y Axis Speed
         //=========================================================
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
-        
+
         gravityModifier = 1;
-        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && velocity.x!=0 && velocity.y<0)
+        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && velocity.x != 0 && velocity.y < 0)
         {
-           gravityModifier = 0.4f;
+            gravityModifier = 0.4f;
         }
-        
+
         velocity.y -= gravity * gravityModifier;
-        
+
 
         if (jumpPressed)
         {
-            
+
             if (movementCollisionHandler.collisionInfo.below)
             {
                 velocity.y = jumpPower;
@@ -124,7 +128,7 @@ public class Player : MonoBehaviour
             {
                 int directionToJump = 0;
                 if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) velocity.y = wallJumpPower;
-                
+
                 extraForceX = directionToJump * wallJumpXPower;
                 hSpeed = directionToJump * moveSpeed;
             }
@@ -138,6 +142,19 @@ public class Player : MonoBehaviour
 
     }
 
+    void Update()
+    {
+        int inputDirection = System.Math.Sign(xInput);
+        animator.SetInteger("input-direction", inputDirection);
+
+        int hDirection = System.Math.Sign(hSpeed);
+
+        if (hDirection != 0) {
+            Vector3 newScale = new(hDirection,1,1);
+            transform.localScale = newScale;
+        }
+    }
+
     void OnJump()
     {
         // velocity.y = jumpPower;
@@ -148,6 +165,10 @@ public class Player : MonoBehaviour
     void OnMove(InputValue value)
     {
         float moveValue = value.Get<float>();
+        
+
+
+        
         xInput = moveValue;
     }
 
