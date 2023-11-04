@@ -11,8 +11,10 @@ public class Player : MonoBehaviour
 
     private MovementCollisionHandler movementCollisionHandler;
 
-    private Animator animator;
+    private PlayerInput playerInput;
+    private InputAction fastFallButton;
 
+    private Animator animator;
     
     private Vector3 velocity;
 
@@ -28,6 +30,9 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private float acceleration = 0.1f;
+
+    [SerializeField]
+    private float fastFallModifier = 2;
 
     [SerializeField]
     private float groundFriction = 0.1f;
@@ -58,6 +63,8 @@ public class Player : MonoBehaviour
     private float gravityModifier = 1;
     private void Awake()
     {
+        playerInput = GetComponent<PlayerInput>();
+        fastFallButton = playerInput.actions["FastFall"];
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
         animator = GetComponent<Animator>();
     }
@@ -107,9 +114,12 @@ public class Player : MonoBehaviour
 
         //Y Axis Speed
         //=========================================================
+        
+
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
 
         gravityModifier = 1;
+        if (fastFallButton.IsPressed()) gravityModifier = fastFallModifier;
         if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && velocity.x != 0 && velocity.y < 0)
         {
             gravityModifier = 0.4f;
@@ -134,8 +144,9 @@ public class Player : MonoBehaviour
                 hSpeed = directionToJump * moveSpeed;
             }
         }
+        
         jumpPressed = false;
-
+        
 
         //Pass the velocity to the movement and collision handler
         //=========================================================
@@ -159,17 +170,17 @@ public class Player : MonoBehaviour
         if (velocity.y > 0) {
             animator.SetBool("is-jumping", true);
             animator.SetBool("is-falling",false);
-            print("jump");
+            
         }
-        else if (velocity.y < -gravity){
+        else if (velocity.y < -gravity * gravityModifier){
             animator.SetBool("is-jumping",false);
             animator.SetBool("is-falling",true);
-            print("fall");
+            
         }
         else {
             animator.SetBool("is-jumping",false);
             animator.SetBool("is-falling",false);
-            print("grounded");
+            
         }
     }
 
@@ -187,8 +198,4 @@ public class Player : MonoBehaviour
         xInput = moveValue;
     }
 
-    void OnFastFall()
-    {
-        print("fast fall");
-    }
 }
