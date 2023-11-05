@@ -21,7 +21,7 @@ public class MovementCollisionHandler : RaycastController
     // Start is called before the first frame update
 
 
-    public void Move(Vector3 velocity)
+    public void Move(Vector3 velocity, bool standingOnPLatform = false)
     {
         //reset current collision info and find where we should be casting rays from
         collisionInfo.Reset();
@@ -38,6 +38,8 @@ public class MovementCollisionHandler : RaycastController
         
         //update our actual position based on potentially updated velocity values
         transform.Translate(velocity);
+
+        if (standingOnPLatform) collisionInfo.below = true;
     }
 
     void CollisionsXAxis(ref Vector3 velocity)
