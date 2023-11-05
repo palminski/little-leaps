@@ -7,6 +7,8 @@ using UnityEngine;
 public class PlatformController : RaycastController
 {
 
+    private bool isPassable = false;
+    private FallthroughSolid fallthroughSolid;
     public LayerMask passengerMask;
     public Vector3 move;
     
@@ -18,6 +20,8 @@ public class PlatformController : RaycastController
     public override void Start()
     {
         base.Start();
+        fallthroughSolid = GetComponent<FallthroughSolid>();
+        if (GetComponent<FallthroughSolid>() != null) isPassable = true;
     }
 
     // Update is called once per frame
@@ -29,10 +33,17 @@ public class PlatformController : RaycastController
         Vector3 velocity = move;
         CalculatePassengerMovement(velocity);
 
+        
+
         MovePassengers(true);
         transform.Translate(velocity);
         MovePassengers(false);
+
+        if (fallthroughSolid) {
+            isPassable = fallthroughSolid.IsPassable();
+        }
     }
+
 
     void MovePassengers(bool beforePlatMove)
     {
@@ -55,7 +66,7 @@ public class PlatformController : RaycastController
         float directionY = Math.Sign(velocity.y);
 
         //Moving Vertically===========================================================
-        if (velocity.y != 0)
+        if (velocity.y != 0 && !isPassable)
         {
             float rayLength = Mathf.Abs(velocity.y) + skinWidth;
             Vector2 rayOrigin;
@@ -86,7 +97,7 @@ public class PlatformController : RaycastController
         }
 
         //Moving Vertically=============================================================
-        if (velocity.x != 0)
+        if (velocity.x != 0 && !isPassable)
         {
             float rayLength = Mathf.Abs(velocity.x) + skinWidth;
             Vector2 rayOrigin;
@@ -118,7 +129,7 @@ public class PlatformController : RaycastController
         }
 
         //Passenger on top of a platform not moving up====================================
-        if (directionY == -1 || (velocity.y == 0 && velocity.x != 0))
+        if (directionY == -1 || (velocity.y == 0 && velocity.x != 0) && !isPassable)
         {
             float rayLength = skinWidth * 2;
             Vector2 rayOrigin = raycastOrigins.topLeft;

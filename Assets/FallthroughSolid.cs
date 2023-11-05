@@ -14,6 +14,8 @@ public class FallthroughSolid : MonoBehaviour
     private int passableIndex;
     private int solidIndex;
 
+
+
     // Start is called before the first frame update
     void Start() {
         playerCollider = GameObject.FindGameObjectWithTag("Player").GetComponent<Collider2D>();
@@ -54,6 +56,15 @@ public class FallthroughSolid : MonoBehaviour
         float platformTop = platformCollider.bounds.max.y;
 
         return playerBottom >= platformTop - GlobalVars.globalSkinWidth;
+    }
+
+    public bool IsPassable() {
+        if (!IsPlayerAbove()) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     
