@@ -71,6 +71,7 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        bool isGrounded = movementCollisionHandler.OnGround();
         //X Axis Speed
         //=========================================================
         //First we will start by checking players input and updating movespeed accordingly
@@ -83,7 +84,7 @@ public class Player : MonoBehaviour
         else
         {
             //Determine weather to use air or ground friction
-            if (movementCollisionHandler.collisionInfo.below)
+            if (isGrounded)
             {
                 hSpeed = Mathf.MoveTowards(hSpeed, 0, groundFriction);
             }
@@ -96,13 +97,13 @@ public class Player : MonoBehaviour
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
 
         //if we are hitting a wall we set the hspeed to 0 so we can accelerate away from it quickly
-        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && movementCollisionHandler.collisionInfo.below)
+        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && isGrounded)
         {
             hSpeed = 0;
         }
 
         //we dont want extra force once we are on the ground. we also want to continuously move it back to 0
-        if (movementCollisionHandler.collisionInfo.below)
+        if (isGrounded)
         {
             extraForceX = 0;
         }
@@ -131,7 +132,7 @@ public class Player : MonoBehaviour
         if (jumpPressed)
         {
 
-            if (movementCollisionHandler.collisionInfo.below)
+            if (isGrounded)
             {
                 velocity.y = jumpPower;
             }

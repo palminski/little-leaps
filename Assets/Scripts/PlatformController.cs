@@ -107,7 +107,7 @@ public class PlatformController : RaycastController
 
                     float pushX = velocity.x - (collision.distance - skinWidth) * directionX;
                     //recheck this
-                    float pushY = -skinWidth;
+                    float pushY = 0;
 
                     // collision.transform.Translate(new Vector3(pushX, pushY));
                     passengerMovements.Add(new PassengerMovement(collision.transform, new Vector3(pushX,pushY), false, true));
