@@ -9,7 +9,7 @@ public class MovementCollisionHandler : RaycastController
     //====================================================================================================================
 
 
-    
+
 
     public CollisionInfo collisionInfo;
 
@@ -21,10 +21,11 @@ public class MovementCollisionHandler : RaycastController
     // Start is called before the first frame update
 
 
-    public void Move(Vector3 velocity)
+    public void Move(Vector3 velocity, bool standingOnPLatform = false)
     {
         //reset current collision info and find where we should be casting rays from
         collisionInfo.Reset();
+
         updateRaycastOrigins();
 
         //cast horizontal rays to determine how far we are allowed to move horizontally and make that our x velocity
@@ -35,9 +36,12 @@ public class MovementCollisionHandler : RaycastController
 
         //cast vertical rays and adjust our y velocity accordingly
         if (velocity.y != 0) CollisionsYAxis(ref velocity);
-        
+
         //update our actual position based on potentially updated velocity values
         transform.Translate(velocity);
+
+        if (standingOnPLatform) collisionInfo.below = true;
+
     }
 
     void CollisionsXAxis(ref Vector3 velocity)
@@ -64,7 +68,7 @@ public class MovementCollisionHandler : RaycastController
         //For loop runs however many times we have set rays to be cast in horizontal direction
         for (int i = 0; i < xRayCount; i++)
         {
-            
+
             RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * horizontalRaySpacing * Vector2.up, rayDirection, distanceToCast, LayerMask.GetMask("Solid"));
             if (shouldDrawRays) Debug.DrawRay(rayOrigin + i * horizontalRaySpacing * Vector2.up, rayDirection, Color.red, distanceToCast);
             //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
@@ -73,7 +77,7 @@ public class MovementCollisionHandler : RaycastController
 
                 velocity.x = (collision.distance - skinWidth) * direction;
                 distanceToCast = collision.distance;
-                
+
                 collisionInfo.left = direction == -1;
                 collisionInfo.right = direction == 1;
             }
@@ -104,7 +108,7 @@ public class MovementCollisionHandler : RaycastController
         //For loop runs however many times we have set rays to be cast in vertical direction
         for (int i = 0; i < yRayCount; i++)
         {
-            
+
             RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, rayDirection, distanceToCast, LayerMask.GetMask("Solid"));
             if (shouldDrawRays) Debug.DrawRay(rayOrigin + i * verticalRaySpacing * Vector2.right, rayDirection, Color.red, distanceToCast);
 
@@ -114,7 +118,7 @@ public class MovementCollisionHandler : RaycastController
 
                 velocity.y = (collision.distance - skinWidth) * direction;
                 distanceToCast = collision.distance;
-                
+
                 collisionInfo.above = direction == 1;
                 collisionInfo.below = direction == -1;
             }
@@ -123,7 +127,8 @@ public class MovementCollisionHandler : RaycastController
     }
     //Public Methods
     //====================================================================================================
-    public bool OnWallAtDist(float distance, ref int outDirection) {
+    public bool OnWallAtDist(float distance, ref int outDirection)
+    {
         //Detects if there is a wall to the left or the right at the specified distance away or closer
         for (int i = 0; i < xRayCount; i++)
         {
@@ -145,13 +150,29 @@ public class MovementCollisionHandler : RaycastController
         return false;
     }
 
+    public bool OnGround() {
+        Vector2 rayOrigin = raycastOrigins.bottomLeft;
+        for (int i = 0; i < yRayCount; i++)
+        {
 
-   
-//Structs
-//==============================================================================
+            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, Vector2.down, skinWidth+0.001f, LayerMask.GetMask("Solid"));
+
+            //If there is a collision we will update velocity.y accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
+            if (collision.collider)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
-    
+
+    //Structs
+    //==============================================================================
+
+
+
 
     public struct CollisionInfo
     {
