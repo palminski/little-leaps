@@ -69,6 +69,13 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
+    private void Start() {
+        print(GameController.Instance.Score);
+        GameController.Instance.AddToScore(1);
+        print(GameController.Instance.AddToScore(1));
+        print(GameController.Instance.Score);
+    }
+
     private void FixedUpdate()
     {
         bool isGrounded = movementCollisionHandler.OnGround();

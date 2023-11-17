@@ -48,7 +48,7 @@ public class PlatformController : RaycastController
     void MovePassengers(bool beforePlatMove)
     {
         foreach (PassengerMovement passenger in passengerMovements) {
-            print("movedPass");
+            
             if (!passengerCollisionHandlers.ContainsKey(passenger.transform)) {
                 passengerCollisionHandlers.Add(passenger.transform, passenger.transform.GetComponent<MovementCollisionHandler>());
             } 
@@ -135,7 +135,7 @@ public class PlatformController : RaycastController
             float rayLength = skinWidth * 2;
             Vector2 rayOrigin = raycastOrigins.topLeft;
 
-            print(isPassable);
+            
             for (int i = 0; i < yRayCount; i++)
             {
 
