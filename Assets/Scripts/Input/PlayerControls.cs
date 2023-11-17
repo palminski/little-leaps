@@ -242,6 +242,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""FastFall"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""472d6fc5-03b9-4ee8-bfa2-09bc1c62ee9c"",
+                    ""path"": ""<Gamepad>/leftStick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FastFall"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
