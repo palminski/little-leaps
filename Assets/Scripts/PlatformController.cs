@@ -48,6 +48,7 @@ public class PlatformController : RaycastController
     void MovePassengers(bool beforePlatMove)
     {
         foreach (PassengerMovement passenger in passengerMovements) {
+            print("movedPass");
             if (!passengerCollisionHandlers.ContainsKey(passenger.transform)) {
                 passengerCollisionHandlers.Add(passenger.transform, passenger.transform.GetComponent<MovementCollisionHandler>());
             } 
@@ -129,12 +130,12 @@ public class PlatformController : RaycastController
         }
 
         //Passenger on top of a platform not moving up====================================
-        if (directionY == -1 || (velocity.y == 0 && velocity.x != 0) && !isPassable)
+        if (directionY == -1 && !isPassable || (velocity.y == 0 && velocity.x != 0) && !isPassable)
         {
             float rayLength = skinWidth * 2;
             Vector2 rayOrigin = raycastOrigins.topLeft;
 
-
+            print(isPassable);
             for (int i = 0; i < yRayCount; i++)
             {
 
