@@ -53,6 +53,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ToggleRoom"",
+                    ""type"": ""Button"",
+                    ""id"": ""cd5f51bc-65f1-4c2f-86ee-34f4b0b04acf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -253,6 +262,39 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""FastFall"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e26f7a69-8baa-445a-bedf-48afa8a983ab"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d226c2c9-e45c-4565-ad3c-1fae3d3ebfcd"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f500c79d-d67f-4986-b976-c2234092d2ac"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -264,6 +306,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Movement_Move = m_Movement.FindAction("Move", throwIfNotFound: true);
         m_Movement_Jump = m_Movement.FindAction("Jump", throwIfNotFound: true);
         m_Movement_FastFall = m_Movement.FindAction("FastFall", throwIfNotFound: true);
+        m_Movement_ToggleRoom = m_Movement.FindAction("ToggleRoom", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -328,6 +371,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Movement_Move;
     private readonly InputAction m_Movement_Jump;
     private readonly InputAction m_Movement_FastFall;
+    private readonly InputAction m_Movement_ToggleRoom;
     public struct MovementActions
     {
         private @PlayerControls m_Wrapper;
@@ -335,6 +379,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Movement_Move;
         public InputAction @Jump => m_Wrapper.m_Movement_Jump;
         public InputAction @FastFall => m_Wrapper.m_Movement_FastFall;
+        public InputAction @ToggleRoom => m_Wrapper.m_Movement_ToggleRoom;
         public InputActionMap Get() { return m_Wrapper.m_Movement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -353,6 +398,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @FastFall.started += instance.OnFastFall;
             @FastFall.performed += instance.OnFastFall;
             @FastFall.canceled += instance.OnFastFall;
+            @ToggleRoom.started += instance.OnToggleRoom;
+            @ToggleRoom.performed += instance.OnToggleRoom;
+            @ToggleRoom.canceled += instance.OnToggleRoom;
         }
 
         private void UnregisterCallbacks(IMovementActions instance)
@@ -366,6 +414,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @FastFall.started -= instance.OnFastFall;
             @FastFall.performed -= instance.OnFastFall;
             @FastFall.canceled -= instance.OnFastFall;
+            @ToggleRoom.started -= instance.OnToggleRoom;
+            @ToggleRoom.performed -= instance.OnToggleRoom;
+            @ToggleRoom.canceled -= instance.OnToggleRoom;
         }
 
         public void RemoveCallbacks(IMovementActions instance)
@@ -388,5 +439,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnFastFall(InputAction.CallbackContext context);
+        void OnToggleRoom(InputAction.CallbackContext context);
     }
 }

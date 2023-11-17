@@ -206,4 +206,10 @@ public class Player : MonoBehaviour
         xInput = moveValue;
     }
 
+    void OnToggleRoom() {
+        GameController.Instance.ToggleRoomState();
+        print($"new room state = [{GameController.Instance.RoomState}]");
+        
+    }
+
 }
