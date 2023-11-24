@@ -19,6 +19,7 @@ public class ColorSwapper : MonoBehaviour
 
     private void OnEnable() {
         GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
+        UpdateSpriteColor();
     }
     private void OnDisable() {
         GameController.Instance.OnRoomStateChanged -= HandleRoomStateChange;
