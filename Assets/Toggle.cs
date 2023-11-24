@@ -10,6 +10,9 @@ public class Toggle : MonoBehaviour
     [SerializeField]
     private GameObject objectForState1;
 
+    [SerializeField]
+    private bool toggleDelay;
+
 
     private void OnEnable() {
         GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
@@ -25,7 +28,13 @@ public class Toggle : MonoBehaviour
     }
 
     private void HandleRoomStateChange() {
-        ToggleChildren();
+        if (toggleDelay) {
+            StartCoroutine(ToggleChildrenCoroutine());
+        }
+        else {
+            ToggleChildren();
+        }
+        
     }
 
     private void ToggleChildren() {
@@ -45,5 +54,13 @@ public class Toggle : MonoBehaviour
                 objectForState1.SetActive(true);
             }
         }
+    }
+
+    private IEnumerator ToggleChildrenCoroutine() {
+        yield return new WaitForSeconds(0.05f);
+        // yield return new WaitForFixedUpdate();
+        // yield return new WaitForFixedUpdate();
+
+        ToggleChildren();
     }
 }

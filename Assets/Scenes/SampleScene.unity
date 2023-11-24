@@ -3129,6 +3129,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toggleable Objects (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 8871866403594411827, guid: 6713ad5d64f0bff418fcd2dc439127dd, type: 3}
+      propertyPath: toggleDelay
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4049,6 +4053,7 @@ MonoBehaviour:
   groundFriction: 0.06
   airFriction: 0.02
   jumpPower: 1
+  coyoteTimeMax: 5
   gravity: 0.08
   wallJumpPower: 0.9
   wallJumpXPower: 0.75
@@ -5094,6 +5099,63 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorForRS0: {r: 0.6769943, g: 0, b: 1, a: 1}
   colorForRS1: {r: 0, g: 1, b: 0.0022239685, a: 1}
+--- !u!1001 &1381027335
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2624873631896628722, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 11.83
+      objectReference: {fileID: 0}
+    - target: {fileID: 2624873631896628722, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2624873631896628722, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2624873631896628722, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2624873631896628722, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2624873631896628722, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2624873631896628722, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2624873631896628722, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2624873631896628722, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2624873631896628722, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3096848305486671813, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
+      propertyPath: m_Name
+      value: Toggleable Object State 1 (4)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
 --- !u!1 &1392598317
 GameObject:
   m_ObjectHideFlags: 0
@@ -7028,6 +7090,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2149848080289845250, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
+      propertyPath: toggleDelay
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2624873631896628722, guid: bea74dba419bd964a83ae2b193cf2b9b, type: 3}
       propertyPath: m_LocalScale.y
       value: 11.48
@@ -7440,6 +7506,7 @@ SceneRoots:
   - {fileID: 1409288540}
   - {fileID: 778744368}
   - {fileID: 8171623707422052718}
+  - {fileID: 1381027335}
   - {fileID: 2020207512}
   - {fileID: 1131236531}
   - {fileID: 1257041728}

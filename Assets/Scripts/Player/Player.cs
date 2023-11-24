@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     private InputAction fastFallButton;
 
     private Animator animator;
-    
+
     private Vector3 velocity;
 
     private float xInput;
@@ -74,7 +74,8 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    private void Start() {
+    private void Start()
+    {
         print(GameController.Instance.Score);
         GameController.Instance.AddToScore(1);
         print(GameController.Instance.AddToScore(1));
@@ -127,7 +128,7 @@ public class Player : MonoBehaviour
 
         //Y Axis Speed
         //=========================================================
-        
+
 
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
 
@@ -153,15 +154,17 @@ public class Player : MonoBehaviour
             else
             {
                 int directionToJump = 0;
-                if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) velocity.y = wallJumpPower;
-
-                extraForceX = directionToJump * wallJumpXPower;
-                hSpeed = directionToJump * moveSpeed;
+                if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
+                {
+                    velocity.y = wallJumpPower;
+                    extraForceX = directionToJump * wallJumpXPower;
+                    hSpeed = directionToJump * moveSpeed;
+                }
             }
         }
         if (coyoteTime > 0) coyoteTime--;
         jumpPressed = false;
-        
+
 
         //Pass the velocity to the movement and collision handler
         //=========================================================
@@ -176,26 +179,30 @@ public class Player : MonoBehaviour
 
         int hDirection = System.Math.Sign(hSpeed);
 
-        if (hDirection != 0) {
-            Vector3 newScale = new(hDirection,1,1);
+        if (hDirection != 0)
+        {
+            Vector3 newScale = new(hDirection, 1, 1);
             transform.localScale = newScale;
         }
 
         //falling animations 
-        if (velocity.y > 0) {
+        if (velocity.y > 0)
+        {
             animator.SetBool("is-jumping", true);
-            animator.SetBool("is-falling",false);
-            
+            animator.SetBool("is-falling", false);
+
         }
-        else if (velocity.y < -gravity * gravityModifier){
-            animator.SetBool("is-jumping",false);
-            animator.SetBool("is-falling",true);
-            
+        else if (velocity.y < -gravity * gravityModifier)
+        {
+            animator.SetBool("is-jumping", false);
+            animator.SetBool("is-falling", true);
+
         }
-        else {
-            animator.SetBool("is-jumping",false);
-            animator.SetBool("is-falling",false);
-            
+        else
+        {
+            animator.SetBool("is-jumping", false);
+            animator.SetBool("is-falling", false);
+
         }
     }
 
@@ -209,14 +216,15 @@ public class Player : MonoBehaviour
     void OnMove(InputValue value)
     {
         float moveValue = value.Get<float>();
-        
+
         xInput = moveValue;
     }
 
-    void OnToggleRoom() {
+    void OnToggleRoom()
+    {
         GameController.Instance.ToggleRoomState();
         print($"new room state = [{GameController.Instance.RoomState}]");
-        
+
     }
 
 }
