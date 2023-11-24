@@ -45,6 +45,9 @@ public class Player : MonoBehaviour
     private float jumpPower = 0.7f;
 
     [SerializeField]
+    private int coyoteTimeMax = 5;
+
+    [SerializeField]
     private float gravity = 0.05f;
 
     [Header("Wall Jump")]
@@ -61,6 +64,8 @@ public class Player : MonoBehaviour
     //
     private float extraForceX = 0;
     private float gravityModifier = 1;
+
+    private int coyoteTime = 0;
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -135,11 +140,13 @@ public class Player : MonoBehaviour
 
         velocity.y -= gravity * gravityModifier;
 
+        //Jumping
+        if (isGrounded) coyoteTime = coyoteTimeMax;
 
         if (jumpPressed)
         {
 
-            if (isGrounded)
+            if (coyoteTime > 0)
             {
                 velocity.y = jumpPower;
             }
@@ -152,7 +159,7 @@ public class Player : MonoBehaviour
                 hSpeed = directionToJump * moveSpeed;
             }
         }
-        
+        if (coyoteTime > 0) coyoteTime--;
         jumpPressed = false;
         
 
