@@ -48,6 +48,9 @@ public class Player : MonoBehaviour
     private int coyoteTimeMax = 5;
 
     [SerializeField]
+    private float jumpBuffer = 0.2f;
+
+    [SerializeField]
     private float gravity = 0.05f;
 
     [Header("Wall Jump")]
@@ -151,6 +154,10 @@ public class Player : MonoBehaviour
             {
                 velocity.y = jumpPower;
             }
+            else if (movementCollisionHandler.OnGroundAtDist(jumpBuffer))
+            {
+                velocity.y = jumpPower;
+            }
             else
             {
                 int directionToJump = 0;
@@ -210,6 +217,8 @@ public class Player : MonoBehaviour
     {
         // velocity.y = jumpPower;
         jumpPressed = true;
+
+
 
     }
 

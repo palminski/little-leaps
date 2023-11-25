@@ -55,7 +55,7 @@ public class FallthroughSolid : MonoBehaviour
         float playerBottom = playerCollider.bounds.min.y;
         float platformTop = platformCollider.bounds.max.y;
 
-        return playerBottom >= platformTop - GlobalVars.globalSkinWidth;
+        return playerBottom >= platformTop - GameController.GlobalSkinWidth;
     }
 
     public bool IsPassable() {

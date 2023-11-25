@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class ColorSwapper : MonoBehaviour
 {
-    public Color colorForRS0;
+    private Color colorForRS0;
 
-    public Color colorForRS1;
+    private Color colorForRS1;
 
     private SpriteRenderer spriteRenderer;
     private Tilemap tilemap;
@@ -17,6 +18,10 @@ public class ColorSwapper : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         tilemap = GetComponent<Tilemap>();
+        
+        colorForRS0 = GameController.ColorForRoomstate0;
+        colorForRS1 = GameController.ColorForRoomstate1;
+
         UpdateColor();
     }
 

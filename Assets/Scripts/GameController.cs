@@ -5,6 +5,14 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
 
+    public GlobalVariables globalVariables;
+
+    public static Color ColorForRoomstate0 => Instance.globalVariables.colorForRoomState0;
+    public static Color ColorForRoomstate1 => Instance.globalVariables.colorForRoomState1;
+
+    public static float GlobalSkinWidth => Instance.globalVariables.globalSkinWidth;
+    
+    
     public static GameController Instance { get; private set; }
 
     private int score;
