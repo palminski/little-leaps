@@ -11,6 +11,11 @@ public class CameraControls : MonoBehaviour
     [SerializeField]
     private Vector3 offset;
 
+    [SerializeField]
+    private float easeTime;
+
+    private Vector3 velocity = Vector3.zero;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,8 +23,10 @@ public class CameraControls : MonoBehaviour
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    void FixedUpdate()
     {
-        transform.position = new Vector3(target.position.x, target.position.y, transform.position.z) + offset;
+        // transform.position = new Vector3(target.position.x, target.position.y, transform.position.z) + offset;
+        Vector3 targetPosition = target.position + offset;
+        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, easeTime);
     }
 }

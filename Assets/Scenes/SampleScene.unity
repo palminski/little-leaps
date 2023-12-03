@@ -1149,7 +1149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 0.5
   acceleration: 0.075
-  fastFallModifier: 2
+  fastFallModifier: 1
   groundFriction: 0.06
   airFriction: 0.02
   jumpPower: 1
@@ -20293,8 +20293,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714cdb25f722f5a43a077b8a0f0446c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorForRS0: {r: 0.73141813, g: 0, b: 0.9811321, a: 1}
-  colorForRS1: {r: 0.0036325455, g: 1, b: 0, a: 1}
 --- !u!1001 &1151609302
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20865,6 +20863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22161acda4a0ab9418e3dfa7cb9903f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  globalVariables: {fileID: 11400000, guid: 30fb508a83102714dbc0c48292c3f937, type: 2}
 --- !u!4 &1541750920
 Transform:
   m_ObjectHideFlags: 0
@@ -21291,8 +21290,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714cdb25f722f5a43a077b8a0f0446c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorForRS0: {r: 0.73141813, g: 0, b: 0.9811321, a: 1}
-  colorForRS1: {r: 0.0036325455, g: 1, b: 0, a: 1}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
