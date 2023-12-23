@@ -163,6 +163,9 @@ public class Player : MonoBehaviour
                 int directionToJump = 0;
                 if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
                 {
+                    //This seems a bit hackey, but it prevents getting stuck in moving block
+                    transform.Translate(directionToJump * 0.5f ,0,0);
+                    
                     velocity.y = wallJumpPower;
                     extraForceX = directionToJump * wallJumpXPower;
                     hSpeed = directionToJump * moveSpeed;
@@ -232,6 +235,7 @@ public class Player : MonoBehaviour
 
     void OnToggleRoom()
     {
+        
         GameController.Instance.ToggleRoomState();
         print($"new room state = [{GameController.Instance.RoomState}]");
 
