@@ -43,7 +43,7 @@ public class FallthroughSolid : MonoBehaviour
             gameObject.layer = passableIndex;
         }
         else if (IsPlayerAbove()) {
-            gameObject.layer = solidIndex;
+            StartCoroutine(MakeSolid());
         }
         else {
             gameObject.layer = passableIndex;
@@ -65,6 +65,12 @@ public class FallthroughSolid : MonoBehaviour
         else {
             return false;
         }
+    }
+
+    //Player needs to finish calculating movement before we make it solid again, so we wait for the fixed update
+    IEnumerator MakeSolid() {
+        yield return new WaitForFixedUpdate();
+        gameObject.layer = solidIndex;
     }
 
     

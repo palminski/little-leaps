@@ -53,7 +53,7 @@ public class PlatformController : RaycastController
                 passengerCollisionHandlers.Add(passenger.transform, passenger.transform.GetComponent<MovementCollisionHandler>());
             } 
             if (passenger.moveBeforePlatform == beforePlatMove) {
-                passengerCollisionHandlers[passenger.transform].Move(passenger.velocity, passenger.onPlatform);
+                passengerCollisionHandlers[passenger.transform].Move(passenger.velocity, passenger.onPlatform, false);
             }
         }
     }

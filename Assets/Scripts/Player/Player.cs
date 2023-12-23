@@ -181,6 +181,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        
         int inputDirection = System.Math.Sign(xInput);
         animator.SetInteger("input-direction", inputDirection);
 
@@ -191,7 +192,7 @@ public class Player : MonoBehaviour
             Vector3 newScale = new(hDirection, 1, 1);
             transform.localScale = newScale;
         }
-
+        
         //falling animations 
         if (velocity.y > 0)
         {
