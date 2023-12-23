@@ -58,6 +58,9 @@ public class Player : MonoBehaviour
     private float wallJumpPower = 0.5f;
 
     [SerializeField]
+    private float wallJumpOffset = 0.5f;
+
+    [SerializeField]
     private float wallJumpXPower = 0.5f;
 
     [SerializeField]
@@ -113,7 +116,7 @@ public class Player : MonoBehaviour
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
 
         //if we are hitting a wall we set the hspeed to 0 so we can accelerate away from it quickly
-        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && isGrounded)
+        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right))
         {
             hSpeed = 0;
         }
@@ -149,7 +152,6 @@ public class Player : MonoBehaviour
 
         if (jumpPressed)
         {
-
             if (coyoteTime > 0)
             {
                 velocity.y = jumpPower;
@@ -163,8 +165,8 @@ public class Player : MonoBehaviour
                 int directionToJump = 0;
                 if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
                 {
-                    //This seems a bit hackey, but it prevents getting stuck in moving block
-                    transform.Translate(directionToJump * 0.5f ,0,0);
+                    
+                    movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump,0,0));
                     
                     velocity.y = wallJumpPower;
                     extraForceX = directionToJump * wallJumpXPower;
@@ -174,7 +176,6 @@ public class Player : MonoBehaviour
         }
         if (coyoteTime > 0) coyoteTime--;
         jumpPressed = false;
-
 
         //Pass the velocity to the movement and collision handler
         //=========================================================
@@ -235,7 +236,6 @@ public class Player : MonoBehaviour
 
     void OnToggleRoom()
     {
-        
         GameController.Instance.ToggleRoomState();
         print($"new room state = [{GameController.Instance.RoomState}]");
 
