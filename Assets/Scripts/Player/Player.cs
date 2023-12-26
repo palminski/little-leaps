@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     private InputAction fastFallButton;
 
     private Animator animator;
-    
+
     private Vector3 velocity;
 
     private float xInput;
@@ -45,11 +45,20 @@ public class Player : MonoBehaviour
     private float jumpPower = 0.7f;
 
     [SerializeField]
+    private int coyoteTimeMax = 5;
+
+    [SerializeField]
+    private float jumpBuffer = 0.2f;
+
+    [SerializeField]
     private float gravity = 0.05f;
 
     [Header("Wall Jump")]
     [SerializeField]
     private float wallJumpPower = 0.5f;
+
+    [SerializeField]
+    private float wallJumpOffset = 0.5f;
 
     [SerializeField]
     private float wallJumpXPower = 0.5f;
@@ -61,6 +70,8 @@ public class Player : MonoBehaviour
     //
     private float extraForceX = 0;
     private float gravityModifier = 1;
+
+    private int coyoteTime = 0;
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -69,7 +80,8 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    private void Start() {
+    private void Start()
+    {
         print(GameController.Instance.Score);
         GameController.Instance.AddToScore(1);
         print(GameController.Instance.AddToScore(1));
@@ -104,7 +116,7 @@ public class Player : MonoBehaviour
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
 
         //if we are hitting a wall we set the hspeed to 0 so we can accelerate away from it quickly
-        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && isGrounded)
+        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right))
         {
             hSpeed = 0;
         }
@@ -122,7 +134,7 @@ public class Player : MonoBehaviour
 
         //Y Axis Speed
         //=========================================================
-        
+
 
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
 
@@ -135,26 +147,35 @@ public class Player : MonoBehaviour
 
         velocity.y -= gravity * gravityModifier;
 
+        //Jumping
+        if (isGrounded) coyoteTime = coyoteTimeMax;
 
         if (jumpPressed)
         {
-
-            if (isGrounded)
+            if (coyoteTime > 0)
+            {
+                velocity.y = jumpPower;
+            }
+            else if (movementCollisionHandler.OnGroundAtDist(jumpBuffer))
             {
                 velocity.y = jumpPower;
             }
             else
             {
                 int directionToJump = 0;
-                if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) velocity.y = wallJumpPower;
-
-                extraForceX = directionToJump * wallJumpXPower;
-                hSpeed = directionToJump * moveSpeed;
+                if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
+                {
+                    
+                    movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump,0,0));
+                    
+                    velocity.y = wallJumpPower;
+                    extraForceX = directionToJump * wallJumpXPower;
+                    hSpeed = directionToJump * moveSpeed;
+                }
             }
         }
-        
+        if (coyoteTime > 0) coyoteTime--;
         jumpPressed = false;
-        
 
         //Pass the velocity to the movement and collision handler
         //=========================================================
@@ -164,31 +185,36 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        
         int inputDirection = System.Math.Sign(xInput);
         animator.SetInteger("input-direction", inputDirection);
 
         int hDirection = System.Math.Sign(hSpeed);
 
-        if (hDirection != 0) {
-            Vector3 newScale = new(hDirection,1,1);
+        if (hDirection != 0)
+        {
+            Vector3 newScale = new(hDirection, 1, 1);
             transform.localScale = newScale;
         }
-
+        
         //falling animations 
-        if (velocity.y > 0) {
+        if (velocity.y > 0)
+        {
             animator.SetBool("is-jumping", true);
-            animator.SetBool("is-falling",false);
-            
+            animator.SetBool("is-falling", false);
+
         }
-        else if (velocity.y < -gravity * gravityModifier){
-            animator.SetBool("is-jumping",false);
-            animator.SetBool("is-falling",true);
-            
+        else if (velocity.y < -gravity * gravityModifier)
+        {
+            animator.SetBool("is-jumping", false);
+            animator.SetBool("is-falling", true);
+
         }
-        else {
-            animator.SetBool("is-jumping",false);
-            animator.SetBool("is-falling",false);
-            
+        else
+        {
+            animator.SetBool("is-jumping", false);
+            animator.SetBool("is-falling", false);
+
         }
     }
 
@@ -197,19 +223,22 @@ public class Player : MonoBehaviour
         // velocity.y = jumpPower;
         jumpPressed = true;
 
+
+
     }
 
     void OnMove(InputValue value)
     {
         float moveValue = value.Get<float>();
-        
+
         xInput = moveValue;
     }
 
-    void OnToggleRoom() {
+    void OnToggleRoom()
+    {
         GameController.Instance.ToggleRoomState();
         print($"new room state = [{GameController.Instance.RoomState}]");
-        
+
     }
 
 }

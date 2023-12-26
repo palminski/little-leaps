@@ -3,17 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
+
+[RequireComponent(typeof(WaypointMovement))]
 public class PlatformController : RaycastController
 {
 
     private bool isPassable = false;
     private FallthroughSolid fallthroughSolid;
     public LayerMask passengerMask;
-    public Vector3 move;
-    
-    private List<PassengerMovement> passengerMovements;
 
+    private WaypointMovement waypointMovement;
+
+
+
+    private List<PassengerMovement> passengerMovements;
     private Dictionary<Transform, MovementCollisionHandler> passengerCollisionHandlers = new Dictionary<Transform, MovementCollisionHandler>();
 
 
@@ -22,38 +27,42 @@ public class PlatformController : RaycastController
         base.Start();
         fallthroughSolid = GetComponent<FallthroughSolid>();
         if (GetComponent<FallthroughSolid>() != null) isPassable = true;
+
+        waypointMovement = GetComponent<WaypointMovement>();
+
+
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-
         updateRaycastOrigins();
 
-        Vector3 velocity = move;
+        Vector3 velocity = waypointMovement.CalculatePlatformMovement();
         CalculatePassengerMovement(velocity);
-
-        
 
         MovePassengers(true);
         transform.Translate(velocity);
         MovePassengers(false);
 
-        if (fallthroughSolid) {
+        if (fallthroughSolid)
+        {
             isPassable = fallthroughSolid.IsPassable();
         }
     }
 
-
     void MovePassengers(bool beforePlatMove)
     {
-        foreach (PassengerMovement passenger in passengerMovements) {
-            
-            if (!passengerCollisionHandlers.ContainsKey(passenger.transform)) {
+        foreach (PassengerMovement passenger in passengerMovements)
+        {
+
+            if (!passengerCollisionHandlers.ContainsKey(passenger.transform))
+            {
                 passengerCollisionHandlers.Add(passenger.transform, passenger.transform.GetComponent<MovementCollisionHandler>());
-            } 
-            if (passenger.moveBeforePlatform == beforePlatMove) {
-                passengerCollisionHandlers[passenger.transform].Move(passenger.velocity, passenger.onPlatform);
+            }
+            if (passenger.moveBeforePlatform == beforePlatMove)
+            {
+                passengerCollisionHandlers[passenger.transform].Move(passenger.velocity, passenger.onPlatform, false);
             }
         }
     }
@@ -61,7 +70,7 @@ public class PlatformController : RaycastController
     void CalculatePassengerMovement(Vector3 velocity)
     {
         HashSet<Transform> movedPassengers = new HashSet<Transform>();
-        passengerMovements = new List<PassengerMovement> ();
+        passengerMovements = new List<PassengerMovement>();
 
         float directionX = Math.Sign(velocity.x);
         float directionY = Math.Sign(velocity.y);
@@ -90,7 +99,7 @@ public class PlatformController : RaycastController
                     float pushY = velocity.y - (collision.distance - skinWidth) * directionY;
 
                     // collision.transform.Translate(new Vector3(pushX, pushY));
-                    passengerMovements.Add(new PassengerMovement(collision.transform, new Vector3(pushX,pushY), directionY == 1, true));
+                    passengerMovements.Add(new PassengerMovement(collision.transform, new Vector3(pushX, pushY), directionY == 1, true));
                     movedPassengers.Add(collision.transform);
 
                 }
@@ -122,7 +131,7 @@ public class PlatformController : RaycastController
                     float pushY = 0;
 
                     // collision.transform.Translate(new Vector3(pushX, pushY));
-                    passengerMovements.Add(new PassengerMovement(collision.transform, new Vector3(pushX,pushY), false, true));
+                    passengerMovements.Add(new PassengerMovement(collision.transform, new Vector3(pushX, pushY), false, true));
                     movedPassengers.Add(collision.transform);
 
                 }
@@ -135,7 +144,7 @@ public class PlatformController : RaycastController
             float rayLength = skinWidth * 2;
             Vector2 rayOrigin = raycastOrigins.topLeft;
 
-            
+
             for (int i = 0; i < yRayCount; i++)
             {
 
@@ -147,7 +156,7 @@ public class PlatformController : RaycastController
                     float pushY = velocity.y;
 
                     // collision.transform.Translate(new Vector3(pushX, pushY));
-                    passengerMovements.Add(new PassengerMovement(collision.transform, new Vector3(pushX,pushY), true, false));
+                    passengerMovements.Add(new PassengerMovement(collision.transform, new Vector3(pushX, pushY), true, false));
                     movedPassengers.Add(collision.transform);
 
                 }
@@ -171,4 +180,5 @@ public class PlatformController : RaycastController
             moveBeforePlatform = _moveBeforePlatform;
         }
     }
+
 }

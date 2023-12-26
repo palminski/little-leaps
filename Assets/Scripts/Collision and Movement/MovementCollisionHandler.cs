@@ -21,10 +21,11 @@ public class MovementCollisionHandler : RaycastController
     // Start is called before the first frame update
 
 
-    public void Move(Vector3 velocity, bool standingOnPLatform = false)
+    public void Move(Vector3 velocity, bool standingOnPLatform = false, bool resertCollisionInfo = true)
     {
+        
         //reset current collision info and find where we should be casting rays from
-        collisionInfo.Reset();
+        if (resertCollisionInfo) collisionInfo.Reset();
 
         updateRaycastOrigins();
 
@@ -133,17 +134,26 @@ public class MovementCollisionHandler : RaycastController
         for (int i = 0; i < xRayCount; i++)
         {
             RaycastHit2D collision = Physics2D.Raycast(raycastOrigins.bottomRight + i * horizontalRaySpacing * Vector2.up, Vector2.right, distance, LayerMask.GetMask("Solid"));
-            //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
             if (collision.collider)
             {
                 outDirection = -1;
                 return true;
             }
             collision = Physics2D.Raycast(raycastOrigins.bottomLeft + i * horizontalRaySpacing * Vector2.up, Vector2.left, distance, LayerMask.GetMask("Solid"));
-            //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
             if (collision.collider)
             {
                 outDirection = 1;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool OnGroundAtDist(float distance) {
+        for (int i = 0; i < yRayCount; i++) {
+            RaycastHit2D collision = Physics2D.Raycast(raycastOrigins.bottomLeft + i * verticalRaySpacing * Vector2.right, Vector2.down, distance, LayerMask.GetMask("Solid"));
+            if (collision.collider)
+            {
                 return true;
             }
         }
