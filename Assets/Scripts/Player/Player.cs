@@ -180,12 +180,16 @@ public class Player : MonoBehaviour
         //Pass the velocity to the movement and collision handler
         //=========================================================
         movementCollisionHandler.Move(velocity * moveSpeed);
+       
 
     }
 
     void Update()
     {
         
+        
+
+        //Direction
         int inputDirection = System.Math.Sign(xInput);
         animator.SetInteger("input-direction", inputDirection);
 

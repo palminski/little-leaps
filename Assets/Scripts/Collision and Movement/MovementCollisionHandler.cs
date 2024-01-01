@@ -18,14 +18,12 @@ public class MovementCollisionHandler : RaycastController
     public bool shouldDrawRays = false;
 
     //====================================================================================================================
-    // Start is called before the first frame update
 
-
-    public void Move(Vector3 velocity, bool standingOnPLatform = false, bool resertCollisionInfo = true)
+    public void Move(Vector3 velocity, bool standingOnPLatform = false, bool resetCollisionInfo = true)
     {
         
         //reset current collision info and find where we should be casting rays from
-        if (resertCollisionInfo) collisionInfo.Reset();
+        if (resetCollisionInfo) collisionInfo.Reset();
 
         updateRaycastOrigins();
 
