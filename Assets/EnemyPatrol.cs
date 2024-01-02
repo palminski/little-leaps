@@ -12,8 +12,12 @@ public class EnemyPatrol : MonoBehaviour
     [SerializeField]
     private bool startRight = true;
 
+    [SerializeField]
+    private float gravity = 0.08f;
+
     private MovementCollisionHandler movementCollisionHandler;
     private int direction;
+    private Vector3 velocity;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,7 +27,12 @@ public class EnemyPatrol : MonoBehaviour
 
     void FixedUpdate() {
 
-        Vector3 velocity = new Vector3 (direction*speed,0,0);
+        
+        velocity.x = direction*speed;
+
+        if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
+
+        velocity.y -= gravity;
         //Pass the velocity to the movement and collision handler
         //=========================================================
         movementCollisionHandler.Move(velocity);
@@ -35,9 +44,7 @@ public class EnemyPatrol : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-
-       
+    
         if (direction != 0)
         {
             Vector3 newScale = new(direction, 1, 1);
