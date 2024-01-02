@@ -245,4 +245,15 @@ public class Player : MonoBehaviour
 
     }
 
+    public void Damage() {
+        
+    }
+
+    public void Shove(int direction) {
+                    movementCollisionHandler.Move(new Vector3(0,0.5f,0));
+                    velocity.y = wallJumpPower/1.5f;
+                    extraForceX = -1 * wallJumpXPower;
+                    hSpeed = direction * moveSpeed;
+    }
+
 }
