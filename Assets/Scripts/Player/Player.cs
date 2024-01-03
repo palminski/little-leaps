@@ -66,12 +66,16 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float distanceWallsDetectable = 0.5f;
 
-
+    [Header("Damage")]
+    [SerializeField]
+    private float invincibilityTime = 3;
     //
+
     private float extraForceX = 0;
     private float gravityModifier = 1;
-
     private int coyoteTime = 0;
+    private Vector3 lastPosition;
+    private float invincibilityCountdown;
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -86,10 +90,14 @@ public class Player : MonoBehaviour
         GameController.Instance.AddToScore(1);
         print(GameController.Instance.AddToScore(1));
         print(GameController.Instance.Score);
+        invincibilityCountdown = invincibilityTime;
     }
 
     private void FixedUpdate()
     {
+        //set last position to current position before moving
+        lastPosition = transform.position;
+
         bool isGrounded = movementCollisionHandler.OnGround();
         //X Axis Speed
         //=========================================================
@@ -186,8 +194,8 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        
-        
+        //invincibility frames
+        if (invincibilityCountdown > 0) invincibilityCountdown -= 1 * Time.deltaTime;
 
         //Direction
         int inputDirection = System.Math.Sign(xInput);
@@ -218,7 +226,6 @@ public class Player : MonoBehaviour
         {
             animator.SetBool("is-jumping", false);
             animator.SetBool("is-falling", false);
-
         }
     }
 
@@ -250,10 +257,21 @@ public class Player : MonoBehaviour
     }
 
     public void Shove(int direction) {
+                    invincibilityCountdown = invincibilityTime;
                     movementCollisionHandler.Move(new Vector3(0,0.5f,0));
                     velocity.y = wallJumpPower/1.5f;
                     extraForceX = -1 * wallJumpXPower;
                     hSpeed = direction * moveSpeed;
     }
+
+    //Methods to get player properties
+    public bool IsInvincible() {
+        return invincibilityCountdown > 0;
+    }
+
+    public Vector3 GetLastPosition() {
+        return lastPosition;
+    }
+
 
 }

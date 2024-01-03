@@ -14,20 +14,38 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.gameObject == player) {
-            print("Hit Player!");
-            int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
-            player.GetComponent<Player>().Shove(directionToShove);
+    void OnTriggerEnter2D(Collider2D hitCollider)
+    {
+        if (hitCollider.gameObject == player)
+        {
+            Player hitPlayer = player.GetComponent<Player>();
+
+            float playerBottom = hitPlayer.GetLastPosition().y - (hitCollider.bounds.size.y / 2);
+            float enemyTop = transform.position.y + GetComponent<Collider2D>().bounds.size.y / 2;
+            if (playerBottom > enemyTop)
+            {
+                //Eventually expand this to add points, some blood effects, etc
+                //Probably move it to its own method 
+                print("Killed Enemy!");
+                Destroy(gameObject);
+                return;
+            }
+
+            if (!hitPlayer.IsInvincible())
+            {
+                print("Hit Player!");
+                int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
+                hitPlayer.Shove(directionToShove);
+            }
         }
     }
 }
