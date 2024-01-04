@@ -273,5 +273,8 @@ public class Player : MonoBehaviour
         return lastPosition;
     }
 
+    public void ResetCoyoteTime() {
+        coyoteTime = coyoteTimeMax;
+    }
 
 }
