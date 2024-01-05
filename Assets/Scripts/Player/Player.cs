@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
 
     private PlayerInput playerInput;
     private InputAction fastFallButton;
+    private SpriteRenderer spriteRenderer;
 
     private Animator animator;
 
@@ -69,6 +70,8 @@ public class Player : MonoBehaviour
     [Header("Damage")]
     [SerializeField]
     private float invincibilityTime = 3;
+    [SerializeField]
+    private float invincibilityBlinkInterval = 0.0001f;
     //
 
     private float extraForceX = 0;
@@ -76,11 +79,14 @@ public class Player : MonoBehaviour
     private int coyoteTime = 0;
     private Vector3 lastPosition;
     private float invincibilityCountdown;
+
+    private float nextInvincibilityBlinkTime;
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         fastFallButton = playerInput.actions["FastFall"];
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
     }
 
@@ -90,7 +96,7 @@ public class Player : MonoBehaviour
         GameController.Instance.AddToScore(1);
         print(GameController.Instance.AddToScore(1));
         print(GameController.Instance.Score);
-        invincibilityCountdown = invincibilityTime;
+        invincibilityCountdown = 0;
     }
 
     private void FixedUpdate()
@@ -195,7 +201,16 @@ public class Player : MonoBehaviour
     void Update()
     {
         //invincibility frames
-        if (invincibilityCountdown > 0) invincibilityCountdown -= 1 * Time.deltaTime;
+        if (invincibilityCountdown > 0) {
+            invincibilityCountdown -= Time.deltaTime;
+            if (Time.time > nextInvincibilityBlinkTime) {
+                spriteRenderer.enabled = !spriteRenderer.enabled;
+                nextInvincibilityBlinkTime = Time.time + invincibilityBlinkInterval;
+            }
+        } 
+        else {
+            spriteRenderer.enabled = true;
+        }
 
         //Direction
         int inputDirection = System.Math.Sign(xInput);
