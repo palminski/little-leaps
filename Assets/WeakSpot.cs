@@ -30,7 +30,7 @@ public class WeakSpot : MonoBehaviour
             if (playerBottom > enemyTop)
             {
                 hitPlayer.ResetCoyoteTime();
-                print("OTYOYOOY");
+                hitPlayer.Bounce();
                 Destroy(transform.parent.gameObject);
                 return;
             }

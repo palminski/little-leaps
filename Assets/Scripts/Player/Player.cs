@@ -292,4 +292,8 @@ public class Player : MonoBehaviour
         coyoteTime = coyoteTimeMax;
     }
 
+    public void Bounce() {
+        velocity.y = jumpPower;
+    }
+
 }
