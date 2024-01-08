@@ -64,7 +64,7 @@ public class PlatformController : RaycastController
             if (passenger.moveBeforePlatform == beforePlatMove)
             {
                 
-                passengerCollisionHandlers[passenger.transform].Move(passenger.velocity, passenger.onPlatform, false);
+                if (passengerCollisionHandlers[passenger.transform]) passengerCollisionHandlers[passenger.transform].Move(passenger.velocity, passenger.onPlatform, false);
             }
         }
     }

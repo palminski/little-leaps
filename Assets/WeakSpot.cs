@@ -6,6 +6,9 @@ public class WeakSpot : MonoBehaviour
 {
     private GameObject player;
 
+        [SerializeField]
+    private GameObject blood;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +34,7 @@ public class WeakSpot : MonoBehaviour
             {
                 hitPlayer.ResetCoyoteTime();
                 hitPlayer.Bounce();
+                GameObject.Instantiate(blood, transform.position, transform.rotation);
                 Destroy(transform.parent.gameObject);
                 return;
             }

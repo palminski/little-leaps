@@ -30,6 +30,9 @@ public class Player : MonoBehaviour
     private float moveSpeed = 0.4f;
 
     [SerializeField]
+    private float finalMoveSpeedScale = 0.4f;
+
+    [SerializeField]
     private float acceleration = 0.1f;
 
     [SerializeField]
@@ -193,7 +196,7 @@ public class Player : MonoBehaviour
 
         //Pass the velocity to the movement and collision handler
         //=========================================================
-        movementCollisionHandler.Move(velocity * moveSpeed);
+        movementCollisionHandler.Move(velocity * finalMoveSpeedScale);
        
 
     }
