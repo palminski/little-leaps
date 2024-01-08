@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
 
     private PlayerInput playerInput;
     private InputAction fastFallButton;
+    private SpriteRenderer spriteRenderer;
 
     private Animator animator;
 
@@ -27,6 +28,9 @@ public class Player : MonoBehaviour
     [Header("Horizontal Movement")]
     [SerializeField]
     private float moveSpeed = 0.4f;
+
+    [SerializeField]
+    private float finalMoveSpeedScale = 0.4f;
 
     [SerializeField]
     private float acceleration = 0.1f;
@@ -66,17 +70,26 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float distanceWallsDetectable = 0.5f;
 
-
+    [Header("Damage")]
+    [SerializeField]
+    private float invincibilityTime = 3;
+    [SerializeField]
+    private float invincibilityBlinkInterval = 0.0001f;
     //
+
     private float extraForceX = 0;
     private float gravityModifier = 1;
-
     private int coyoteTime = 0;
+    private Vector3 lastPosition;
+    private float invincibilityCountdown;
+
+    private float nextInvincibilityBlinkTime;
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
         fastFallButton = playerInput.actions["FastFall"];
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
     }
 
@@ -86,10 +99,14 @@ public class Player : MonoBehaviour
         GameController.Instance.AddToScore(1);
         print(GameController.Instance.AddToScore(1));
         print(GameController.Instance.Score);
+        invincibilityCountdown = 0;
     }
 
     private void FixedUpdate()
     {
+        //set last position to current position before moving
+        lastPosition = transform.position;
+
         bool isGrounded = movementCollisionHandler.OnGround();
         //X Axis Speed
         //=========================================================
@@ -179,13 +196,26 @@ public class Player : MonoBehaviour
 
         //Pass the velocity to the movement and collision handler
         //=========================================================
-        movementCollisionHandler.Move(velocity * moveSpeed);
+        movementCollisionHandler.Move(velocity * finalMoveSpeedScale);
+       
 
     }
 
     void Update()
     {
-        
+        //invincibility frames
+        if (invincibilityCountdown > 0) {
+            invincibilityCountdown -= Time.deltaTime;
+            if (Time.time > nextInvincibilityBlinkTime) {
+                spriteRenderer.enabled = !spriteRenderer.enabled;
+                nextInvincibilityBlinkTime = Time.time + invincibilityBlinkInterval;
+            }
+        } 
+        else {
+            spriteRenderer.enabled = true;
+        }
+
+        //Direction
         int inputDirection = System.Math.Sign(xInput);
         animator.SetInteger("input-direction", inputDirection);
 
@@ -214,7 +244,6 @@ public class Player : MonoBehaviour
         {
             animator.SetBool("is-jumping", false);
             animator.SetBool("is-falling", false);
-
         }
     }
 
@@ -239,6 +268,35 @@ public class Player : MonoBehaviour
         GameController.Instance.ToggleRoomState();
         print($"new room state = [{GameController.Instance.RoomState}]");
 
+    }
+
+    public void Damage() {
+        
+    }
+
+    public void Shove(int direction) {
+                    invincibilityCountdown = invincibilityTime;
+                    movementCollisionHandler.Move(new Vector3(0,0.5f,0));
+                    velocity.y = wallJumpPower/1.5f;
+                    extraForceX = -1 * wallJumpXPower;
+                    hSpeed = direction * moveSpeed;
+    }
+
+    //Methods to get player properties
+    public bool IsInvincible() {
+        return invincibilityCountdown > 0;
+    }
+
+    public Vector3 GetLastPosition() {
+        return lastPosition;
+    }
+
+    public void ResetCoyoteTime() {
+        coyoteTime = coyoteTimeMax;
+    }
+
+    public void Bounce() {
+        velocity.y = jumpPower;
     }
 
 }
