@@ -12,6 +12,8 @@ public class Player : MonoBehaviour
     private MovementCollisionHandler movementCollisionHandler;
 
     private PlayerInput playerInput;
+
+    private InputAction jumpAction;
     private InputAction fastFallButton;
     private SpriteRenderer spriteRenderer;
 
@@ -24,6 +26,7 @@ public class Player : MonoBehaviour
     private float hSpeed;
 
     private bool jumpPressed;
+    private bool jumpReleased;
 
     [Header("Horizontal Movement")]
     [SerializeField]
@@ -47,6 +50,9 @@ public class Player : MonoBehaviour
     [Header("Vertical Movement")]
     [SerializeField]
     private float jumpPower = 0.7f;
+
+    [SerializeField]
+    private float minJumpPower = 1;
 
     [SerializeField]
     private int coyoteTimeMax = 5;
@@ -82,8 +88,10 @@ public class Player : MonoBehaviour
     private int coyoteTime = 0;
     private Vector3 lastPosition;
     private float invincibilityCountdown;
-
     private float nextInvincibilityBlinkTime;
+
+    
+    private float minJumpVelocity;
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -91,6 +99,10 @@ public class Player : MonoBehaviour
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+
+        jumpAction = playerInput.actions["Jump"];
+        jumpAction.started += context => OnJumpPress();
+        jumpAction.canceled += context => OnJumpRelease();
     }
 
     private void Start()
@@ -99,7 +111,17 @@ public class Player : MonoBehaviour
         GameController.Instance.AddToScore(1);
         print(GameController.Instance.AddToScore(1));
         print(GameController.Instance.Score);
+
+        minJumpVelocity = Mathf.Sqrt(2*Mathf.Abs(gravity) * minJumpPower);
+
         invincibilityCountdown = 0;
+    }
+
+    private void OnEnable() {
+        jumpAction.Enable();
+    }
+    private void OnDisable() {
+        jumpAction.Disable();
     }
 
     private void FixedUpdate()
@@ -191,8 +213,15 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        if (jumpReleased) {
+            if (velocity.y > minJumpVelocity) {
+                print(minJumpVelocity);
+                velocity.y = minJumpVelocity;
+            }
+        }
         if (coyoteTime > 0) coyoteTime--;
         jumpPressed = false;
+        jumpReleased = false;
 
         //Pass the velocity to the movement and collision handler
         //=========================================================
@@ -247,13 +276,14 @@ public class Player : MonoBehaviour
         }
     }
 
-    void OnJump()
+    void OnJumpPress()
     {
-        // velocity.y = jumpPower;
         jumpPressed = true;
+    }
 
-
-
+    void OnJumpRelease()
+    {
+        jumpReleased = true;
     }
 
     void OnMove(InputValue value)
