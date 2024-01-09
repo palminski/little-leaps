@@ -63,6 +63,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float gravity = 0.05f;
 
+    [SerializeField]
+    private float terminalYVelocity = 1;
+
     [Header("Wall Jump")]
     [SerializeField]
     private float wallJumpPower = 0.5f;
@@ -215,13 +218,16 @@ public class Player : MonoBehaviour
         }
         if (jumpReleased) {
             if (velocity.y > minJumpVelocity) {
-                print(minJumpVelocity);
                 velocity.y = minJumpVelocity;
             }
         }
+        velocity.y = Mathf.Clamp(velocity.y,-terminalYVelocity, terminalYVelocity);
+print(velocity.y);
         if (coyoteTime > 0) coyoteTime--;
         jumpPressed = false;
         jumpReleased = false;
+
+
 
         //Pass the velocity to the movement and collision handler
         //=========================================================
@@ -296,7 +302,7 @@ public class Player : MonoBehaviour
     void OnToggleRoom()
     {
         GameController.Instance.ToggleRoomState();
-        print($"new room state = [{GameController.Instance.RoomState}]");
+        
 
     }
 
