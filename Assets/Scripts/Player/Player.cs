@@ -222,18 +222,15 @@ public class Player : MonoBehaviour
             }
         }
         velocity.y = Mathf.Clamp(velocity.y,-terminalYVelocity, terminalYVelocity);
-print(velocity.y);
+
         if (coyoteTime > 0) coyoteTime--;
         jumpPressed = false;
         jumpReleased = false;
-
-
 
         //Pass the velocity to the movement and collision handler
         //=========================================================
         movementCollisionHandler.Move(velocity * finalMoveSpeedScale);
        
-
     }
 
     void Update()

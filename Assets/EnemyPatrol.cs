@@ -13,7 +13,20 @@ public class EnemyPatrol : MonoBehaviour
     private bool scaredOfHeights = false;
 
     [SerializeField]
+    private bool canHop = false;
+
+    [SerializeField]
+    private float hopDetectionDist = 1;
+    [SerializeField]
+    private float hopDetectionHeight = 1;
+
+
+
+    [SerializeField]
     private bool startRight = true;
+
+    [SerializeField]
+    private float jumpPower = 1f;
 
     [SerializeField]
     private float gravity = 0.08f;
@@ -39,16 +52,25 @@ public class EnemyPatrol : MonoBehaviour
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
 
         velocity.y -= gravity;
+
+    if (canHop && ShouldJump() && movementCollisionHandler.collisionInfo.below)
+        {
+            print("foo");
+            velocity.y = jumpPower;
+        }
+
         //Pass the velocity to the movement and collision handler
         //=========================================================
         movementCollisionHandler.Move(velocity);
         if (movementCollisionHandler.collisionInfo.right) direction = -1;
         if (movementCollisionHandler.collisionInfo.left) direction = 1;
 
-        if (scaredOfHeights && IsAtEdge())
+        if (scaredOfHeights && IsAtEdge() && movementCollisionHandler.collisionInfo.below)
         {
             TurnAround();
         }
+        
+
 
     }
 
@@ -71,6 +93,23 @@ public class EnemyPatrol : MonoBehaviour
 
         RaycastHit2D hit = Physics2D.Raycast(rayStartPosition, Vector2.down, 0.5f, LayerMask.GetMask("Solid"));
         return hit.collider == null;
+    }
+
+    private bool ShouldJump()
+    {
+        Vector2 rayStartPosition = collider2d.bounds.center;
+        rayStartPosition.x += direction * collider2d.bounds.extents.x;
+        rayStartPosition.y -= collider2d.bounds.extents.y-0.005f;
+
+
+        Debug.DrawRay(rayStartPosition, new Vector3(hopDetectionDist * direction, 0, 0), Color.red);
+        RaycastHit2D lowerHit = Physics2D.Raycast(rayStartPosition, new Vector2(direction, 0), hopDetectionDist, LayerMask.GetMask("Solid"));
+        rayStartPosition.y += hopDetectionHeight;
+        Debug.DrawRay(rayStartPosition, new Vector3(hopDetectionDist * direction, 0, 0), Color.red);
+        RaycastHit2D upperHit = Physics2D.Raycast(rayStartPosition, new Vector2(direction, 0), hopDetectionDist, LayerMask.GetMask("Solid"));
+
+        if (lowerHit.collider != null && upperHit.collider == null) return true;
+        return false;
     }
 
     private void TurnAround()
