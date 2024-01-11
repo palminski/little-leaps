@@ -42,9 +42,7 @@ public class Enemy : MonoBehaviour
             float enemyTop = transform.position.y + collider.offset.y + collider.bounds.size.y / 2;
             if (playerBottom > enemyTop)
             {
-                //Eventually expand this to add points, some blood effects, etc
                 //Probably move it to its own method 
-                print("Killed Enemy!");
                 hitPlayer.ResetCoyoteTime();
                 hitPlayer.Bounce();
                 GameObject.Instantiate(blood, transform.position, transform.rotation);
@@ -54,8 +52,9 @@ public class Enemy : MonoBehaviour
 
             if (!hitPlayer.IsInvincible())
             {
-                print("Hit Player!");
                 int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
+                GameController.Instance.ChangeHealth(-1);
+                print(GameController.Instance.Health);
                 hitPlayer.Shove(directionToShove);
             }
         }

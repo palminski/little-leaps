@@ -55,7 +55,7 @@ public class EnemyPatrol : MonoBehaviour
 
     if (canHop && ShouldJump() && movementCollisionHandler.collisionInfo.below)
         {
-            print("foo");
+            
             velocity.y = jumpPower;
         }
 
