@@ -27,6 +27,12 @@ public class GameController : MonoBehaviour
         get { return roomState; }
     }
 
+    private int health = 5;
+    public int Health
+    {
+        get { return health; }
+    }
+
     void Awake()
     {
         if (Instance == null)
@@ -55,6 +61,9 @@ public class GameController : MonoBehaviour
         return roomState;
     }
 
-
+    public int ChangeHealth(int healthChange) {
+        health += healthChange;
+        return health;
+    }
 
 }

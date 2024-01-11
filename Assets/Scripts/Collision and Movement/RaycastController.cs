@@ -30,6 +30,9 @@ public class RaycastController : MonoBehaviour
     [SerializeField]
     public float skinWidth = 0.001f;
 
+    [SerializeField]
+    public LayerMask collidableLayers;
+
 
  //Calculating Spacing and Locations for Rays to Be Cast
     //====================================================================================================
