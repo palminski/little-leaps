@@ -68,7 +68,7 @@ public class MovementCollisionHandler : RaycastController
         for (int i = 0; i < xRayCount; i++)
         {
 
-            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * horizontalRaySpacing * Vector2.up, rayDirection, distanceToCast, LayerMask.GetMask("Solid"));
+            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * horizontalRaySpacing * Vector2.up, rayDirection, distanceToCast, collidableLayers);
             if (shouldDrawRays) Debug.DrawRay(rayOrigin + i * horizontalRaySpacing * Vector2.up, rayDirection, Color.red, distanceToCast);
             //If there is a collision we will update velocity.x accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
             if (collision.collider)
@@ -108,7 +108,7 @@ public class MovementCollisionHandler : RaycastController
         for (int i = 0; i < yRayCount; i++)
         {
 
-            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, rayDirection, distanceToCast, LayerMask.GetMask("Solid"));
+            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, rayDirection, distanceToCast, collidableLayers);
             if (shouldDrawRays) Debug.DrawRay(rayOrigin + i * verticalRaySpacing * Vector2.right, rayDirection, Color.red, distanceToCast);
 
             //If there is a collision we will update velocity.y accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
@@ -131,13 +131,13 @@ public class MovementCollisionHandler : RaycastController
         //Detects if there is a wall to the left or the right at the specified distance away or closer
         for (int i = 0; i < xRayCount; i++)
         {
-            RaycastHit2D collision = Physics2D.Raycast(raycastOrigins.bottomRight + i * horizontalRaySpacing * Vector2.up, Vector2.right, distance, LayerMask.GetMask("Solid"));
+            RaycastHit2D collision = Physics2D.Raycast(raycastOrigins.bottomRight + i * horizontalRaySpacing * Vector2.up, Vector2.right, distance, collidableLayers);
             if (collision.collider)
             {
                 outDirection = -1;
                 return true;
             }
-            collision = Physics2D.Raycast(raycastOrigins.bottomLeft + i * horizontalRaySpacing * Vector2.up, Vector2.left, distance, LayerMask.GetMask("Solid"));
+            collision = Physics2D.Raycast(raycastOrigins.bottomLeft + i * horizontalRaySpacing * Vector2.up, Vector2.left, distance, collidableLayers);
             if (collision.collider)
             {
                 outDirection = 1;
@@ -149,7 +149,7 @@ public class MovementCollisionHandler : RaycastController
 
     public bool OnGroundAtDist(float distance) {
         for (int i = 0; i < yRayCount; i++) {
-            RaycastHit2D collision = Physics2D.Raycast(raycastOrigins.bottomLeft + i * verticalRaySpacing * Vector2.right, Vector2.down, distance, LayerMask.GetMask("Solid"));
+            RaycastHit2D collision = Physics2D.Raycast(raycastOrigins.bottomLeft + i * verticalRaySpacing * Vector2.right, Vector2.down, distance, collidableLayers);
             if (collision.collider)
             {
                 return true;
@@ -163,7 +163,7 @@ public class MovementCollisionHandler : RaycastController
         for (int i = 0; i < yRayCount; i++)
         {
 
-            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, Vector2.down, skinWidth+0.001f, LayerMask.GetMask("Solid"));
+            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, Vector2.down, skinWidth+0.001f, collidableLayers);
 
             //If there is a collision we will update velocity.y accordingly and decrease distance to cast as well so we dont cast subsequent rays too far and move into a block
             if (collision.collider)

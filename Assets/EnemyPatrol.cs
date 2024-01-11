@@ -91,7 +91,7 @@ public class EnemyPatrol : MonoBehaviour
         rayStartPosition.x += direction * collider2d.bounds.extents.x;
         rayStartPosition.y -= collider2d.bounds.extents.y;
 
-        RaycastHit2D hit = Physics2D.Raycast(rayStartPosition, Vector2.down, 0.5f, LayerMask.GetMask("Solid"));
+        RaycastHit2D hit = Physics2D.Raycast(rayStartPosition, Vector2.down, 0.5f, movementCollisionHandler.collidableLayers);
         return hit.collider == null;
     }
 
@@ -103,10 +103,10 @@ public class EnemyPatrol : MonoBehaviour
 
 
         Debug.DrawRay(rayStartPosition, new Vector3(hopDetectionDist * direction, 0, 0), Color.red);
-        RaycastHit2D lowerHit = Physics2D.Raycast(rayStartPosition, new Vector2(direction, 0), hopDetectionDist, LayerMask.GetMask("Solid"));
+        RaycastHit2D lowerHit = Physics2D.Raycast(rayStartPosition, new Vector2(direction, 0), hopDetectionDist, movementCollisionHandler.collidableLayers);
         rayStartPosition.y += hopDetectionHeight;
         Debug.DrawRay(rayStartPosition, new Vector3(hopDetectionDist * direction, 0, 0), Color.red);
-        RaycastHit2D upperHit = Physics2D.Raycast(rayStartPosition, new Vector2(direction, 0), hopDetectionDist, LayerMask.GetMask("Solid"));
+        RaycastHit2D upperHit = Physics2D.Raycast(rayStartPosition, new Vector2(direction, 0), hopDetectionDist, movementCollisionHandler.collidableLayers);
 
         if (lowerHit.collider != null && upperHit.collider == null) return true;
         return false;
