@@ -7,8 +7,8 @@ public class GameController : MonoBehaviour
 
     public GlobalVariables globalVariables;
 
-    public static Color ColorForRoomstate0 => Instance.globalVariables.colorForRoomState0;
-    public static Color ColorForRoomstate1 => Instance.globalVariables.colorForRoomState1;
+    public static Color ColorForPurple => Instance.globalVariables.colorForPurple;
+    public static Color ColorForGreen => Instance.globalVariables.colorForGreen;
 
     public static float GlobalSkinWidth => Instance.globalVariables.globalSkinWidth;
     
@@ -21,8 +21,8 @@ public class GameController : MonoBehaviour
         get { return score; }
     }
 
-    private int roomState = 0;
-    public int RoomState
+    private RoomColor roomState = RoomColor.Purple;
+    public RoomColor RoomState
     {
         get { return roomState; }
     }
@@ -54,9 +54,9 @@ public class GameController : MonoBehaviour
         return score;
     }
 
-    public int ToggleRoomState()
+    public RoomColor ToggleRoomState()
     {
-        roomState = roomState == 0 ? 1 : 0;
+        roomState = roomState == RoomColor.Purple ? RoomColor.Green : RoomColor.Purple;
         OnRoomStateChanged?.Invoke();
         return roomState;
     }

@@ -19,8 +19,8 @@ public class ColorSwapper : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         tilemap = GetComponent<Tilemap>();
         
-        colorForRS0 = GameController.ColorForRoomstate0;
-        colorForRS1 = GameController.ColorForRoomstate1;
+        colorForRS0 = GameController.ColorForPurple;
+        colorForRS1 = GameController.ColorForGreen;
 
         UpdateColor();
     }
@@ -34,7 +34,7 @@ public class ColorSwapper : MonoBehaviour
     }
 
     private void UpdateColor() {
-        if (GameController.Instance.RoomState == 0) {
+        if (GameController.Instance.RoomState == RoomColor.Purple) {
             if (spriteRenderer) spriteRenderer.color = colorForRS0;
             if (tilemap) tilemap.color = colorForRS0;
             
