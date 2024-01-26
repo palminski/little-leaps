@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 // using UnityEditor.Build.Content;
 using UnityEngine;
@@ -43,11 +44,17 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoad;
         }
         else
         {
             Destroy(gameObject);
         }
+    }
+
+    private void OnSceneLoad(Scene scene, LoadSceneMode mode) {
+        print("HELLO WORLD");
+        objectPool =  new Dictionary<string, Queue<GameObject>>();
     }
 
     public event Action OnRoomStateChanged;
@@ -67,6 +74,12 @@ public class GameController : MonoBehaviour
 
     public int ChangeHealth(int healthChange) {
         health += healthChange;
+
+        if (health <= 0) {
+            health = 5;
+            SceneManager.LoadScene( SceneManager.GetActiveScene().name );
+        } 
+
         return health;
     }
 
