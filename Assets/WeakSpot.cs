@@ -34,7 +34,7 @@ public class WeakSpot : MonoBehaviour
             {
                 hitPlayer.ResetCoyoteTime();
                 hitPlayer.Bounce();
-                GameObject.Instantiate(blood, transform.position, transform.rotation);
+                GameController.Instance.PullFromPool(blood,transform.position);
                 Destroy(transform.parent.gameObject);
                 return;
             }
