@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+
 // using UnityEditor.Build.Content;
 using UnityEngine;
 
@@ -14,6 +16,8 @@ public class GameController : MonoBehaviour
     
     
     public static GameController Instance { get; private set; }
+
+    public Dictionary<string, Queue<GameObject>> objectPool = new Dictionary<string, Queue<GameObject>>();
 
     private int score;
     public int Score
@@ -65,5 +69,33 @@ public class GameController : MonoBehaviour
         health += healthChange;
         return health;
     }
+
+    public GameObject PullFromPool(GameObject gameObject, Vector3 position) {
+        //Name of the specific pool to access
+        string tag = gameObject.name;
+
+        //If there is no pool with that name create one and add the newly instanciated object to it
+        if (!objectPool.ContainsKey(tag)) {
+            objectPool.Add(tag,new Queue<GameObject>());
+            GameObject newObject = Instantiate(gameObject, position, Quaternion.identity);
+            objectPool[tag].Enqueue(newObject);
+            return newObject;
+        }
+
+        //if the next object in the pool is already active, create a new one and add it to the queue
+        if (objectPool[tag].Peek().activeSelf) {
+            GameObject newObject = Instantiate(gameObject, position, Quaternion.identity);
+            objectPool[tag].Enqueue(newObject);
+            return newObject;
+        }
+
+        //Otherwise we will pull an object from the queue, set it to active, and place it in the back of the queue
+        GameObject pulledObject = objectPool[tag].Dequeue();
+        pulledObject.transform.position = position;
+        pulledObject.SetActive(true);
+        objectPool[tag].Enqueue(pulledObject);
+
+        return pulledObject;
+    } 
 
 }

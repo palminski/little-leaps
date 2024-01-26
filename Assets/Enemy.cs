@@ -42,11 +42,7 @@ public class Enemy : MonoBehaviour
             float enemyTop = transform.position.y + collider.offset.y + collider.bounds.size.y / 2;
             if (playerBottom > enemyTop)
             {
-                //Probably move it to its own method 
-                hitPlayer.ResetCoyoteTime();
-                hitPlayer.Bounce();
-                GameObject.Instantiate(blood, transform.position, transform.rotation);
-                Destroy(gameObject);
+                
                 return;
             }
 

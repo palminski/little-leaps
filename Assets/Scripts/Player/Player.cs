@@ -139,7 +139,7 @@ public class Player : MonoBehaviour
         //if there is input then we increase the hSpeed by acceleration in that direction
         if (xInput != 0)
         {
-            hSpeed += xInput * acceleration;
+            hSpeed += Mathf.Sign(xInput) * acceleration;
         }
         //Otherwise we will approach 0 by out friction ammount
         else
