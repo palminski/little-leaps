@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class HazardousToPlayer : MonoBehaviour
 {
     [SerializeField]
     private int damage;
 
-    [SerializeField]
-    private GameObject blood;
-
 
     private GameObject player;
+
+    private Vector3 lastPosition;
 
     
 
@@ -20,7 +19,12 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        print(player);
+        lastPosition = transform.position;
+        
+    }
+
+    void LateUpdate() {
+        lastPosition = transform.position;
     }
 
     void OnTriggerEnter2D(Collider2D hitCollider)
@@ -29,21 +33,10 @@ public class Enemy : MonoBehaviour
         {
             Player hitPlayer = player.GetComponent<Player>();
 
-            Collider2D collider;
-            collider = GetComponent<Collider2D>();
-
-            float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y  - (hitCollider.bounds.size.y / 2);
-            float enemyTop = transform.position.y + collider.offset.y + collider.bounds.size.y / 2;
-            if (playerBottom > enemyTop)
-            {
-                
-                return;
-            }
-
             if (!hitPlayer.IsInvincible())
             {
-                int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
-                GameController.Instance.ChangeHealth(-1);
+                int directionToShove = (player.transform.position.x > lastPosition.x) ? 1 : -1;
+                GameController.Instance.ChangeHealth(-damage);
                 print(GameController.Instance.Health);
                 hitPlayer.Shove(directionToShove);
             }
