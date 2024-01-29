@@ -21,6 +21,6 @@ public class bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D hitCollider)
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 }

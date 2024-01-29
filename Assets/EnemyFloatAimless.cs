@@ -10,43 +10,40 @@ public class EnemyFloatAimless : MonoBehaviour
     private float speed = 0.35f;
 
     [SerializeField]
-    private bool startRight = true;
-
-    [SerializeField]
-    private bool startUp = true;
-
+    private Vector2 startDirection;
+    
+    private Vector2 direction = new(1,1);
 
     
 
     private MovementCollisionHandler movementCollisionHandler;
-    private Collider2D collider2d;
-    private int directionX;
-    private int directionY;
+    
+    
     private Vector3 velocity;
     // Start is called before the first frame update
     void Start()
     {
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
-        collider2d = GetComponent<Collider2D>();
-        directionX = startRight ? 1 : -1;
-        directionY = startUp ? 1 : -1;
+        
+    
+
+        direction = startDirection.normalized;    
     }
 
     void FixedUpdate()
     {
 
 
-        velocity.x = directionX * speed;
-        velocity.y = directionY * speed;
+        velocity = direction * speed;
 
 
         //Pass the velocity to the movement and collision handler
         //=========================================================
         movementCollisionHandler.Move(velocity);
-        if (movementCollisionHandler.collisionInfo.right) directionX = -1;
-        if (movementCollisionHandler.collisionInfo.left) directionX = 1;
-        if (movementCollisionHandler.collisionInfo.above) directionY = -1;
-        if (movementCollisionHandler.collisionInfo.below) directionY = 1;
+        
+        if (movementCollisionHandler.collisionInfo.right || movementCollisionHandler.collisionInfo.left) direction.x = -direction.x;
+        if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) direction.y = -direction.y;
+
     
 
     }
@@ -55,16 +52,15 @@ public class EnemyFloatAimless : MonoBehaviour
     void Update()
     {
 
-        if (directionX != 0)
+        if (direction.x != 0)
         {
-            Vector3 newScale = new(directionX, 1, 1);
+            Vector3 newScale = new(Mathf.Sign(direction.x), 1, 1);
             transform.localScale = newScale;
         }
     }
 
-
-    private void TurnAround()
+    void OnDrawGizmos()
     {
-        directionX = -directionX;
+        Debug.DrawRay(transform.position, startDirection.normalized, Color.cyan);
     }
 }
