@@ -51,6 +51,7 @@ public class CameraControls : MonoBehaviour
         float yTarget = Vector3.SmoothDamp(yVector, targetYVector, ref velocity, easeTimeY).y;
 
         if (tilemap) {
+            tilemap.CompressBounds();
             Camera camera = Camera.main;
             float verticalExtent = camera.orthographicSize+boarderBuffer;
             float horizontalExtent = (verticalExtent * camera.aspect)+boarderBuffer;
