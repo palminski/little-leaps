@@ -25,6 +25,9 @@ public class Portal : MonoBehaviour
         if (levelConnection == LevelConnection.ActiveConnection)
         {
             player.transform.position = spawnPoint.position;
+            var camera = Camera.main.GetComponent<CameraControls>();
+            if (camera) camera.SnapToPosition(spawnPoint);
+            player.transform.localScale = new(Mathf.Sign(spawnPoint.localPosition.x),1,1);
         }
     }
 
@@ -45,7 +48,8 @@ public class Portal : MonoBehaviour
         {
 
             LevelConnection.ActiveConnection = levelConnection;
-            SceneManager.LoadScene(targetSceneName);
+            
+            GameController.Instance.ChangeScene(targetSceneName);
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class CameraControls : MonoBehaviour
 {
@@ -65,4 +66,9 @@ public class CameraControls : MonoBehaviour
 
         transform.position = new(xTarget, yTarget, transform.position.z);
     }
+
+    public void SnapToPosition(Transform target) {
+        transform.position = target.position + offset;
+    }
+
 }

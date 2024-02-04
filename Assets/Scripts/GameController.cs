@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
@@ -21,6 +22,9 @@ public class GameController : MonoBehaviour
     public Dictionary<string, Queue<GameObject>> objectPool = new Dictionary<string, Queue<GameObject>>();
 
     private int score;
+
+    [SerializeField]
+    private Animator levelChangerAnimator;
     public int Score
     {
         get { return score; }
@@ -53,9 +57,13 @@ public class GameController : MonoBehaviour
     }
 
     private void OnSceneLoad(Scene scene, LoadSceneMode mode) {
-        print("HELLO WORLD");
+        // print("HELLO WORLD");
+        // levelChangerAnimator.SetTrigger("FadeOut");
+        levelChangerAnimator.Play("Fade_In", 0, 0f);
         objectPool =  new Dictionary<string, Queue<GameObject>>();
     }
+
+    
 
     public event Action OnRoomStateChanged;
 
@@ -111,4 +119,14 @@ public class GameController : MonoBehaviour
         return pulledObject;
     } 
 
+    public void ChangeScene(string sceneName) {
+        levelChangerAnimator.SetTrigger("FadeIn");
+        StartCoroutine(ChangeSceneAfterDelay(sceneName));
+    }
+    public IEnumerator ChangeSceneAfterDelay(string sceneName) {
+        yield return null;
+        AnimatorStateInfo stateInfo = levelChangerAnimator.GetCurrentAnimatorStateInfo(0);
+        yield return new WaitForSeconds(stateInfo.length);
+        SceneManager.LoadScene(sceneName);
+    }
 }
