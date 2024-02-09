@@ -41,6 +41,7 @@ public class ShootAtPlayer : MonoBehaviour
 
         if (!spriteRenderer.isVisible || BulletStillExists()) {
             nextShotTime = Time.time + shotInterval;
+            spriteRenderer.color = startingColor;
         }
 
         if (Time.time > (nextShotTime - Mathf.Abs(blinkStart)))

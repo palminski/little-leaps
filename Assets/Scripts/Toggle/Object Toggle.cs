@@ -4,13 +4,13 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class TileToggle : MonoBehaviour
+public class ObjectToggle : MonoBehaviour
 {
 
     [SerializeField]
     private RoomColor activeOnRoomColor;
 
-    private Tilemap tilemap;
+    private SpriteRenderer spriteRenderer;
 
     private void OnEnable()
     {
@@ -27,11 +27,11 @@ public class TileToggle : MonoBehaviour
 
     void Start()
     {
-        tilemap = GetComponent<Tilemap>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         tileCollider = GetComponent<Collider2D>();
-        if (tilemap) tilemap.color = activeOnRoomColor == RoomColor.Purple ? GameController.ColorForPurple : GameController.ColorForGreen;
+        if (spriteRenderer) spriteRenderer.color = activeOnRoomColor == RoomColor.Purple ? GameController.ColorForPurple : GameController.ColorForGreen;
 
-        deactiveColor = new Color(tilemap.color.r, tilemap.color.g, tilemap.color.b, 0.02f);
+        deactiveColor = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0.03f);
 
         HandleRoomStateChange();
     }
@@ -51,13 +51,13 @@ public class TileToggle : MonoBehaviour
 
     private void Activate()
     {
-        if (tilemap) tilemap.color = activeOnRoomColor == RoomColor.Purple ? GameController.ColorForPurple : GameController.ColorForGreen;
+        if (spriteRenderer) spriteRenderer.color = activeOnRoomColor == RoomColor.Purple ? GameController.ColorForPurple : GameController.ColorForGreen;
         if (tileCollider) tileCollider.enabled = true;
     }
 
     private void Deactivate()
     {
-        if (tilemap) tilemap.color = deactiveColor;
+        if (spriteRenderer) spriteRenderer.color = deactiveColor;
         StartCoroutine(WaitThenRemoveCollision());
     }
 

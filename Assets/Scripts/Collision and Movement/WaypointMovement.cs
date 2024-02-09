@@ -6,19 +6,21 @@ public class WaypointMovement : MonoBehaviour
 {
 
     public Vector3[] localWaypoints;
-    private Vector3[] globalWaypoints;
+    public Vector3[] globalWaypoints;
 
     [SerializeField]
-    private bool shouldReverse = false;
+    public bool shouldReverse = false;
     [SerializeField]
-    private float waitTime = 0;
+    public float waitTime = 0;
     [SerializeField][Range(0,2)]
-    private float easeAmount = 0;
+    public float easeAmount = 0;
     [SerializeField]
-    private float speed;
-    int fromWaypointIndex;
-    float percentBetweenWaypoints;
-    private float nextMoveTime;
+    public float speed;
+    public int fromWaypointIndex;
+    public float percentBetweenWaypoints;
+    public float nextMoveTime;
+
+    
     
     
     // Start is called before the first frame update
@@ -31,7 +33,7 @@ public class WaypointMovement : MonoBehaviour
         }
     }
 
-    public Vector3 CalculatePlatformMovement()
+    public virtual Vector3 CalculatePlatformMovement()
     {
 
         if (Time.time < nextMoveTime)
@@ -66,7 +68,7 @@ public class WaypointMovement : MonoBehaviour
         return newPos - transform.position;
     }
 
-    float Ease(float x)
+    public float Ease(float x)
     {
         float a = easeAmount + 1;
         return Mathf.Pow(x, a) / (Mathf.Pow(x, a) + Mathf.Pow(1 - x, a));
