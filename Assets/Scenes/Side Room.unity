@@ -978,7 +978,7 @@ GameObject:
   - component: {fileID: 1024461866}
   - component: {fileID: 1024461865}
   - component: {fileID: 1024461864}
-  - component: {fileID: 1024461862}
+  - component: {fileID: 1024461868}
   m_Layer: 6
   m_Name: Moving Block
   m_TagString: Untagged
@@ -986,31 +986,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1024461862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1024461861}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d9b45518e512024ebe26c7428a05cda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  localWaypoints:
-  - {x: 0, y: 0, z: 0}
-  - {x: 3.21, y: 0, z: 0}
-  globalWaypoints: []
-  shouldReverse: 0
-  waitTime: 0
-  easeAmount: 0.64
-  speed: 0.06
-  fromWaypointIndex: 0
-  percentBetweenWaypoints: 0
-  nextMoveTime: 0
-  activeOnRoomColor: 0
-  toggleToStopStart: 0
 --- !u!114 &1024461864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1147,6 +1122,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1024461868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024461861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36ec9498b3c29e54fae2dd4197b3bba9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  behavior: 2
+  localWaypoints:
+  - {x: 0, y: 0, z: 0}
+  - {x: 3.5, y: 0, z: 0}
+  shouldReverse: 0
+  waitTime: 0
+  easeAmount: 0
+  speed: 0.05
+  activeOnRoomColor: 0
 --- !u!1 &1038934876
 GameObject:
   m_ObjectHideFlags: 0
