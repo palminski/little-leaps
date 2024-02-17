@@ -9,6 +9,9 @@ public class Enemy : MonoBehaviour
     private int damage;
 
     [SerializeField]
+    private int pointValue = 100;
+
+    [SerializeField]
     private GameObject blood;
 
 
@@ -20,7 +23,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        print(player);
+        
     }
 
     void OnTriggerEnter2D(Collider2D hitCollider)
@@ -44,10 +47,15 @@ public class Enemy : MonoBehaviour
             {
                 int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
                 GameController.Instance.ChangeHealth(-1);
-                print(GameController.Instance.Health);
                 hitPlayer.Shove(directionToShove);
             }
         }
+    }
+
+
+    public void KillEnemy() {
+        GameController.Instance.AddToScore(pointValue);
+        Destroy(gameObject);
     }
 
 

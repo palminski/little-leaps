@@ -66,10 +66,12 @@ public class GameController : MonoBehaviour
     
 
     public event Action OnRoomStateChanged;
+    public event Action OnUpdateHUD;
 
     public int AddToScore(int pointsToAdd)
     {
         score += pointsToAdd;
+        OnUpdateHUD?.Invoke();
         return score;
     }
 
@@ -82,12 +84,11 @@ public class GameController : MonoBehaviour
 
     public int ChangeHealth(int healthChange) {
         health += healthChange;
-
+        OnUpdateHUD?.Invoke();
         if (health <= 0) {
             health = 5;
             SceneManager.LoadScene( SceneManager.GetActiveScene().name );
         } 
-
         return health;
     }
 

@@ -9,11 +9,13 @@ public class WeakSpot : MonoBehaviour
         [SerializeField]
     private GameObject blood;
 
+    private Enemy enemy;
+
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-
+        enemy = GetComponentInParent<Enemy>();
     }
 
     void OnTriggerEnter2D(Collider2D hitCollider)
@@ -28,14 +30,20 @@ public class WeakSpot : MonoBehaviour
 
             float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y  - (hitCollider.bounds.size.y / 2);
             float enemyTop = transform.position.y + collider.offset.y + collider.bounds.size.y / 2;
-            print($"hit play at {hitCollider.bounds.center.y}. this collision box center: {collider.bounds.center.y} ");
+            
 
             if (playerBottom > enemyTop)
             {
                 hitPlayer.ResetCoyoteTime();
                 hitPlayer.Bounce();
                 GameController.Instance.PullFromPool(blood,transform.position);
-                Destroy(transform.parent.gameObject);
+
+                if (enemy) {
+                    enemy.KillEnemy();
+                }
+                else {
+                    Destroy(transform.parent.gameObject);
+                }
                 return;
             }
         }

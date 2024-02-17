@@ -37,7 +37,7 @@ public class HazardousToPlayer : MonoBehaviour
             {
                 int directionToShove = (player.transform.position.x > lastPosition.x) ? 1 : -1;
                 GameController.Instance.ChangeHealth(-damage);
-                print(GameController.Instance.Health);
+                
                 hitPlayer.Shove(directionToShove);
             }
         }

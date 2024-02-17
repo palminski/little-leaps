@@ -110,10 +110,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        print(GameController.Instance.Score);
-        GameController.Instance.AddToScore(1);
-        print(GameController.Instance.AddToScore(1));
-        print(GameController.Instance.Score);
+        
 
         minJumpVelocity = Mathf.Sqrt(2*Mathf.Abs(gravity) * minJumpPower);
 
