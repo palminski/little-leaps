@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
+using TMPro;
 
 public class ColorSwapper : MonoBehaviour
 {
@@ -13,11 +15,17 @@ public class ColorSwapper : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Tilemap tilemap;
 
+    private Image image;
+
+    private TMP_Text text;
+
     // Start is called before the first frame update
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         tilemap = GetComponent<Tilemap>();
+        image = GetComponent<Image>();
+        text = GetComponent<TMP_Text>();
         
         colorForRS0 = GameController.ColorForPurple;
         colorForRS1 = GameController.ColorForGreen;
@@ -37,11 +45,15 @@ public class ColorSwapper : MonoBehaviour
         if (GameController.Instance.RoomState == RoomColor.Purple) {
             if (spriteRenderer) spriteRenderer.color = colorForRS0;
             if (tilemap) tilemap.color = colorForRS0;
+            if (image) image.color = colorForRS0;
+            if (text) text.color = colorForRS0;
             
         }
         else {
             if (spriteRenderer) spriteRenderer.color = colorForRS1;
             if (tilemap) tilemap.color = colorForRS1;
+            if (image) image.color = colorForRS1;
+            if (text) text.color = colorForRS1;
         }
     }
 

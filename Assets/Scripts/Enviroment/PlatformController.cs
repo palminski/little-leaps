@@ -58,7 +58,6 @@ public class PlatformController : RaycastController
 
             if (!passengerCollisionHandlers.ContainsKey(passenger.transform))
             {
-                print(passenger.transform.GetComponent<MovementCollisionHandler>() == null);
                 passengerCollisionHandlers.Add(passenger.transform, passenger.transform.GetComponent<MovementCollisionHandler>());
             }
             if (passenger.moveBeforePlatform == beforePlatMove)

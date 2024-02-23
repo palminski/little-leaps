@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class CameraControls : MonoBehaviour
 {
@@ -51,6 +52,7 @@ public class CameraControls : MonoBehaviour
         float yTarget = Vector3.SmoothDamp(yVector, targetYVector, ref velocity, easeTimeY).y;
 
         if (tilemap) {
+            tilemap.CompressBounds();
             Camera camera = Camera.main;
             float verticalExtent = camera.orthographicSize+boarderBuffer;
             float horizontalExtent = (verticalExtent * camera.aspect)+boarderBuffer;
@@ -64,4 +66,9 @@ public class CameraControls : MonoBehaviour
 
         transform.position = new(xTarget, yTarget, transform.position.z);
     }
+
+    public void SnapToPosition(Transform target) {
+        transform.position = target.position + offset;
+    }
+
 }
