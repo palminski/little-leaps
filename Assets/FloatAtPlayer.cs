@@ -63,7 +63,6 @@ public class FloatAtPlayer : MonoBehaviour
 
         if (hit) 
         {
-            print(Vector3.Reflect(velocity, hit.normal));
             moveDirection = Vector3.Reflect(velocity, hit.normal).normalized;
         }
         else
@@ -95,8 +94,10 @@ public class FloatAtPlayer : MonoBehaviour
 
     private void FollowPlayer() {
         UpdateTargetPoint();
-        Vector3 additionToTarget = hasLineOfSight ? Vector3.zero : (targetPoint - transform.position).normalized * 1;
+        Vector3 additionToTarget = hasLineOfSight ? Vector3.zero : (targetPoint - transform.position).normalized * 3;
         
+        // print(CheckForFlock());
+
         if (CanMoveToTargetPoint()) transform.Translate((targetPoint - transform.position + additionToTarget).normalized * moveSpeed);
 
         if (Vector3.Distance(transform.position, targetPoint) <= moveSpeed) currentState = EnemyState.Idle;
@@ -133,6 +134,16 @@ public class FloatAtPlayer : MonoBehaviour
             return false;
         }
         return true;
+    }
+
+    private bool CheckForFlock() {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 2, LayerMask.GetMask("Entity"));
+        foreach (Collider2D collider in colliders) {
+            if (gameObject != collider.gameObject && collider.CompareTag("Flocker")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     void OnDrawGizmos()
