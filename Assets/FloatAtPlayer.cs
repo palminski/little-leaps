@@ -1,75 +1,146 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 
 [RequireComponent(typeof(MovementCollisionHandler))]
 public class FloatAtPlayer : MonoBehaviour
 {
-     private MovementCollisionHandler movementCollisionHandler;
-    //  private Collider2D collider2d;
-
-     private BoxCollider2D collider2d;
+    private MovementCollisionHandler movementCollisionHandler;
     private GameObject player;
     private Vector3 targetPoint;
-
     private bool hasLineOfSight = false;
-    // Start is called before the first frame update
+    private enum EnemyState
+    {
+        Idle,
+        Following
+    }
+    private EnemyState currentState;
+    private Vector2 moveDirection = new(1,1);
+
+    [SerializeField]
+    private float moveSpeed;
+    [SerializeField]
+    private float playerDetectionRadius;
+    [SerializeField]
+    private Vector2 startDirection;
+    
+
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
-        collider2d = GetComponent<BoxCollider2D>();
+
         targetPoint = transform.position;
+        currentState = EnemyState.Idle;
+        moveDirection = startDirection.normalized; 
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        UpdateTargetPoint();
-
-         Vector3 additionToTarget = hasLineOfSight ? Vector3.zero : (targetPoint-transform.position).normalized * 5;
-
-       if (CanMoveToTargetPoint()) transform.Translate((targetPoint-transform.position+ additionToTarget).normalized*0.05f); 
+        switch (currentState)
+        {
+            case EnemyState.Idle:
+                Idle();
+            break;
+            case EnemyState.Following:
+                FollowPlayer();
+            break;
+        }
+       
     }
 
-    private void UpdateTargetPoint() {
+    private void Idle() {
+        Vector3 velocity = moveDirection * moveSpeed;
+        
+
+        Vector3 rayStartPosition = transform.position;
+        
+        Vector2 direction = velocity.normalized;
+        RaycastHit2D hit = Physics2D.Raycast(rayStartPosition, direction, moveSpeed, movementCollisionHandler.collidableLayers);
+
+        if (hit) 
+        {
+            print(Vector3.Reflect(velocity, hit.normal));
+            moveDirection = Vector3.Reflect(velocity, hit.normal).normalized;
+        }
+        else
+        {
+            transform.Translate(velocity);
+        }
+        
+
+        if (PlayerInRange()) currentState = EnemyState.Following;
+    }
+
+    private bool PlayerInRange()
+    {
+        
+        if (Vector3.Distance(transform.position, player.transform.position) > playerDetectionRadius) return false;
+
+        Vector3 rayStartPosition = transform.position;
+        float distance = Vector2.Distance(player.transform.position, rayStartPosition);
+        Vector2 direction = (player.transform.position - rayStartPosition).normalized;
+
+        RaycastHit2D hit = Physics2D.Raycast(rayStartPosition, direction, distance, movementCollisionHandler.collidableLayers);
+        if (hit)
+        {
+            return false;
+        }
+        
+        return true;
+    }
+
+    private void FollowPlayer() {
+        UpdateTargetPoint();
+        Vector3 additionToTarget = hasLineOfSight ? Vector3.zero : (targetPoint - transform.position).normalized * 1;
+        
+        if (CanMoveToTargetPoint()) transform.Translate((targetPoint - transform.position + additionToTarget).normalized * moveSpeed);
+
+        if (Vector3.Distance(transform.position, targetPoint) <= moveSpeed) currentState = EnemyState.Idle;
+    }
+
+    private void UpdateTargetPoint()
+    {
         Vector3 playerPosition = player.transform.position;
         Vector3 rayStartPosition = transform.position;
-        float distance = Vector2.Distance(playerPosition,rayStartPosition);
-        Vector2 direction =  (playerPosition - rayStartPosition).normalized;
-
-        RaycastHit2D hit = Physics2D.Raycast(rayStartPosition,  direction, distance, movementCollisionHandler.collidableLayers);
-        if (!hit) {
+        float distance = Vector2.Distance(playerPosition, rayStartPosition);
+        Vector2 direction = (playerPosition - rayStartPosition).normalized;
+        moveDirection = direction;
+        RaycastHit2D hit = Physics2D.Raycast(rayStartPosition, direction, distance, movementCollisionHandler.collidableLayers);
+        if (!hit)
+        {
             hasLineOfSight = true;
-            print($"has line of sight! {player.transform.position}");
             targetPoint = playerPosition;
         }
-        else {
+        else
+        {
             hasLineOfSight = false;
-            print ("cant see player...");
         }
-        
     }
 
-    private bool CanMoveToTargetPoint() {
-        
+    private bool CanMoveToTargetPoint()
+    {
         Vector3 rayStartPosition = transform.position;
-        float distance = Vector2.Distance(targetPoint,rayStartPosition);
-        Vector2 direction =  (targetPoint - rayStartPosition).normalized;
+        Vector2 direction = (targetPoint - rayStartPosition).normalized;
 
-        RaycastHit2D hit = Physics2D.Raycast(rayStartPosition,  direction, 1, movementCollisionHandler.collidableLayers);
-        if (!hit) {
-            return true;
+        RaycastHit2D hit = Physics2D.Raycast(rayStartPosition, direction, 1, movementCollisionHandler.collidableLayers);
+        if (hit)
+        {
+            currentState = EnemyState.Idle;
+            return false;
         }
-        return false;
+        return true;
     }
 
-    // void OnDrawGizmos()
-    // {
-    //     Vector3 playerPosition = player.transform.position;
-    //     Vector3 rayStartPosition = transform.position;
-    //     float distance = Vector2.Distance(playerPosition,rayStartPosition);
-    //     Vector2 direction =  (playerPosition - rayStartPosition).normalized;
-    //     Debug.DrawRay(transform.position, direction * distance, Color.cyan);
-    // }
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, playerDetectionRadius);
+
+        Debug.DrawRay(transform.position, startDirection.normalized, Color.cyan);
+    }
+    
 }
