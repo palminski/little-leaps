@@ -6,6 +6,16 @@ using UnityEngine.Tilemaps;
 
 public class TileToggle : MonoBehaviour
 {
+    [SerializeField]
+    private float maxAlphaSubtractionPercentage = 0.5f;
+    [SerializeField]
+    private float maxAlphaSubtractionPercentageInactive = 0.5f;
+
+    [SerializeField]
+    private float pulseSpeed = 1;
+
+    [SerializeField]
+    private bool shouldPulse;
 
     [SerializeField]
     private RoomColor activeOnRoomColor;
@@ -36,6 +46,12 @@ public class TileToggle : MonoBehaviour
         HandleRoomStateChange();
     }
 
+    void Update() {
+        if (shouldPulse) {
+            Pulse(activeOnRoomColor == GameController.Instance.RoomState);
+        }
+    }
+
     private void HandleRoomStateChange()
     {
         // UpdateColor();
@@ -64,5 +80,23 @@ public class TileToggle : MonoBehaviour
     private IEnumerator WaitThenRemoveCollision() {
         yield return new WaitForSeconds(0.05f);
         if (tileCollider) tileCollider.enabled = false;
+    }
+
+    private void Pulse(bool isActive) {
+
+        Color baseColor = deactiveColor;
+        if (isActive) {
+            baseColor = activeOnRoomColor == RoomColor.Purple ? GameController.ColorForPurple : GameController.ColorForGreen;
+        }
+
+        float pulse = Mathf.PingPong(Time.time * pulseSpeed, 1.0f);
+
+        // Interpolate alpha between minAlpha and maxAlpha
+        float alphaToSubtract = isActive ? Mathf.Lerp(baseColor.a * maxAlphaSubtractionPercentage, 0, pulse) : Mathf.Lerp(baseColor.a * maxAlphaSubtractionPercentageInactive, 0, pulse);
+
+        // Apply the modified alpha value to the tilemap color
+        
+        baseColor.a -= alphaToSubtract;
+        tilemap.color = baseColor;
     }
 }
