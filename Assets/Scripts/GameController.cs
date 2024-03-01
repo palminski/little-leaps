@@ -48,6 +48,7 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            
             SceneManager.sceneLoaded += OnSceneLoad;
         }
         else
@@ -60,6 +61,8 @@ public class GameController : MonoBehaviour
         // print("HELLO WORLD");
         // levelChangerAnimator.SetTrigger("FadeOut");
         levelChangerAnimator.Play("Fade_In", 0, 0f);
+        
+
         objectPool =  new Dictionary<string, Queue<GameObject>>();
     }
 
@@ -130,5 +133,17 @@ public class GameController : MonoBehaviour
         AnimatorStateInfo stateInfo = levelChangerAnimator.GetCurrentAnimatorStateInfo(0);
         yield return new WaitForSeconds(stateInfo.length);
         SceneManager.LoadScene(sceneName);
+    }
+
+    public void SaveGame() {
+        
+        SaveData gameData = SaveDataManager.LoadGameData();
+        gameData.score = score;
+        SaveDataManager.SaveGameData(gameData);
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveGame();
     }
 }

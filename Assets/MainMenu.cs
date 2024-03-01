@@ -32,7 +32,8 @@ public class MainMenu : MonoBehaviour
 
     public void StartGame()
     {
-
+        SaveData saveData = SaveDataManager.LoadGameData();
+        GameController.Instance.AddToScore(saveData.score);
         GameController.Instance.ChangeScene("Main Room");
     }
     public void Debug()
