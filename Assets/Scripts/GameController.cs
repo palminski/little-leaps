@@ -87,7 +87,8 @@ public class GameController : MonoBehaviour
         OnUpdateHUD?.Invoke();
         if (health <= 0) {
             health = 5;
-            SceneManager.LoadScene( SceneManager.GetActiveScene().name );
+            // SceneManager.LoadScene( SceneManager.GetActiveScene().name );
+            ChangeScene("Main Menu");
         } 
         return health;
     }
