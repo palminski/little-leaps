@@ -1,8 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class ObjectToggle : MonoBehaviour
 {
@@ -10,7 +7,18 @@ public class ObjectToggle : MonoBehaviour
     [SerializeField]
     private RoomColor activeOnRoomColor;
 
+    [SerializeField]
+    private float deactiveAlpha = 0.1f;
+
+    [SerializeField]
+    private Sprite deactiveSprite;
+
     private SpriteRenderer spriteRenderer;
+
+    private Sprite activeSprite;
+    
+    private Color activeColor;
+    private Color deactiveColor;
 
     private void OnEnable()
     {
@@ -21,17 +29,13 @@ public class ObjectToggle : MonoBehaviour
         GameController.Instance.OnRoomStateChanged -= HandleRoomStateChange;
     }
 
-    private Color deactiveColor;
-
-    private Collider2D tileCollider;
-
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        tileCollider = GetComponent<Collider2D>();
-        if (spriteRenderer) spriteRenderer.color = activeOnRoomColor == RoomColor.Purple ? GameController.ColorForPurple : GameController.ColorForGreen;
-
-        deactiveColor = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0.03f);
+        // if (spriteRenderer) spriteRenderer.color = activeOnRoomColor == RoomColor.Purple ? GameController.ColorForPurple : GameController.ColorForGreen;
+        activeColor = spriteRenderer.color;
+        activeSprite = spriteRenderer.sprite;
+        deactiveColor = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, deactiveAlpha);
 
         HandleRoomStateChange();
     }
@@ -51,18 +55,24 @@ public class ObjectToggle : MonoBehaviour
 
     private void Activate()
     {
-        if (spriteRenderer) spriteRenderer.color = activeOnRoomColor == RoomColor.Purple ? GameController.ColorForPurple : GameController.ColorForGreen;
-        if (tileCollider) tileCollider.enabled = true;
+        if (spriteRenderer) spriteRenderer.color = activeColor;
+        if (spriteRenderer) spriteRenderer.sprite = activeSprite;
     }
 
     private void Deactivate()
     {
-        if (spriteRenderer) spriteRenderer.color = deactiveColor;
+        
         StartCoroutine(WaitThenRemoveCollision());
+
+        if (spriteRenderer && deactiveSprite){
+            spriteRenderer.sprite = deactiveSprite;
+            return;
+        }
+
+        if (spriteRenderer) spriteRenderer.color = deactiveColor;
     }
 
     private IEnumerator WaitThenRemoveCollision() {
         yield return new WaitForSeconds(0.05f);
-        if (tileCollider) tileCollider.enabled = false;
     }
 }
