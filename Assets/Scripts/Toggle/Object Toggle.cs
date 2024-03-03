@@ -19,6 +19,7 @@ public class ObjectToggle : MonoBehaviour
     private Color activeColor;
     private Color deactiveColor;
     private Collider2D boxCollider;
+    private Animator animator;
 
     private void OnEnable()
     {
@@ -33,6 +34,7 @@ public class ObjectToggle : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         boxCollider = GetComponent<Collider2D>();
+        animator = GetComponent<Animator>();
 
         activeColor = spriteRenderer.color;
         activeSprite = spriteRenderer.sprite;
@@ -57,15 +59,20 @@ public class ObjectToggle : MonoBehaviour
     {
         if (spriteRenderer) spriteRenderer.color = activeColor;
         if (spriteRenderer) spriteRenderer.sprite = activeSprite;
-
+        if (animator) animator.SetTrigger("Activate");
         if (boxCollider) boxCollider.enabled = true;
     }
 
     private void Deactivate()
     {
         StartCoroutine(WaitThenRemoveCollision());
-
-        if (spriteRenderer && deactiveSprite){
+        if (animator)
+        {
+            animator.SetTrigger("Deactivate");
+            return;
+        }
+        if (spriteRenderer && deactiveSprite)
+        {
             spriteRenderer.sprite = deactiveSprite;
             return;
         }
@@ -73,7 +80,8 @@ public class ObjectToggle : MonoBehaviour
         if (spriteRenderer) spriteRenderer.color = deactiveColor;
     }
 
-    private IEnumerator WaitThenRemoveCollision() {
+    private IEnumerator WaitThenRemoveCollision()
+    {
         yield return new WaitForSeconds(0.05f);
         if (boxCollider) boxCollider.enabled = false;
     }
