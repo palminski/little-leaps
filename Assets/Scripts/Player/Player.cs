@@ -84,6 +84,7 @@ public class Player : MonoBehaviour
     private float invincibilityTime = 3;
     [SerializeField]
     private float invincibilityBlinkInterval = 0.0001f;
+    
     //
 
     private float extraForceX = 0;
@@ -93,6 +94,7 @@ public class Player : MonoBehaviour
     private float invincibilityCountdown;
     private float nextInvincibilityBlinkTime;
 
+    public Vector3 startPosition;
 
     private float minJumpVelocity;
     private void Awake()
@@ -115,6 +117,9 @@ public class Player : MonoBehaviour
         minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpPower);
 
         invincibilityCountdown = 0;
+
+        startPosition = transform.position;
+
     }
 
     private void OnEnable()
@@ -128,6 +133,8 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+
+        
         //set last position to current position before moving
         lastPosition = transform.position;
 
@@ -231,6 +238,11 @@ public class Player : MonoBehaviour
         //Pass the velocity to the movement and collision handler
         //=========================================================
         movementCollisionHandler.Move(velocity * finalMoveSpeedScale);
+        
+        if (movementCollisionHandler.InGround()) {
+            Damage();
+        }
+        
 
     }
 
@@ -303,13 +315,16 @@ public class Player : MonoBehaviour
     void OnToggleRoom()
     {
         GameController.Instance.ToggleRoomState();
-
+        
 
     }
 
     public void Damage()
     {
-
+        transform.position = startPosition;
+        GameController.Instance.ChangeHealth(-1);
+        invincibilityCountdown = invincibilityTime;
+        
     }
 
     public void Shove(int direction)
