@@ -77,7 +77,7 @@ public class EnemyPatrol : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        // movementCollisionHandler.InGround();
         if (direction != 0)
         {
             Vector3 newScale = new(direction, 1, 1);
