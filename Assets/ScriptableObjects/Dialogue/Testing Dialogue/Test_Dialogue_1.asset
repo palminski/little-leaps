@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7522d7d9b205b734b95fb33790c047dc, type: 3}
+  m_Name: Test_Dialogue_1
+  m_EditorClassIdentifier: 
+  dialogueSentences:
+  - text: This is a test of the dialogue system made by yours truly! Click A or Space
+      to advance to the next piece of text. Spoiler alert, it's just going to be
+      a Lorem Ipsum paragraph.
+    dialogueOptions: []
+  - text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem
+      ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+      ut
+    dialogueOptions: []
+  - text: There is another dialogu you can launch from this one. Would you like to
+      see it? SELECT NO TO TEST OPTION EVENT
+    dialogueOptions:
+    - option: Yes
+      nextDialogue: {fileID: 11400000, guid: 92870e662dc67dc438a1d6d8c9ee3b4d, type: 2}
+      optionEvent:
+        m_PersistentCalls:
+          m_Calls: []
+    - option: No
+      nextDialogue: {fileID: 0}
+      optionEvent:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 7391664942457233986, guid: e2f6a30c4d94268479d156656c9a0c70, type: 3}
+            m_TargetAssemblyTypeName: GameController, Assembly-CSharp
+            m_MethodName: TestDialogueSystem
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+  - text: Okay! No worries! Advance the text again to regain control of the character.
+    dialogueOptions: []

@@ -174,6 +174,36 @@ public class MovementCollisionHandler : RaycastController
         return false;
     }
 
+    public bool InGround() {
+        Vector2 boxCenter = boxCollider.bounds.center;
+        Vector2 boxSize = boxCollider.bounds.size;
+        boxSize -= Vector2.one * 0.045f;
+        
+        Collider2D overlapCollider = Physics2D.OverlapBox(boxCenter,boxSize,0,collidableLayers);
+        // if (overlapCollider != null) 
+        // {
+        //     print(overlapCollider.Distance(boxCollider).distance);
+        // }
+        // else {
+        //     print("No Collision");
+        // }
+        if (overlapCollider != null && overlapCollider.Distance(boxCollider).distance < 0.0201f) return true;
+
+        return false;
+    }
+
+    // void OnDrawGizmos() {
+    //     Gizmos.color = Color.red;
+    //     Collider2D boxCollider = GetComponent<BoxCollider2D>();;
+    //     Vector2 boxCenter = boxCollider.bounds.center;
+    //     Vector2 boxSize = boxCollider.bounds.size;
+    //     boxSize -= Vector2.one * skinWidth;
+        
+    //     // Collider2D overlapCollider = Physics2D.OverlapBox(boxCenter,boxSize,0,collidableLayers);
+
+    //     Gizmos.DrawWireCube(boxCenter, boxSize);
+    // }
+
 
 
     //Structs

@@ -84,6 +84,7 @@ public class Player : MonoBehaviour
     private float invincibilityTime = 3;
     [SerializeField]
     private float invincibilityBlinkInterval = 0.0001f;
+    
     //
 
     private float extraForceX = 0;
@@ -93,7 +94,8 @@ public class Player : MonoBehaviour
     private float invincibilityCountdown;
     private float nextInvincibilityBlinkTime;
 
-    
+    public Vector3 startPosition;
+
     private float minJumpVelocity;
     private void Awake()
     {
@@ -110,22 +112,29 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        
 
-        minJumpVelocity = Mathf.Sqrt(2*Mathf.Abs(gravity) * minJumpPower);
+
+        minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpPower);
 
         invincibilityCountdown = 0;
+
+        startPosition = transform.position;
+
     }
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
         jumpAction.Enable();
     }
-    private void OnDisable() {
+    private void OnDisable()
+    {
         jumpAction.Disable();
     }
 
     private void FixedUpdate()
     {
+
+        
         //set last position to current position before moving
         lastPosition = transform.position;
 
@@ -204,21 +213,23 @@ public class Player : MonoBehaviour
                 int directionToJump = 0;
                 if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
                 {
-                    
-                    movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump,0,0));
-                    
+
+                    movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump, 0, 0));
+
                     velocity.y = wallJumpPower;
                     extraForceX = directionToJump * wallJumpXPower;
                     hSpeed = directionToJump * moveSpeed;
                 }
             }
         }
-        if (jumpReleased) {
-            if (velocity.y > minJumpVelocity) {
+        if (jumpReleased)
+        {
+            if (velocity.y > minJumpVelocity)
+            {
                 velocity.y = minJumpVelocity;
             }
         }
-        velocity.y = Mathf.Clamp(velocity.y,-terminalYVelocity, terminalYVelocity);
+        velocity.y = Mathf.Clamp(velocity.y, -terminalYVelocity, terminalYVelocity);
 
         if (coyoteTime > 0) coyoteTime--;
         jumpPressed = false;
@@ -227,20 +238,28 @@ public class Player : MonoBehaviour
         //Pass the velocity to the movement and collision handler
         //=========================================================
         movementCollisionHandler.Move(velocity * finalMoveSpeedScale);
-       
+        
+        if (movementCollisionHandler.InGround()) {
+            Damage();
+        }
+        
+
     }
 
     void Update()
     {
         //invincibility frames
-        if (invincibilityCountdown > 0) {
+        if (invincibilityCountdown > 0)
+        {
             invincibilityCountdown -= Time.deltaTime;
-            if (Time.time > nextInvincibilityBlinkTime) {
+            if (Time.time > nextInvincibilityBlinkTime)
+            {
                 spriteRenderer.enabled = !spriteRenderer.enabled;
                 nextInvincibilityBlinkTime = Time.time + invincibilityBlinkInterval;
             }
-        } 
-        else {
+        }
+        else
+        {
             spriteRenderer.enabled = true;
         }
 
@@ -255,7 +274,7 @@ public class Player : MonoBehaviour
             Vector3 newScale = new(hDirection, 1, 1);
             transform.localScale = newScale;
         }
-        
+
         //falling animations 
         if (velocity.y > 0)
         {
@@ -300,32 +319,41 @@ public class Player : MonoBehaviour
 
     }
 
-    public void Damage() {
+    public void Damage()
+    {
+        transform.position = startPosition;
+        GameController.Instance.ChangeHealth(-1);
+        invincibilityCountdown = invincibilityTime;
         
     }
 
-    public void Shove(int direction) {
-                    invincibilityCountdown = invincibilityTime;
-                    movementCollisionHandler.Move(new Vector3(0,0.5f,0));
-                    velocity.y = wallJumpPower/1.5f;
-                    extraForceX = -1 * wallJumpXPower;
-                    hSpeed = direction * moveSpeed;
+    public void Shove(int direction)
+    {
+        invincibilityCountdown = invincibilityTime;
+        movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
+        velocity.y = jumpPower * 0.5f;
+        // extraForceX = -1 * wallJumpXPower;
+        hSpeed = direction * moveSpeed;
     }
 
     //Methods to get player properties
-    public bool IsInvincible() {
+    public bool IsInvincible()
+    {
         return invincibilityCountdown > 0;
     }
 
-    public Vector3 GetLastPosition() {
+    public Vector3 GetLastPosition()
+    {
         return lastPosition;
     }
 
-    public void ResetCoyoteTime() {
+    public void ResetCoyoteTime()
+    {
         coyoteTime = coyoteTimeMax;
     }
 
-    public void Bounce() {
+    public void Bounce()
+    {
         velocity.y = jumpPower;
     }
 
