@@ -1,16 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DialogueActions : MonoBehaviour
 {
-    public void Test() 
+
+    public DialogueEvent Event;
+
+
+    private void OnEnable()
     {
-        Debug.Log("TEST");
+        Event.OnEventRaised.AddListener(OnEventRaised);
     }
 
-    public void AddToScore(int points)
+    private void OnDisable()
     {
-        GameController.Instance.AddToScore(points);
+        Event.OnEventRaised.RemoveListener(OnEventRaised);
+    }
+
+    void OnEventRaised()
+    {
+        print("EVENT RECIEVED");
+        GameController.Instance.AddToScore(100);
     }
 }

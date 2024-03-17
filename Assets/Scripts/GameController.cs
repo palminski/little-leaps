@@ -146,4 +146,9 @@ public class GameController : MonoBehaviour
     {
         SaveGame();
     }
+
+    public void TestDialogueSystem() 
+    {
+        Debug.Log("TEST");
+    }
 }

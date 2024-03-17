@@ -55,6 +55,11 @@ public class DialogueManager : MonoBehaviour
                 StartCoroutine(TypeSentence(currentDialogue.dialogueSentences[currentIndex].text));
                 return;
             }
+
+            if(dialogueOption.optionEvent != null) 
+            {
+                dialogueOption.optionEvent.Raise();
+            }
         }
         DisplayNextSentence();
     }

@@ -16,7 +16,7 @@ public class DialogueOption
 {
     public string option;
     public Dialogue nextDialogue;
-    public UnityEvent optionEvent;
+    public DialogueEvent optionEvent;
 }
 
 [CreateAssetMenu(menuName = "Dialogue/Dialogue")]
