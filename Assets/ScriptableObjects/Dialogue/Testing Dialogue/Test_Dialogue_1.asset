@@ -28,25 +28,9 @@ MonoBehaviour:
     dialogueOptions:
     - option: Yes
       nextDialogue: {fileID: 11400000, guid: 92870e662dc67dc438a1d6d8c9ee3b4d, type: 2}
-      optionEvent:
-        m_PersistentCalls:
-          m_Calls: []
+      optionEvent: {fileID: 0}
     - option: No
       nextDialogue: {fileID: 0}
-      optionEvent:
-        m_PersistentCalls:
-          m_Calls:
-          - m_Target: {fileID: 7391664942457233986, guid: e2f6a30c4d94268479d156656c9a0c70, type: 3}
-            m_TargetAssemblyTypeName: GameController, Assembly-CSharp
-            m_MethodName: TestDialogueSystem
-            m_Mode: 1
-            m_Arguments:
-              m_ObjectArgument: {fileID: 0}
-              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-              m_IntArgument: 0
-              m_FloatArgument: 0
-              m_StringArgument: 
-              m_BoolArgument: 0
-            m_CallState: 2
+      optionEvent: {fileID: 11400000, guid: 973f039e60f019c48bdf92d857f530da, type: 2}
   - text: Okay! No worries! Advance the text again to regain control of the character.
     dialogueOptions: []
