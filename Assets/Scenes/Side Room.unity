@@ -580,7 +580,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 30.53, y: 10.74, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -650,6 +650,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714cdb25f722f5a43a077b8a0f0446c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxAlphaSubtractionPercentage: 0.5
+  pulseSpeed: 1
+  shouldPulse: 0
 --- !u!483693784 &572264876
 TilemapRenderer:
   m_ObjectHideFlags: 0
@@ -1329,6 +1332,7 @@ MonoBehaviour:
   distanceWallsDetectable: 0.1
   invincibilityTime: 1
   invincibilityBlinkInterval: 0.05
+  startPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &1038934882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5142,6 +5146,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b80e7de2a07194ba84444565e571af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxAlphaSubtractionPercentage: 0.5
+  maxAlphaSubtractionPercentageInactive: 0.5
+  pulseSpeed: 1
+  shouldPulse: 0
   activeOnRoomColor: 0
 --- !u!19719996 &1234797325
 TilemapCollider2D:
@@ -5725,6 +5733,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b80e7de2a07194ba84444565e571af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxAlphaSubtractionPercentage: 0.5
+  maxAlphaSubtractionPercentageInactive: 0.5
+  pulseSpeed: 1
+  shouldPulse: 0
   activeOnRoomColor: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
