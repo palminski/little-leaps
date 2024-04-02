@@ -19,6 +19,9 @@ public class ColorSwapper : MonoBehaviour
 
     private TMP_Text text;
 
+    [SerializeField][Range(0,1)]
+    private float brightness = 1f;
+
     [SerializeField]
     private float maxAlphaSubtractionPercentage = 0.5f;
 
@@ -40,6 +43,9 @@ public class ColorSwapper : MonoBehaviour
         
         colorForRS0 = GameController.ColorForPurple;
         colorForRS1 = GameController.ColorForGreen;
+
+        colorForRS0 = Color.Lerp(colorForRS0, Color.black, (1-brightness));
+        colorForRS1 = Color.Lerp(colorForRS1, Color.black, (1-brightness));
 
         UpdateColor();
         timeSinceLastBeat = Time.time;

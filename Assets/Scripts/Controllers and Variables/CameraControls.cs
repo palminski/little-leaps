@@ -7,21 +7,22 @@ using UnityEngine.UIElements;
 public class CameraControls : MonoBehaviour
 {
 
+
+    [SerializeField]
+    public bool canMove = true;
     [SerializeField]
     private Transform target;
-
-    
 
     [SerializeField]
     private Vector3 offset;
 
-    [Header ("Easing")]
+    [Header("Easing")]
     [SerializeField]
     private float easeTimeX = 0.2f;
     [SerializeField]
     private float easeTimeY = 0.1f;
 
-    [Header ("Binding")]
+    [Header("Binding")]
     [SerializeField]
     private Tilemap tilemap;
     [SerializeField]
@@ -29,13 +30,14 @@ public class CameraControls : MonoBehaviour
 
     private Vector3 velocity = Vector3.zero;
 
-    void Start() {
-        transform.position = target.position + offset;
+    void Start()
+    {
+        if (canMove) transform.position = target.position + offset;
     }
 
     void FixedUpdate()
     {
-        EaseToTarget(target);
+        if (canMove) EaseToTarget(target);
     }
 
     private void EaseToTarget(Transform target)
@@ -47,27 +49,29 @@ public class CameraControls : MonoBehaviour
 
         Vector3 yVector = new(0, transform.position.y, 0);
         Vector3 targetYVector = new(0, targetPosition.y, 0);
-        
+
         float xTarget = Vector3.SmoothDamp(xVector, targetXVector, ref velocity, easeTimeX).x;
         float yTarget = Vector3.SmoothDamp(yVector, targetYVector, ref velocity, easeTimeY).y;
 
-        if (tilemap) {
+        if (tilemap)
+        {
             tilemap.CompressBounds();
             Camera camera = Camera.main;
-            float verticalExtent = camera.orthographicSize+boarderBuffer;
-            float horizontalExtent = (verticalExtent * camera.aspect)+boarderBuffer;
+            float verticalExtent = camera.orthographicSize + boarderBuffer;
+            float horizontalExtent = (verticalExtent * camera.aspect) + boarderBuffer;
 
-            Vector3 minPoint = tilemap.localBounds.min + new Vector3(horizontalExtent,verticalExtent,0);
-            Vector3 maxPoint = tilemap.localBounds.max - new Vector3(horizontalExtent,verticalExtent,0);
+            Vector3 minPoint = tilemap.localBounds.min + new Vector3(horizontalExtent, verticalExtent, 0);
+            Vector3 maxPoint = tilemap.localBounds.max - new Vector3(horizontalExtent, verticalExtent, 0);
 
-            xTarget = Mathf.Clamp(xTarget,minPoint.x,maxPoint.x);
-            yTarget = Mathf.Clamp(yTarget,minPoint.y,maxPoint.y); 
+            xTarget = Mathf.Clamp(xTarget, minPoint.x, maxPoint.x);
+            yTarget = Mathf.Clamp(yTarget, minPoint.y, maxPoint.y);
         }
 
         transform.position = new(xTarget, yTarget, transform.position.z);
     }
 
-    public void SnapToPosition(Transform target) {
+    public void SnapToPosition(Transform target)
+    {
         transform.position = target.position + offset;
     }
 
