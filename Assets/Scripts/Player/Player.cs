@@ -168,9 +168,12 @@ public class Player : MonoBehaviour
         if (movementCollisionHandler.collisionInfo.left)
         {
             hSpeed = Mathf.Max(hSpeed,0);
+            extraForceX = 0;
+            
         }
         if (movementCollisionHandler.collisionInfo.right) {
             hSpeed = Mathf.Min(hSpeed,0);
+            extraForceX = 0;
         }
 
         //we dont want extra force once we are on the ground. we also want to continuously move it back to 0
@@ -312,7 +315,6 @@ public class Player : MonoBehaviour
     void OnMove(InputValue value)
     {
         float moveValue = value.Get<float>();
-
         xInput = moveValue;
     }
 
