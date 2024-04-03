@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.UIElements.Experimental;
 using Unity.VisualScripting;
+using System.Collections;
 
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(MovementCollisionHandler))]
@@ -164,9 +165,12 @@ public class Player : MonoBehaviour
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
 
         //if we are hitting a wall we set the hspeed to 0 so we can accelerate away from it quickly
-        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right))
+        if (movementCollisionHandler.collisionInfo.left)
         {
-            hSpeed = 0;
+            hSpeed = Mathf.Max(hSpeed,0);
+        }
+        if (movementCollisionHandler.collisionInfo.right) {
+            hSpeed = Mathf.Min(hSpeed,0);
         }
 
         //we dont want extra force once we are on the ground. we also want to continuously move it back to 0
@@ -240,7 +244,7 @@ public class Player : MonoBehaviour
         movementCollisionHandler.Move(velocity * finalMoveSpeedScale);
         
         if (movementCollisionHandler.InGround()) {
-            Damage();
+            StartCoroutine(WaitCheckAndDie());
         }
         
 
@@ -357,4 +361,10 @@ public class Player : MonoBehaviour
         velocity.y = jumpPower;
     }
 
+    private IEnumerator WaitCheckAndDie() 
+    {
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+        if (movementCollisionHandler.InGround()) Damage();
+    }
 }

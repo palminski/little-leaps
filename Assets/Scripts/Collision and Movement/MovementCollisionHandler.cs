@@ -187,7 +187,10 @@ public class MovementCollisionHandler : RaycastController
         // else {
         //     print("No Collision");
         // }
-        if (overlapCollider != null && overlapCollider.Distance(boxCollider).distance < 0.0201f) return true;
+        if (overlapCollider != null && overlapCollider.Distance(boxCollider).distance < 0.0201f) {
+            print(overlapCollider);
+            return true;
+        } 
 
         return false;
     }

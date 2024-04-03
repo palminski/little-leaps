@@ -107,7 +107,7 @@ public class PlatformController : RaycastController
             }
         }
 
-        //Moving Vertically=============================================================
+        //Moving Horizontal=============================================================
         if (velocity.x != 0 && !isPassable)
         {
             float rayLength = Mathf.Abs(velocity.x) + skinWidth;
