@@ -10,7 +10,7 @@ public class CameraControls : MonoBehaviour
 
     [SerializeField]
     public bool canMove = true;
-    [SerializeField]
+    
     private Transform target;
 
     [SerializeField]
@@ -32,6 +32,7 @@ public class CameraControls : MonoBehaviour
 
     void Start()
     {
+        target = GameObject.FindGameObjectWithTag("Player").transform;
         if (canMove) transform.position = target.position + offset;
     }
 

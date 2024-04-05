@@ -5,13 +5,15 @@ using UnityEngine.Tilemaps;
 
 public class BackgroundParallax : MonoBehaviour
 {
-    public Transform cameraTransform;
+    private Transform cameraTransform;
     [SerializeField]
     private float parallaxEffectMultiplier = 1f;
     private Vector3 lastCameraPosition;
     // Start is called before the first frame update
     IEnumerator Start()
     {
+        
+        cameraTransform = Camera.main.transform;
         yield return null;
         lastCameraPosition = cameraTransform.position;
         // transform.position = new(0,0,0);
