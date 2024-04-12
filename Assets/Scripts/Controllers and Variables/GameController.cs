@@ -13,7 +13,6 @@ public class GameController : MonoBehaviour
 
     public static Color ColorForPurple => Instance.globalVariables.colorForPurple;
     public static Color ColorForGreen => Instance.globalVariables.colorForGreen;
-
     public static float GlobalSkinWidth => Instance.globalVariables.globalSkinWidth;
     
     
@@ -41,6 +40,19 @@ public class GameController : MonoBehaviour
     {
         get { return health; }
     }
+
+    private int charge;
+    public int Charge
+    {
+        get { return charge; }
+    }
+
+    public int ChargeMax
+    {
+        get { return 100; }
+    }
+    
+
 
     void Awake()
     {
@@ -94,6 +106,18 @@ public class GameController : MonoBehaviour
             ChangeScene("Main Menu");
         } 
         return health;
+    }
+
+    public int ChangeCharge(int chargeChange) {
+        charge += chargeChange;
+        if (charge >= ChargeMax)
+        {
+            charge -= ChargeMax;
+            ChangeHealth(1);
+        }
+        OnUpdateHUD?.Invoke();
+        
+        return charge;
     }
 
     public GameObject PullFromPool(GameObject gameObject, Vector3 position) {

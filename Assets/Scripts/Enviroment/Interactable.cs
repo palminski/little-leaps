@@ -40,7 +40,7 @@ public class Interactable : MonoBehaviour
         }
     }
     
-    void OnSelect() {
+    void OnInteract() {
         if (CanInteractWith() && (FindObjectOfType<DialogueManager>() == null)) {
             print("test");
             dialogueSystem.GetComponent<DialogueManager>().currentDialogue = dialogueToStart;
