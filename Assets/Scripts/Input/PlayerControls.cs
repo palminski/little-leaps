@@ -211,7 +211,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b59dbb02-aec2-4e13-a845-d7960edf8775"",
-                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -320,6 +320,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""Select"",
                     ""type"": ""Button"",
                     ""id"": ""b6a9f100-61aa-435e-8ffb-da52dcc024db"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""9092c171-8b5a-4350-a6a0-654e11068fd3"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -535,6 +544,50 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""NavigateDown"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5c2b15d2-08f0-4a67-a1fa-83361cb70f51"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""380a8e5d-66eb-43d2-95da-33b8d240b1f5"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""60183ab2-56b3-4a52-9c6b-7d5bbbdd7c4d"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""872ef0a5-2d01-4182-92aa-eccd76b1bcf9"",
+                    ""path"": ""<Gamepad>/leftStick/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -554,6 +607,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Menu_NavigateRight = m_Menu.FindAction("NavigateRight", throwIfNotFound: true);
         m_Menu_NavigateDown = m_Menu.FindAction("NavigateDown", throwIfNotFound: true);
         m_Menu_Select = m_Menu.FindAction("Select", throwIfNotFound: true);
+        m_Menu_Interact = m_Menu.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -690,6 +744,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Menu_NavigateRight;
     private readonly InputAction m_Menu_NavigateDown;
     private readonly InputAction m_Menu_Select;
+    private readonly InputAction m_Menu_Interact;
     public struct MenuActions
     {
         private @PlayerControls m_Wrapper;
@@ -699,6 +754,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @NavigateRight => m_Wrapper.m_Menu_NavigateRight;
         public InputAction @NavigateDown => m_Wrapper.m_Menu_NavigateDown;
         public InputAction @Select => m_Wrapper.m_Menu_Select;
+        public InputAction @Interact => m_Wrapper.m_Menu_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Menu; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -723,6 +779,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Select.started += instance.OnSelect;
             @Select.performed += instance.OnSelect;
             @Select.canceled += instance.OnSelect;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         private void UnregisterCallbacks(IMenuActions instance)
@@ -742,6 +801,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Select.started -= instance.OnSelect;
             @Select.performed -= instance.OnSelect;
             @Select.canceled -= instance.OnSelect;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         public void RemoveCallbacks(IMenuActions instance)
@@ -773,5 +835,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnNavigateRight(InputAction.CallbackContext context);
         void OnNavigateDown(InputAction.CallbackContext context);
         void OnSelect(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
 }
