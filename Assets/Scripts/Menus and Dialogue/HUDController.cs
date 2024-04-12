@@ -36,9 +36,14 @@ private void OnEnable() {
         if (scoreText) scoreText.text = GameController.Instance.Score.ToString();
         if (healthText) {
             string healthString = "";
-            for (int i = 0; i < GameController.Instance.Health; i++)
+            for (int i = 0; i < GameController.Instance.MaxHealth; i++)
             {
-                healthString += "|";
+                if(i < GameController.Instance.Health)
+                {
+                    healthString += "|";
+                    continue;
+                }
+                healthString += "-";
             }
             healthText.text = healthString;
         } 
