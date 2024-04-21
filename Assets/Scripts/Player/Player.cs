@@ -367,6 +367,8 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
         if (movementCollisionHandler.InGround()) Damage();
     }
 }

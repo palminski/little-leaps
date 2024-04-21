@@ -13,10 +13,14 @@ public class ObjectToggle : MonoBehaviour
     private float deactiveAlpha = 0.1f;
     [SerializeField]
     private Sprite deactiveSprite;
+    [SerializeField]
+    private bool shouldRemoveCollision = true;
 
     private SpriteRenderer spriteRenderer;
     private Sprite activeSprite;
     private Color activeColor;
+
+    
     private Color deactiveColor;
     private Collider2D boxCollider;
     private Animator animator;
@@ -65,7 +69,7 @@ public class ObjectToggle : MonoBehaviour
 
     private void Deactivate()
     {
-        StartCoroutine(WaitThenRemoveCollision());
+        if (shouldRemoveCollision) StartCoroutine(WaitThenRemoveCollision());
         if (animator)
         {
             animator.SetTrigger("Deactivate");
