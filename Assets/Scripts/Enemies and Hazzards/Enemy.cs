@@ -12,6 +12,9 @@ public class Enemy : MonoBehaviour
     private int pointValue = 100;
 
     [SerializeField]
+    private int health = 1;
+
+    [SerializeField]
     private GameObject blood;
 
 
@@ -52,9 +55,17 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void DamageEnemy(int damage=1) {
+        health -= damage;
+        if (health <= 0)
+        {
+            KillEnemy();
+        }
+    }
 
     public void KillEnemy() {
         GameController.Instance.AddToScore(pointValue);
+        if (blood) GameController.Instance.PullFromPool(blood,transform.position);
         Destroy(gameObject);
     }
 

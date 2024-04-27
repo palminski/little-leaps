@@ -72,7 +72,6 @@ public class ColorSwapper : MonoBehaviour
     private void OnEnable() {
         GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
         UpdateColor();
-        print(partSys);
     }
     private void OnDisable() {
         GameController.Instance.OnRoomStateChanged -= HandleRoomStateChange;

@@ -51,7 +51,6 @@ private void OnEnable() {
         {
             
             float chargeMeterPercentage = (float)GameController.Instance.Charge / GameController.Instance.ChargeMax;
-            print(GameController.Instance.ChargeMax);
             chargeMeter.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, chargeMeterWidth * chargeMeterPercentage);
         }
 

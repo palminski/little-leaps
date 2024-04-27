@@ -6,7 +6,7 @@ public class WeakSpot : MonoBehaviour
 {
     private GameObject player;
 
-        [SerializeField]
+    [SerializeField]
     private GameObject blood;
 
     private Enemy enemy;

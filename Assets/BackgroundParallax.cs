@@ -16,8 +16,6 @@ public class BackgroundParallax : MonoBehaviour
         cameraTransform = Camera.main.transform;
         yield return null;
         lastCameraPosition = cameraTransform.position;
-        // transform.position = new(0,0,0);
-        print(cameraTransform.position);
     }
 
     // Update is called once per frame

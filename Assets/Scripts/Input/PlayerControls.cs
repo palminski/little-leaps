@@ -62,6 +62,33 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightJoystickTilt"",
+                    ""type"": ""Value"",
+                    ""id"": ""165a3f8c-5864-4d3b-b11f-37651c90da00"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""LeftJoystickTilt"",
+                    ""type"": ""Value"",
+                    ""id"": ""d25d92fc-1ddc-48ea-8808-c22417d823ec"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""ac5d3919-bc8a-430b-ab5c-0b91d152c4ea"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -271,6 +298,39 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b57e5e3a-5aa9-4338-bdc5-bb5017aec2a5"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightJoystickTilt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""518d9dc8-b785-407a-8898-51480f6c60cb"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7d071a6b-9581-4a28-a9aa-d99687add483"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftJoystickTilt"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -600,6 +660,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Movement_Jump = m_Movement.FindAction("Jump", throwIfNotFound: true);
         m_Movement_FastFall = m_Movement.FindAction("FastFall", throwIfNotFound: true);
         m_Movement_ToggleRoom = m_Movement.FindAction("ToggleRoom", throwIfNotFound: true);
+        m_Movement_RightJoystickTilt = m_Movement.FindAction("RightJoystickTilt", throwIfNotFound: true);
+        m_Movement_LeftJoystickTilt = m_Movement.FindAction("LeftJoystickTilt", throwIfNotFound: true);
+        m_Movement_Attack = m_Movement.FindAction("Attack", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_NavigateUp = m_Menu.FindAction("NavigateUp", throwIfNotFound: true);
@@ -673,6 +736,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Movement_Jump;
     private readonly InputAction m_Movement_FastFall;
     private readonly InputAction m_Movement_ToggleRoom;
+    private readonly InputAction m_Movement_RightJoystickTilt;
+    private readonly InputAction m_Movement_LeftJoystickTilt;
+    private readonly InputAction m_Movement_Attack;
     public struct MovementActions
     {
         private @PlayerControls m_Wrapper;
@@ -681,6 +747,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Movement_Jump;
         public InputAction @FastFall => m_Wrapper.m_Movement_FastFall;
         public InputAction @ToggleRoom => m_Wrapper.m_Movement_ToggleRoom;
+        public InputAction @RightJoystickTilt => m_Wrapper.m_Movement_RightJoystickTilt;
+        public InputAction @LeftJoystickTilt => m_Wrapper.m_Movement_LeftJoystickTilt;
+        public InputAction @Attack => m_Wrapper.m_Movement_Attack;
         public InputActionMap Get() { return m_Wrapper.m_Movement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -702,6 +771,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @ToggleRoom.started += instance.OnToggleRoom;
             @ToggleRoom.performed += instance.OnToggleRoom;
             @ToggleRoom.canceled += instance.OnToggleRoom;
+            @RightJoystickTilt.started += instance.OnRightJoystickTilt;
+            @RightJoystickTilt.performed += instance.OnRightJoystickTilt;
+            @RightJoystickTilt.canceled += instance.OnRightJoystickTilt;
+            @LeftJoystickTilt.started += instance.OnLeftJoystickTilt;
+            @LeftJoystickTilt.performed += instance.OnLeftJoystickTilt;
+            @LeftJoystickTilt.canceled += instance.OnLeftJoystickTilt;
+            @Attack.started += instance.OnAttack;
+            @Attack.performed += instance.OnAttack;
+            @Attack.canceled += instance.OnAttack;
         }
 
         private void UnregisterCallbacks(IMovementActions instance)
@@ -718,6 +796,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @ToggleRoom.started -= instance.OnToggleRoom;
             @ToggleRoom.performed -= instance.OnToggleRoom;
             @ToggleRoom.canceled -= instance.OnToggleRoom;
+            @RightJoystickTilt.started -= instance.OnRightJoystickTilt;
+            @RightJoystickTilt.performed -= instance.OnRightJoystickTilt;
+            @RightJoystickTilt.canceled -= instance.OnRightJoystickTilt;
+            @LeftJoystickTilt.started -= instance.OnLeftJoystickTilt;
+            @LeftJoystickTilt.performed -= instance.OnLeftJoystickTilt;
+            @LeftJoystickTilt.canceled -= instance.OnLeftJoystickTilt;
+            @Attack.started -= instance.OnAttack;
+            @Attack.performed -= instance.OnAttack;
+            @Attack.canceled -= instance.OnAttack;
         }
 
         public void RemoveCallbacks(IMovementActions instance)
@@ -827,6 +914,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnFastFall(InputAction.CallbackContext context);
         void OnToggleRoom(InputAction.CallbackContext context);
+        void OnRightJoystickTilt(InputAction.CallbackContext context);
+        void OnLeftJoystickTilt(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

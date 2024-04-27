@@ -348,6 +348,11 @@ public class Player : MonoBehaviour
         return invincibilityCountdown > 0;
     }
 
+    public bool IsFalling()
+    {
+        return velocity.y < -gravity * gravityModifier;
+    }
+
     public Vector3 GetLastPosition()
     {
         return lastPosition;
