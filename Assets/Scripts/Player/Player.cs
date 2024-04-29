@@ -348,6 +348,15 @@ public class Player : MonoBehaviour
         return invincibilityCountdown > 0;
     }
 
+    public bool IsFalling()
+    {
+        return velocity.y < -gravity * gravityModifier;
+    }
+    public bool IsInAir()
+    {
+        return !movementCollisionHandler.OnGround();
+    }
+
     public Vector3 GetLastPosition()
     {
         return lastPosition;
@@ -365,6 +374,8 @@ public class Player : MonoBehaviour
 
     private IEnumerator WaitCheckAndDie() 
     {
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
         if (movementCollisionHandler.InGround()) Damage();

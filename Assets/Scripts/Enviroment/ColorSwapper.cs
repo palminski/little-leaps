@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Rendering.Universal;
 
 public class ColorSwapper : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class ColorSwapper : MonoBehaviour
     private Image image;
 
     private TMP_Text text;
+    private Light2D light2D;
+
+    private ParticleSystem partSys;
 
     [SerializeField][Range(0,1)]
     private float brightnessForRS0 = 1f;
@@ -36,6 +40,8 @@ public class ColorSwapper : MonoBehaviour
 
     private float timeSinceLastBeat;
 
+    public bool debug = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +49,8 @@ public class ColorSwapper : MonoBehaviour
         tilemap = GetComponent<Tilemap>();
         image = GetComponent<Image>();
         text = GetComponent<TMP_Text>();
+        light2D = GetComponent<Light2D>();
+        partSys = GetComponent<ParticleSystem>();
         
         colorForRS0 = GameController.ColorForPurple;
         colorForRS1 = GameController.ColorForGreen;
@@ -75,6 +83,12 @@ public class ColorSwapper : MonoBehaviour
             if (tilemap) tilemap.color = colorForRS0;
             if (image) image.color = colorForRS0;
             if (text) text.color = colorForRS0;
+            if (light2D) light2D.color = colorForRS0;
+            if (partSys) {
+                UpdateParticles(colorForRS0);
+                ParticleSystem.MainModule main = partSys.main;
+                main.startColor = colorForRS0;
+            } 
             
         }
         else {
@@ -82,6 +96,12 @@ public class ColorSwapper : MonoBehaviour
             if (tilemap) tilemap.color = colorForRS1;
             if (image) image.color = colorForRS1;
             if (text) text.color = colorForRS1;
+            if (light2D) light2D.color = colorForRS1;
+            if (partSys) {
+                UpdateParticles(colorForRS1);
+                ParticleSystem.MainModule main = partSys.main;
+                main.startColor = colorForRS1;
+            } 
         }
     }
 
@@ -111,5 +131,15 @@ public class ColorSwapper : MonoBehaviour
         if (text) text.color = lerpedColor;
     }
 
-    
+    private void UpdateParticles(Color color) {
+        ParticleSystem.Particle[] currentParticles = new ParticleSystem.Particle[partSys.particleCount];
+        int numParticlesAlive = partSys.GetParticles(currentParticles);
+
+        for (int i = 0 ; i < numParticlesAlive; i++)
+        {
+            currentParticles[i].startColor = color;
+        }
+
+        partSys.SetParticles(currentParticles, numParticlesAlive);
+    }
 }

@@ -41,6 +41,12 @@ public class GameController : MonoBehaviour
         get { return health; }
     }
 
+    private int maxHealth = 5;
+    public int MaxHealth
+    {
+        get { return maxHealth; }
+    }
+
     private int charge;
     public int Charge
     {
@@ -51,6 +57,8 @@ public class GameController : MonoBehaviour
     {
         get { return 100; }
     }
+
+    
     
 
 
@@ -99,6 +107,8 @@ public class GameController : MonoBehaviour
 
     public int ChangeHealth(int healthChange) {
         health += healthChange;
+        ChangeCharge(0);
+        health = Mathf.Clamp(health,0,maxHealth);
         OnUpdateHUD?.Invoke();
         if (health <= 0) {
             health = 5;
@@ -112,11 +122,17 @@ public class GameController : MonoBehaviour
         charge += chargeChange;
         if (charge >= ChargeMax)
         {
-            charge -= ChargeMax;
-            ChangeHealth(1);
+            if(health < maxHealth)
+            {
+                charge -= ChargeMax;
+                ChangeHealth(1);
+            }
+            else
+            {
+                charge = ChargeMax;
+            }
         }
         OnUpdateHUD?.Invoke();
-        
         return charge;
     }
 

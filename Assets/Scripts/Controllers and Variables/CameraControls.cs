@@ -43,7 +43,7 @@ public class CameraControls : MonoBehaviour
 
     private void EaseToTarget(Transform target)
     {
-        Vector3 targetPosition = target.position + offset;
+        Vector3 targetPosition = (target.position + offset);
 
         Vector3 xVector = new(transform.position.x, 0, 0);
         Vector3 targetXVector = new(targetPosition.x, 0, 0);
