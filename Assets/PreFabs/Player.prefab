@@ -153,7 +153,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.75, y: 0}
+  m_Offset: {x: 0.9625945, y: 0.0027730465}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0.5}
@@ -164,7 +164,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.5, y: 0.38}
+  m_Size: {x: 1.074811, y: 0.35966492}
   m_EdgeRadius: 0
 --- !u!50 &7206146269674421475
 Rigidbody2D:
@@ -446,13 +446,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8471944304e178742862deddb8e9d537, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.32
+  moveSpeed: 0.28
   finalMoveSpeedScale: 0.5
-  acceleration: 0.045
+  acceleration: 0.035
   fastFallModifier: 1
   groundFriction: 0.04
   airFriction: 0.02
-  jumpPower: 1
+  jumpPower: 0.95
   minJumpPower: 0.65
   coyoteTimeMax: 3
   jumpBuffer: 0.5
@@ -461,10 +461,10 @@ MonoBehaviour:
   wallJumpPower: 0.9
   wallJumpOffset: 0.5
   wallJumpXPower: 0.5
-  distanceWallsDetectable: 0.2
+  distanceWallsDetectable: 0.3
   invincibilityTime: 1
   invincibilityBlinkInterval: 0.05
-  startPosition: {x: 0, y: 0, z: 0}
+  startPosition: {x: -15.569796, y: -9.5, z: 0}
 --- !u!114 &2095105948704731533
 MonoBehaviour:
   m_ObjectHideFlags: 0

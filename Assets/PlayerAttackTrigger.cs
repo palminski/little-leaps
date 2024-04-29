@@ -48,18 +48,16 @@ public class PlayerAttackTrigger : MonoBehaviour
         Vector2 joystickVector = context.ReadValue<Vector2>();
         if (joystickVector != Vector2.zero)
         {
-            Transform attackObjectTransform = attackObject.transform;
+            
             float angle = Mathf.Atan2(joystickVector.y, joystickVector.x) * Mathf.Rad2Deg;
-            // angle = Mathf.Round(angle / 90) * 90;
-            attackObjectTransform.rotation = Quaternion.Euler(0,0,angle);
-            attackObject.SetActive(true);
-            attackAnimator.SetTrigger("Attack");
+            angle = Mathf.Round(angle / 90) * 90;
+            
+            LaunchAttack(angle);
         }
     }
 
     private void OnAttack()
     {
-        Transform attackObjectTransform = attackObject.transform;
         Vector2 leftJoystickPosition = playerInput.actions["LeftJoystickTilt"].ReadValue<Vector2>();
 
         float angle = 0;
@@ -72,7 +70,13 @@ public class PlayerAttackTrigger : MonoBehaviour
             angle = 180;
         }
         
-        
+        LaunchAttack(angle);
+    }
+
+    private void LaunchAttack(float angle)
+    {
+        if (attackObject.activeSelf) return;
+        Transform attackObjectTransform = attackObject.transform;
         attackObjectTransform.rotation = Quaternion.Euler(0,0,angle);
         attackObject.SetActive(true);
         attackAnimator.SetTrigger("Attack");

@@ -33,16 +33,26 @@ public class PlayerAttack : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D hitCollider)
     {
+        
+        
+        
         Enemy hitEnemy = hitCollider.gameObject.GetComponent<Enemy>();
         if (hitEnemy)
         {
             Collider2D playerCollider = transform.parent.gameObject.GetComponent<Collider2D>();
             float playerBottom = player.GetLastPosition().y + playerCollider.offset.y  - (playerCollider.bounds.size.y / 2);
-            if (playerBottom > hitCollider.transform.position.y && player.IsFalling())
+            if (playerBottom > hitCollider.transform.position.y && player.IsInAir() && IsAttackingDown())
             {
+                
                 player.Bounce();
             }
             hitEnemy.DamageEnemy();
         }
+    }
+
+    private bool IsAttackingDown()
+    {
+        Vector3 direction = transform.rotation * Vector3.down;
+        return Mathf.Approximately(direction.x ,-1f);
     }
 }

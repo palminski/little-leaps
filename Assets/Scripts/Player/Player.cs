@@ -352,6 +352,10 @@ public class Player : MonoBehaviour
     {
         return velocity.y < -gravity * gravityModifier;
     }
+    public bool IsInAir()
+    {
+        return !movementCollisionHandler.OnGround();
+    }
 
     public Vector3 GetLastPosition()
     {
