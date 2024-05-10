@@ -16,8 +16,6 @@ public class PlatformController : RaycastController
 
     private WaypointMovement waypointMovement;
 
-
-
     private List<PassengerMovement> passengerMovements;
     private Dictionary<Transform, MovementCollisionHandler> passengerCollisionHandlers = new Dictionary<Transform, MovementCollisionHandler>();
 
@@ -36,14 +34,23 @@ public class PlatformController : RaycastController
     // Update is called once per frame
     void FixedUpdate()
     {
+        
         updateRaycastOrigins();
 
         Vector3 velocity = waypointMovement.CalculatePlatformMovement();
-        CalculatePassengerMovement(velocity);
 
-        MovePassengers(true);
-        transform.Translate(velocity);
-        MovePassengers(false);
+        if (boxCollider.enabled) 
+        {
+            CalculatePassengerMovement(velocity);
+            MovePassengers(true);
+            transform.Translate(velocity);
+            MovePassengers(false);
+        }
+        else
+        {
+            transform.Translate(velocity);
+        }
+        
 
         if (fallthroughSolid)
         {

@@ -64,7 +64,7 @@ public class Enemy : MonoBehaviour
     }
 
     public void KillEnemy() {
-        GameController.Instance.AddToScore(pointValue);
+        // GameController.Instance.AddToScore(pointValue);
         if (blood) GameController.Instance.PullFromPool(blood,transform.position);
         Destroy(gameObject);
     }

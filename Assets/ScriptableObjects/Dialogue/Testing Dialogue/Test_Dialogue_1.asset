@@ -13,24 +13,16 @@ MonoBehaviour:
   m_Name: Test_Dialogue_1
   m_EditorClassIdentifier: 
   dialogueSentences:
-  - text: This is a test of the dialogue system made by yours truly! Click A or Space
-      to advance to the next piece of text. Spoiler alert, it's just going to be
-      a Lorem Ipsum paragraph.
+  - text: "H.A.R.T.E Report-776\r"
     dialogueOptions: []
-  - text: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem
-      ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-      ut
+  - text: 'Bootup of the runtime environment successful. Unfortunately, attempting
+      to integrate a subject into the runtime continues to prove difficult.
+
+'
     dialogueOptions: []
-  - text: There is another dialogu you can launch from this one. Would you like to
-      see it? SELECT NO TO TEST OPTION EVENT
-    dialogueOptions:
-    - option: Yes
-      nextDialogue: {fileID: 11400000, guid: 92870e662dc67dc438a1d6d8c9ee3b4d, type: 2}
-      optionEvent: {fileID: 0}
-    - option: No
-      nextDialogue: {fileID: 0}
-      optionEvent: {fileID: 11400000, guid: 973f039e60f019c48bdf92d857f530da, type: 2}
-  - text: Okay! No worries! Advance the text again to regain control of the character.
+  - text: Our issue seems to be memory. There simply isn't enough for the subject
+      to last for more than around 5 minutes
+    dialogueOptions: []
+  - text: While the path ahead seems long, and we are running out of time I am still
+      optimistic that we can succeed.
     dialogueOptions: []

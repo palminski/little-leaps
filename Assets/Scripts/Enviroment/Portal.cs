@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -26,8 +25,9 @@ public class Portal : MonoBehaviour
         {
             player.transform.position = spawnPoint.position;
             player.GetComponent<Player>().startPosition = spawnPoint.position;
+            
             var camera = Camera.main.GetComponent<CameraControls>();
-            if (camera && camera.canMove) camera.SnapToPosition(spawnPoint);
+            if (camera && camera.canMove && !camera.onlyUp) camera.SnapToPosition(spawnPoint);
             player.transform.localScale = new(Mathf.Sign(spawnPoint.localPosition.x),1,1);
         }
     }
