@@ -73,6 +73,17 @@ public class GameController : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+            #else
+            Application.Quit();
+            #endif
+        }
+    }
     private void OnSceneLoad(Scene scene, LoadSceneMode mode) {
         levelChangerAnimator.Play("Fade_In", 0, 0f);
         objectPool =  new Dictionary<string, Queue<GameObject>>();
