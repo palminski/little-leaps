@@ -78,8 +78,8 @@ public class CameraControls : MonoBehaviour
         {
             tilemap.CompressBounds();
             Camera camera = Camera.main;
-            float verticalExtent = camera.orthographicSize + boarderBuffer;
-            float horizontalExtent = (verticalExtent * camera.aspect) + boarderBuffer;
+            float verticalExtent = camera.orthographicSize + boarderBuffer * 2;
+            float horizontalExtent = ((camera.orthographicSize + boarderBuffer) * camera.aspect) + boarderBuffer;
 
             Vector3 minPoint = tilemap.localBounds.min + new Vector3(horizontalExtent, verticalExtent, 0);
             Vector3 maxPoint = tilemap.localBounds.max - new Vector3(horizontalExtent, verticalExtent, 0);

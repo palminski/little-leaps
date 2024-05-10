@@ -8,22 +8,14 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-
     public GlobalVariables globalVariables;
-
     public static Color ColorForPurple => Instance.globalVariables.colorForPurple;
     public static Color ColorForGreen => Instance.globalVariables.colorForGreen;
     public static float GlobalSkinWidth => Instance.globalVariables.globalSkinWidth;
-    
-    
     public static GameController Instance { get; private set; }
-
     public Dictionary<string, Queue<GameObject>> objectPool = new Dictionary<string, Queue<GameObject>>();
-
+    [SerializeField] private Animator levelChangerAnimator;
     private int score;
-
-    [SerializeField]
-    private Animator levelChangerAnimator;
     public int Score
     {
         get { return score; }
@@ -58,10 +50,15 @@ public class GameController : MonoBehaviour
         get { return 100; }
     }
 
-    
-    
+    private HashSet<string> collectedObjects = new HashSet<string>();
+    public HashSet<string> CollectedObjects
+    {
+        get {return collectedObjects;}
+    }
 
+    // ----------------------------------------------------------------------------------
 
+    // ---------------------------------------------------------------------------------- 
     void Awake()
     {
         if (Instance == null)
@@ -76,28 +73,17 @@ public class GameController : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     private void OnSceneLoad(Scene scene, LoadSceneMode mode) {
-        // print("HELLO WORLD");
-        // levelChangerAnimator.SetTrigger("FadeOut");
         levelChangerAnimator.Play("Fade_In", 0, 0f);
-        
-
         objectPool =  new Dictionary<string, Queue<GameObject>>();
     }
 
-    
-
+    // ------------------------------
+    // Events
+    // ------------------------------
     public event Action OnRoomStateChanged;
     public event Action OnUpdateHUD;
-
-    public int AddToScore(int pointsToAdd)
-    {
-        score += pointsToAdd;
-        OnUpdateHUD?.Invoke();
-        return score;
-    }
-
+    
     public RoomColor ToggleRoomState()
     {
         roomState = roomState == RoomColor.Purple ? RoomColor.Green : RoomColor.Purple;
@@ -105,6 +91,16 @@ public class GameController : MonoBehaviour
         return roomState;
     }
 
+
+    // ------------------------------
+    // Update Variables in Controller
+    // ------------------------------
+    public int AddToScore(int pointsToAdd)
+    {
+        score += pointsToAdd;
+        OnUpdateHUD?.Invoke();
+        return score;
+    }
     public int ChangeHealth(int healthChange) {
         health += healthChange;
         ChangeCharge(0);
@@ -136,6 +132,15 @@ public class GameController : MonoBehaviour
         return charge;
     }
 
+    public void TagObjectStringAsCollected(string objectKey)
+    {
+        collectedObjects.Add(objectKey);
+    }
+
+
+    // ---------------------------------
+    // Functions other objects can Call
+    // ---------------------------------
     public GameObject PullFromPool(GameObject gameObject, Vector3 position) {
         //Name of the specific pool to access
         string tag = gameObject.name;
@@ -174,14 +179,12 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(stateInfo.length);
         SceneManager.LoadScene(sceneName);
     }
-
     public void SaveGame() {
         
         SaveData gameData = SaveDataManager.LoadGameData();
         gameData.score = score;
         SaveDataManager.SaveGameData(gameData);
     }
-
     private void OnApplicationQuit()
     {
         SaveGame();

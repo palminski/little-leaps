@@ -85,6 +85,9 @@ public class Player : MonoBehaviour
     private float invincibilityTime = 3;
     [SerializeField]
     private float invincibilityBlinkInterval = 0.0001f;
+
+    [Header("Particles")]
+    [SerializeField] private ParticleSystem ps;
     
     //
 
@@ -245,7 +248,10 @@ public class Player : MonoBehaviour
         //Pass the velocity to the movement and collision handler
         //=========================================================
         movementCollisionHandler.Move(velocity * finalMoveSpeedScale);
-        
+        if (movementCollisionHandler.OnGround() && velocity.x != 0)
+        {
+            ps.Play();
+        }
         if (movementCollisionHandler.InGround()) {
             StartCoroutine(WaitCheckAndDie());
         }

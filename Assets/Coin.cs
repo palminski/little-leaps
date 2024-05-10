@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Coin : MonoBehaviour
 {
@@ -22,9 +23,14 @@ public class Coin : MonoBehaviour
 
     public ParticleSystem coinParticleSystem;
 
+    private string coinId;
+    
     // Start is called before the first frame update
     void Start()
     {
+        coinId = $"{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
+        if (GameController.Instance.CollectedObjects.Contains(coinId)) Destroy(gameObject);
+        
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
@@ -53,6 +59,7 @@ public class Coin : MonoBehaviour
                 coinParticleSystem.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             } 
             GameController.Instance.PullFromPool(collectionParticle,transform.position);
+            GameController.Instance.TagObjectStringAsCollected(coinId);
             Destroy(gameObject);
         }
     }
