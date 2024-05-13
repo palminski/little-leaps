@@ -53,6 +53,8 @@ public class CameraControls : MonoBehaviour
         target = GameObject.FindGameObjectWithTag("Player").transform;
         if (canMove && !onlyUp) transform.position = target.position + offset;
         highestPoint = transform.position.y;
+        if (!tilemap) tilemap = GameObject.Find("environment").GetComponent<Tilemap>();
+
     }
 
     void FixedUpdate()
