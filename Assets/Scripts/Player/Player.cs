@@ -30,61 +30,45 @@ public class Player : MonoBehaviour
     private bool jumpReleased;
 
     [Header("Horizontal Movement")]
-    [SerializeField]
-    private float moveSpeed = 0.4f;
+    [SerializeField] private float moveSpeed = 0.4f;
 
-    [SerializeField]
-    private float finalMoveSpeedScale = 0.4f;
+    [SerializeField] private float finalMoveSpeedScale = 0.4f;
 
-    [SerializeField]
-    private float acceleration = 0.1f;
+    [SerializeField] private float acceleration = 0.1f;
 
-    [SerializeField]
-    private float fastFallModifier = 2;
+    [SerializeField] private float fastFallModifier = 2;
 
-    [SerializeField]
-    private float groundFriction = 0.1f;
+    [SerializeField] private float groundFriction = 0.1f;
 
-    [SerializeField]
-    private float airFriction = 0.1f;
+    [SerializeField] private float airFriction = 0.1f;
 
     [Header("Vertical Movement")]
-    [SerializeField]
-    private float jumpPower = 0.7f;
+    [SerializeField] private float jumpPower = 0.7f;
 
-    [SerializeField]
-    private float minJumpPower = 1;
+    [SerializeField] private float minJumpPower = 1;
 
-    [SerializeField]
-    private int coyoteTimeMax = 5;
+    [SerializeField] private int coyoteTimeMax = 5;
 
-    [SerializeField]
-    private float jumpBuffer = 0.2f;
+    [SerializeField] private float jumpBuffer = 0.2f;
 
-    [SerializeField]
-    private float gravity = 0.05f;
+    [SerializeField] private float gravity = 0.05f;
 
-    [SerializeField]
-    private float terminalYVelocity = 1;
+    [SerializeField] private float terminalYVelocity = 1;
 
     [Header("Wall Jump")]
-    [SerializeField]
-    private float wallJumpPower = 0.5f;
+    [SerializeField] private float wallJumpPower = 0.5f;
 
-    [SerializeField]
-    private float wallJumpOffset = 0.5f;
+    [SerializeField] private float wallJumpOffset = 0.5f;
 
-    [SerializeField]
-    private float wallJumpXPower = 0.5f;
+    [SerializeField] private float wallJumpXPower = 0.5f;
 
-    [SerializeField]
-    private float distanceWallsDetectable = 0.5f;
+    [SerializeField] private float distanceWallsDetectable = 0.5f;
+
+    [SerializeField] private float wallClingGravityModifier = 0.4f;
 
     [Header("Damage")]
-    [SerializeField]
-    private float invincibilityTime = 3;
-    [SerializeField]
-    private float invincibilityBlinkInterval = 0.0001f;
+    [SerializeField] private float invincibilityTime = 3;
+    [SerializeField] private float invincibilityBlinkInterval = 0.0001f;
 
     [Header("Particles")]
     [SerializeField] private ParticleSystem ps;
@@ -195,12 +179,12 @@ public class Player : MonoBehaviour
 
 
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
-
+        
         gravityModifier = 1;
         if (fastFallButton.IsPressed()) gravityModifier = fastFallModifier;
-        if ((movementCollisionHandler.collisionInfo.left || movementCollisionHandler.collisionInfo.right) && velocity.x != 0 && velocity.y < 0)
+        if (xInput != 0 && velocity.y < 0 && movementCollisionHandler.OnWallAtDistInDirection(distanceWallsDetectable, (int)Mathf.Sign(xInput)))
         {
-            gravityModifier = 0.4f;
+            gravityModifier = wallClingGravityModifier;
         }
 
         velocity.y -= gravity * gravityModifier;
