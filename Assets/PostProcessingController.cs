@@ -8,6 +8,7 @@ public class PostProcessingController : MonoBehaviour
 {
     [SerializeField] private Volume volume;
     private ChromaticAberration chromaticAberration;
+    private Vignette vignette;
 
     [SerializeField] float pulseSpeed = 1f;
     [SerializeField] float maxAbberation = 1f;
@@ -19,6 +20,8 @@ public class PostProcessingController : MonoBehaviour
         shouldPulse = false;
         volume = GetComponent<Volume>();
         volume.profile.TryGet(out chromaticAberration);
+        volume.profile.TryGet(out vignette);
+        UpdateColor();
     }
 
 
@@ -35,15 +38,29 @@ public class PostProcessingController : MonoBehaviour
     {
         Pulse();
     }
-    private void HandleRoomStateChange() {
+    private void HandleRoomStateChange()
+    {
         shouldPulse = true;
         chromaticAberration.active = true;
+        UpdateColor();
+    }
+
+    private void UpdateColor()
+    {
+        if (GameController.Instance.RoomState == RoomColor.Purple)
+        {
+            vignette.color.value = GameController.ColorForPurple;
+        }
+        else
+        {
+            vignette.color.value = GameController.ColorForGreen;
+        }
     }
 
     private void Pulse()
     {
         if (!chromaticAberration.active) return;
-        if (shouldPulse && chromaticAberration.intensity.value < maxAbberation) 
+        if (shouldPulse && chromaticAberration.intensity.value < maxAbberation)
         {
             chromaticAberration.intensity.value += pulseSpeed * Time.deltaTime;
             return;
@@ -55,6 +72,6 @@ public class PostProcessingController : MonoBehaviour
             chromaticAberration.intensity.value = 0;
             chromaticAberration.active = false;
         }
-        
+
     }
 }

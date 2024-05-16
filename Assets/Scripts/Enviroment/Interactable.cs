@@ -18,6 +18,8 @@ public class Interactable : MonoBehaviour
     [SerializeField]
     private GameObject dialogueSystem;
 
+    [SerializeField] private Vector3 dialogueSpawnLocationOffset = new Vector3(0,5,0);
+
     private SpriteRenderer spriteRenderer;
     private Material startingMaterial;
     private Transform playerTransform;
@@ -44,7 +46,7 @@ public class Interactable : MonoBehaviour
         if (CanInteractWith() && (FindObjectOfType<DialogueManager>() == null)) {
             print("test");
             dialogueSystem.GetComponent<DialogueManager>().currentDialogue = dialogueToStart;
-            Instantiate(dialogueSystem);
+            Instantiate(dialogueSystem, transform.position + dialogueSpawnLocationOffset, Quaternion.identity);
         }
     }
 
