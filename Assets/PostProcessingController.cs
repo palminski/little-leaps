@@ -7,20 +7,30 @@ using UnityEngine.Rendering.Universal;
 public class PostProcessingController : MonoBehaviour
 {
     [SerializeField] private Volume volume;
-    private ChromaticAberration chromaticAberration;
+
     private Vignette vignette;
 
+    [Header("Chromatic Abberation")]
+    private ChromaticAberration chromaticAberration;
     [SerializeField] float pulseSpeed = 1f;
     [SerializeField] float maxAbberation = 1f;
+
+    [Header("Film Grain")]
+    private FilmGrain filmGrain;
+    [SerializeField] float filmGrainReturnSpeed = 1f;
 
     private bool shouldPulse;
     // Start is called before the first frame update
     void Start()
     {
-        shouldPulse = false;
         volume = GetComponent<Volume>();
         volume.profile.TryGet(out chromaticAberration);
         volume.profile.TryGet(out vignette);
+        volume.profile.TryGet(out filmGrain);
+     
+        shouldPulse = false;
+        
+     
         UpdateColor();
     }
 
@@ -28,18 +38,34 @@ public class PostProcessingController : MonoBehaviour
     private void OnEnable()
     {
         GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
+        GameController.Instance.OnPlayerDamaged += HandlePlayerDamaged;
     }
     private void OnDisable()
     {
         GameController.Instance.OnRoomStateChanged -= HandleRoomStateChange;
+        GameController.Instance.OnPlayerDamaged -= HandlePlayerDamaged;
     }
     // Update is called once per frame
     void Update()
     {
         Pulse();
+
+        if (filmGrain.response.value < 1)
+        {
+            filmGrain.response.value += filmGrainReturnSpeed * Time.deltaTime;
+            if (filmGrain.response.value > 1) filmGrain.response.value = 1;
+        }
     }
     private void HandleRoomStateChange()
     {
+        shouldPulse = true;
+        chromaticAberration.active = true;
+        UpdateColor();
+    }
+
+    private void HandlePlayerDamaged()
+    {
+        filmGrain.response.value = 0;
         shouldPulse = true;
         chromaticAberration.active = true;
         UpdateColor();

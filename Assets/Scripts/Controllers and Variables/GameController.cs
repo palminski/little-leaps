@@ -94,6 +94,7 @@ public class GameController : MonoBehaviour
     // ------------------------------
     public event Action OnRoomStateChanged;
     public event Action OnUpdateHUD;
+    public event Action OnPlayerDamaged;
     
     public RoomColor ToggleRoomState()
     {
@@ -113,6 +114,7 @@ public class GameController : MonoBehaviour
         return score;
     }
     public int ChangeHealth(int healthChange) {
+        if (healthChange < 0) OnPlayerDamaged?.Invoke();
         health += healthChange;
         ChangeCharge(0);
         health = Mathf.Clamp(health,0,maxHealth);

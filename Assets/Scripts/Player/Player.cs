@@ -317,7 +317,8 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        transform.position = startPosition;
+        if(IsInvincible()) return;
+        // transform.position = startPosition;
         GameController.Instance.ChangeHealth(-1);
         invincibilityCountdown = invincibilityTime;
         

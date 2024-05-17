@@ -37,7 +37,7 @@ public class MovementCollisionHandler : RaycastController
         if (velocity.y != 0) CollisionsYAxis(ref velocity);
 
         //update our actual position based on potentially updated velocity values
-        transform.Translate(velocity);
+        if (!InGround()) transform.Translate(velocity);
 
         if (standingOnPLatform) collisionInfo.below = true;
 
