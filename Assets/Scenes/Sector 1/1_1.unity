@@ -2136,7 +2136,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 98f3b0207f397334a9940cb12a172436, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5862,7 +5862,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b80e7de2a07194ba84444565e571af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxAlphaSubtractionPercentage: 0.6
+  maxAlphaSubtractionPercentage: 0.2
   maxAlphaSubtractionPercentageInactive: 0.6
   pulseSpeed: 0.5
   shouldPulse: 1
@@ -5923,7 +5923,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: -876546973899608171, guid: 594e6d39d37d28b4ab03014ddf0c17f3, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6139,11 +6139,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.046153847
+      value: 0.004513217
       objectReference: {fileID: 0}
     - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.40087146
+      value: 0.040983602
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
+      propertyPath: m_NormalizedViewPortRect.width
+      value: 0.9903288
+      objectReference: {fileID: 0}
+    - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
+      propertyPath: m_NormalizedViewPortRect.height
+      value: 0.91803277
       objectReference: {fileID: 0}
     - target: {fileID: 5658948705658991358, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_Name
@@ -11495,7 +11503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b80e7de2a07194ba84444565e571af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxAlphaSubtractionPercentage: 0.6
+  maxAlphaSubtractionPercentage: 0.2
   maxAlphaSubtractionPercentageInactive: 0.9
   pulseSpeed: 0.5
   shouldPulse: 1
@@ -11556,7 +11564,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: -876546973899608171, guid: 594e6d39d37d28b4ab03014ddf0c17f3, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

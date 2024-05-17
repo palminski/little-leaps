@@ -41,7 +41,7 @@ public class TileToggle : MonoBehaviour
         tileCollider = GetComponent<Collider2D>();
         if (tilemap) tilemap.color = activeOnRoomColor == RoomColor.Purple ? GameController.ColorForPurple : GameController.ColorForGreen;
 
-        deactiveColor = new Color(tilemap.color.r, tilemap.color.g, tilemap.color.b, 0.03f);
+        deactiveColor = new Color(tilemap.color.r, tilemap.color.g, tilemap.color.b, 0.2f);
 
         HandleRoomStateChange();
     }
