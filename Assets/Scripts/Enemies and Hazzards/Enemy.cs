@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Enemy : MonoBehaviour
 {
@@ -66,6 +67,12 @@ public class Enemy : MonoBehaviour
     public void KillEnemy() {
         // GameController.Instance.AddToScore(pointValue);
         if (blood) GameController.Instance.PullFromPool(blood,transform.position);
+        GameLight light = GetComponentInChildren<GameLight>();
+        
+        if (light) {
+            light.transform.SetParent(null);
+            light.Fade();
+        }
         Destroy(gameObject);
     }
 
