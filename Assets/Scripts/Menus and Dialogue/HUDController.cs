@@ -17,6 +17,8 @@ private TMP_Text healthText;
 private RectTransform chargeMeter;
 private float chargeMeterWidth;
 
+private Canvas canvas;
+
 private void OnEnable() {
         GameController.Instance.OnUpdateHUD += HandleUpdateHUD;
     }
@@ -24,11 +26,21 @@ private void OnEnable() {
         GameController.Instance.OnUpdateHUD -= HandleUpdateHUD;
     }
 
+    void Awake(){
+        canvas = GetComponent<Canvas>();
+    }
     // Start is called before the first frame update
     void Start()
     {
+        canvas.worldCamera = Camera.main;
         if (chargeMeter) chargeMeterWidth = chargeMeter.rect.width;
         HandleUpdateHUD();
+    }
+
+    void FixedUpdate()
+    {
+        canvas.enabled = false;
+        canvas.enabled = true;
     }
 
     private void HandleUpdateHUD() {

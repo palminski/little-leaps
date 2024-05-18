@@ -37,7 +37,7 @@ public class MovementCollisionHandler : RaycastController
         if (velocity.y != 0) CollisionsYAxis(ref velocity);
 
         //update our actual position based on potentially updated velocity values
-        transform.Translate(velocity);
+        if (!InGround()) transform.Translate(velocity);
 
         if (standingOnPLatform) collisionInfo.below = true;
 
@@ -147,6 +147,27 @@ public class MovementCollisionHandler : RaycastController
         return false;
     }
 
+    public bool OnWallAtDist(float distance)
+    {
+        int dummyDirection = 0;
+        return OnWallAtDist(distance, ref dummyDirection);
+    }
+
+    public bool OnWallAtDistInDirection(float distance, int direction)
+    {
+        Vector2 rayOrigins = direction > 0 ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft;
+        //Detects if there is a wall to the left or the right at the specified distance away or closer
+        for (int i = 0; i < xRayCount; i++)
+        {
+            RaycastHit2D collision = Physics2D.Raycast(rayOrigins + i * horizontalRaySpacing * Vector2.up, Vector2.right * direction, distance, collidableLayers);
+            if (collision.collider)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public bool OnGroundAtDist(float distance) {
         for (int i = 0; i < yRayCount; i++) {
             RaycastHit2D collision = Physics2D.Raycast(raycastOrigins.bottomLeft + i * verticalRaySpacing * Vector2.right, Vector2.down, distance, collidableLayers);
@@ -188,7 +209,6 @@ public class MovementCollisionHandler : RaycastController
         //     print("No Collision");
         // }
         if (overlapCollider != null && overlapCollider.Distance(boxCollider).distance < 0.0201f) {
-            print(overlapCollider);
             return true;
         } 
 
