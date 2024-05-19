@@ -59,7 +59,7 @@ public class CameraControls : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (canMove) EaseToTarget(target);
+        if (canMove && target) EaseToTarget(target);
     }
 
     private void EaseToTarget(Transform target)
