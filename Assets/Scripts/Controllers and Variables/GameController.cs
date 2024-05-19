@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    public GameObject deathObject;
     public GlobalVariables globalVariables;
     public static Color ColorForPurple => Instance.globalVariables.colorForPurple;
     public static Color ColorForGreen => Instance.globalVariables.colorForGreen;
@@ -53,7 +54,7 @@ public class GameController : MonoBehaviour
     private HashSet<string> collectedObjects = new HashSet<string>();
     public HashSet<string> CollectedObjects
     {
-        get {return collectedObjects;}
+        get { return collectedObjects; }
     }
 
     // ----------------------------------------------------------------------------------
@@ -65,7 +66,7 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            
+
             SceneManager.sceneLoaded += OnSceneLoad;
         }
         else
@@ -77,16 +78,17 @@ public class GameController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
-            #else
+#else
             Application.Quit();
-            #endif
+#endif
         }
     }
-    private void OnSceneLoad(Scene scene, LoadSceneMode mode) {
+    private void OnSceneLoad(Scene scene, LoadSceneMode mode)
+    {
         levelChangerAnimator.Play("Fade_In", 0, 0f);
-        objectPool =  new Dictionary<string, Queue<GameObject>>();
+        objectPool = new Dictionary<string, Queue<GameObject>>();
     }
 
     // ------------------------------
@@ -95,7 +97,7 @@ public class GameController : MonoBehaviour
     public event Action OnRoomStateChanged;
     public event Action OnUpdateHUD;
     public event Action OnPlayerDamaged;
-    
+
     public RoomColor ToggleRoomState()
     {
         roomState = roomState == RoomColor.Purple ? RoomColor.Green : RoomColor.Purple;
@@ -113,25 +115,38 @@ public class GameController : MonoBehaviour
         OnUpdateHUD?.Invoke();
         return score;
     }
-    public int ChangeHealth(int healthChange) {
+    public int ChangeHealth(int healthChange)
+    {
         if (healthChange < 0) OnPlayerDamaged?.Invoke();
         health += healthChange;
         ChangeCharge(0);
-        health = Mathf.Clamp(health,0,maxHealth);
+        health = Mathf.Clamp(health, 0, maxHealth);
         OnUpdateHUD?.Invoke();
-        if (health <= 0) {
+        if (health <= 0)
+        {
             health = 5;
-            // SceneManager.LoadScene( SceneManager.GetActiveScene().name );
-            ChangeScene("Main Menu");
-        } 
+            if (deathObject)
+            {
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                
+                GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
+                _deathObject.transform.SetParent(null);
+            }
+            else
+            {
+                ChangeScene("Main Menu");
+            }
+            
+        }
         return health;
     }
 
-    public int ChangeCharge(int chargeChange) {
+    public int ChangeCharge(int chargeChange)
+    {
         charge += chargeChange;
         if (charge >= ChargeMax)
         {
-            if(health < maxHealth)
+            if (health < maxHealth)
             {
                 charge -= ChargeMax;
                 ChangeHealth(1);
@@ -154,20 +169,23 @@ public class GameController : MonoBehaviour
     // ---------------------------------
     // Functions other objects can Call
     // ---------------------------------
-    public GameObject PullFromPool(GameObject gameObject, Vector3 position) {
+    public GameObject PullFromPool(GameObject gameObject, Vector3 position)
+    {
         //Name of the specific pool to access
         string tag = gameObject.name;
 
         //If there is no pool with that name create one and add the newly instanciated object to it
-        if (!objectPool.ContainsKey(tag)) {
-            objectPool.Add(tag,new Queue<GameObject>());
+        if (!objectPool.ContainsKey(tag))
+        {
+            objectPool.Add(tag, new Queue<GameObject>());
             GameObject newObject = Instantiate(gameObject, position, Quaternion.identity);
             objectPool[tag].Enqueue(newObject);
             return newObject;
         }
 
         //if the next object in the pool is already active, create a new one and add it to the queue
-        if (objectPool[tag].Peek().activeSelf) {
+        if (objectPool[tag].Peek().activeSelf)
+        {
             GameObject newObject = Instantiate(gameObject, position, Quaternion.identity);
             objectPool[tag].Enqueue(newObject);
             return newObject;
@@ -180,20 +198,23 @@ public class GameController : MonoBehaviour
         objectPool[tag].Enqueue(pulledObject);
 
         return pulledObject;
-    } 
+    }
 
-    public void ChangeScene(string sceneName) {
+    public void ChangeScene(string sceneName)
+    {
         levelChangerAnimator.SetTrigger("FadeIn");
         StartCoroutine(ChangeSceneAfterDelay(sceneName));
     }
-    public IEnumerator ChangeSceneAfterDelay(string sceneName) {
+    public IEnumerator ChangeSceneAfterDelay(string sceneName)
+    {
         yield return null;
         AnimatorStateInfo stateInfo = levelChangerAnimator.GetCurrentAnimatorStateInfo(0);
         yield return new WaitForSeconds(stateInfo.length);
         SceneManager.LoadScene(sceneName);
     }
-    public void SaveGame() {
-        
+    public void SaveGame()
+    {
+
         SaveData gameData = SaveDataManager.LoadGameData();
         gameData.score = score;
         SaveDataManager.SaveGameData(gameData);
@@ -203,7 +224,7 @@ public class GameController : MonoBehaviour
         SaveGame();
     }
 
-    public void TestDialogueSystem() 
+    public void TestDialogueSystem()
     {
         Debug.Log("TEST");
     }
