@@ -14,6 +14,8 @@ public class MenuOption
     public UnityEvent action;
 
     public string text;
+    
+    [TextArea(15,15)] public string sideText;
 
 }
 
@@ -23,10 +25,17 @@ public class MainMenu : MonoBehaviour
     private int selectedIndex;
     public MenuOption[] menuOptions;
     // Start is called before the first frame update
+    public StartingText startingText;
+
     void Start()
     {
         playerInput = GetComponent<PlayerInput>();
         selectedIndex = 0;
+        gameObject.SetActive(false);
+    }
+    
+    void OnEnable()
+    {
         UpdateMenuText();
     }
 
@@ -35,6 +44,7 @@ public class MainMenu : MonoBehaviour
         // SaveData saveData = SaveDataManager.LoadGameData();
         // GameController.Instance.AddToScore(saveData.score);
         LevelConnection.ActiveConnection = null;
+        GameController.Instance.ChangeHealth(100);
         GameController.Instance.ChangeScene("Main Room");
     }
     public void Debug()
@@ -56,11 +66,6 @@ public void Shift()
             Application.Quit();
         #endif
     }
-
-
-
-
-
 
     // ==============================================================================
     void OnNavigateRight()
@@ -112,8 +117,8 @@ public void Shift()
             if (menuOptions[selectedIndex] == menuOption) {
                 menuOption.textElement.text = "> " + menuOption.text;
             }
-            
         }
+        if (startingText.isFinishedTyping) startingText.SetSideText(menuOptions[selectedIndex].sideText);
     }
 
 
