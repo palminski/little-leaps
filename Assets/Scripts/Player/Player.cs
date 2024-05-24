@@ -31,39 +31,25 @@ public class Player : MonoBehaviour
 
     [Header("Horizontal Movement")]
     [SerializeField] private float moveSpeed = 0.4f;
-
     [SerializeField] private float finalMoveSpeedScale = 0.4f;
-
     [SerializeField] private float acceleration = 0.1f;
-
     [SerializeField] private float fastFallModifier = 2;
-
     [SerializeField] private float groundFriction = 0.1f;
-
     [SerializeField] private float airFriction = 0.1f;
 
     [Header("Vertical Movement")]
     [SerializeField] private float jumpPower = 0.7f;
-
     [SerializeField] private float minJumpPower = 1;
-
     [SerializeField] private int coyoteTimeMax = 5;
-
     [SerializeField] private float jumpBuffer = 0.2f;
-
     [SerializeField] private float gravity = 0.05f;
-
     [SerializeField] private float terminalYVelocity = 1;
 
     [Header("Wall Jump")]
     [SerializeField] private float wallJumpPower = 0.5f;
-
     [SerializeField] private float wallJumpOffset = 0.5f;
-
     [SerializeField] private float wallJumpXPower = 0.5f;
-
     [SerializeField] private float distanceWallsDetectable = 0.5f;
-
     [SerializeField] private float wallClingGravityModifier = 0.4f;
 
     [Header("Damage")]
@@ -72,10 +58,7 @@ public class Player : MonoBehaviour
 
     [Header("Particles")]
     [SerializeField] private ParticleSystem ps;
-    
-    //
-
-    private float extraForceX = 0;
+    private float extraHSpeed = 0;
     private float gravityModifier = 1;
     private int coyoteTime = 0;
     private Vector3 lastPosition;
@@ -100,16 +83,10 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-
-
         minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpPower);
-
         invincibilityCountdown = 0;
-
         startPosition = transform.position;
-
     }
-
     private void OnEnable()
     {
         jumpAction.Enable();
@@ -119,26 +96,23 @@ public class Player : MonoBehaviour
         jumpAction.Disable();
     }
 
+    // -------------------
+    // Calculate Movement
+    // -------------------
     private void FixedUpdate()
     {
-
-        
-        //set last position to current position before moving
         lastPosition = transform.position;
-
         bool isGrounded = movementCollisionHandler.OnGround();
-        //X Axis Speed
-        //=========================================================
-        //First we will start by checking players input and updating movespeed accordingly
-        //if there is input then we increase the hSpeed by acceleration in that direction
+
+        // -------------
+        // X Axis Speed
+        // -------------
         if (xInput != 0)
         {
             hSpeed += Mathf.Sign(xInput) * acceleration;
         }
-        //Otherwise we will approach 0 by out friction ammount
         else
         {
-            //Determine weather to use air or ground friction
             if (isGrounded)
             {
                 hSpeed = Mathf.MoveTowards(hSpeed, 0, groundFriction);
@@ -152,32 +126,30 @@ public class Player : MonoBehaviour
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
 
         //if we are hitting a wall we set the hspeed to 0 so we can accelerate away from it quickly
-        if (movementCollisionHandler.collisionInfo.left)
+        if (movementCollisionHandler.collisionInfo.left) 
         {
             hSpeed = Mathf.Max(hSpeed,0);
-            extraForceX = 0;
+            extraHSpeed = 0;
             
         }
         if (movementCollisionHandler.collisionInfo.right) {
             hSpeed = Mathf.Min(hSpeed,0);
-            extraForceX = 0;
+            extraHSpeed = 0;
         }
 
         //we dont want extra force once we are on the ground. we also want to continuously move it back to 0
         if (isGrounded)
         {
-            extraForceX = 0;
+            extraHSpeed = 0;
         }
-        extraForceX = Mathf.MoveTowards(extraForceX, 0, groundFriction);
+        extraHSpeed = Mathf.MoveTowards(extraHSpeed, 0, groundFriction);
 
         //Update the x component of velocity by hSpeed and any additional extra force
-        velocity.x = hSpeed + extraForceX;
+        velocity.x = hSpeed + extraHSpeed;
 
-
-        //Y Axis Speed
-        //=========================================================
-
-
+        // -------------
+        // Y Axis Speed
+        // -------------
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
         
         gravityModifier = 1;
@@ -211,7 +183,7 @@ public class Player : MonoBehaviour
                     movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump, 0, 0));
 
                     velocity.y = wallJumpPower;
-                    extraForceX = directionToJump * wallJumpXPower;
+                    extraHSpeed = directionToJump * wallJumpXPower;
                     hSpeed = directionToJump * moveSpeed;
                 }
             }
@@ -243,6 +215,9 @@ public class Player : MonoBehaviour
 
     }
 
+    // --------------------------
+    // Update Called Every Frame
+    // --------------------------
     void Update()
     {
         //invincibility frames
@@ -292,11 +267,70 @@ public class Player : MonoBehaviour
         }
     }
 
+    
+    // ------------------------------------
+    // Methods that do something to player
+    // ------------------------------------
+    public void Damage()
+    {
+        if(IsInvincible()) return;
+        // transform.position = startPosition;
+        GameController.Instance.ChangeHealth(-1);
+        invincibilityCountdown = invincibilityTime;
+        
+    }
+    public void Shove(int direction)
+    {
+        invincibilityCountdown = invincibilityTime;
+        movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
+        velocity.y = jumpPower * 0.5f;
+        // extraHSpeed = -1 * wallJumpXPower;
+        hSpeed = direction * moveSpeed;
+    }
+    public void Bounce()
+    {
+        velocity.y = jumpPower;
+    }
+    public void ResetCoyoteTime()
+    {
+        coyoteTime = coyoteTimeMax;
+    }
+    private IEnumerator WaitCheckAndDie() 
+    {
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+        if (movementCollisionHandler.InGround()) Damage();
+    }
+
+    // --------------------------------------
+    // Methods used to get player Properties
+    // --------------------------------------
+    public bool IsInvincible()
+    {
+        return invincibilityCountdown > 0;
+    }
+    public bool IsFalling()
+    {
+        return velocity.y < -gravity * gravityModifier;
+    }
+    public bool IsInAir()
+    {
+        return !movementCollisionHandler.OnGround();
+    }
+    public Vector3 GetLastPosition()
+    {
+        return lastPosition;
+    }
+
+    // --------------------------------
+    // Methods used for handling input
+    // --------------------------------
     void OnJumpPress()
     {
         jumpPressed = true;
     }
-
     void OnJumpRelease()
     {
         jumpReleased = true;
@@ -307,68 +341,8 @@ public class Player : MonoBehaviour
         float moveValue = value.Get<float>();
         xInput = moveValue;
     }
-
     void OnToggleRoom()
     {
         GameController.Instance.ToggleRoomState();
-        
-
-    }
-
-    public void Damage()
-    {
-        if(IsInvincible()) return;
-        // transform.position = startPosition;
-        GameController.Instance.ChangeHealth(-1);
-        invincibilityCountdown = invincibilityTime;
-        
-    }
-
-    public void Shove(int direction)
-    {
-        invincibilityCountdown = invincibilityTime;
-        movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
-        velocity.y = jumpPower * 0.5f;
-        // extraForceX = -1 * wallJumpXPower;
-        hSpeed = direction * moveSpeed;
-    }
-
-    //Methods to get player properties
-    public bool IsInvincible()
-    {
-        return invincibilityCountdown > 0;
-    }
-
-    public bool IsFalling()
-    {
-        return velocity.y < -gravity * gravityModifier;
-    }
-    public bool IsInAir()
-    {
-        return !movementCollisionHandler.OnGround();
-    }
-
-    public Vector3 GetLastPosition()
-    {
-        return lastPosition;
-    }
-
-    public void ResetCoyoteTime()
-    {
-        coyoteTime = coyoteTimeMax;
-    }
-
-    public void Bounce()
-    {
-        velocity.y = jumpPower;
-    }
-
-    private IEnumerator WaitCheckAndDie() 
-    {
-        yield return new WaitForFixedUpdate();
-        yield return new WaitForFixedUpdate();
-        yield return new WaitForFixedUpdate();
-        yield return new WaitForFixedUpdate();
-        if (movementCollisionHandler.InGround()) Damage();
     }
 }
