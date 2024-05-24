@@ -9,25 +9,17 @@ using System.Collections;
 [RequireComponent(typeof(MovementCollisionHandler))]
 public class Player : MonoBehaviour
 {
-
     private MovementCollisionHandler movementCollisionHandler;
-
     private PlayerInput playerInput;
-
     private InputAction jumpAction;
     private InputAction fastFallButton;
     private SpriteRenderer spriteRenderer;
-
     private Animator animator;
-
     private Vector3 velocity;
-
-    private float xInput;
-
-    private float hSpeed;
-
-    private bool jumpPressed;
-    private bool jumpReleased;
+    public Vector3 startPosition;
+    private Vector3 lastPosition;
+    private float invincibilityCountdown;
+    private float nextInvincibilityBlinkTime;
 
     [Header("Horizontal Movement")]
     [SerializeField] private float moveSpeed = 0.4f;
@@ -36,6 +28,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float fastFallModifier = 2;
     [SerializeField] private float groundFriction = 0.1f;
     [SerializeField] private float airFriction = 0.1f;
+    private float xInput;
+    private float hSpeed;
+    private float hExtraSpeed = 0;
 
     [Header("Vertical Movement")]
     [SerializeField] private float jumpPower = 0.7f;
@@ -44,6 +39,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpBuffer = 0.2f;
     [SerializeField] private float gravity = 0.05f;
     [SerializeField] private float terminalYVelocity = 1;
+    private bool jumpPressed;
+    private bool jumpReleased;
+    private float gravityModifier = 1;
+    private int coyoteTime = 0;
+    private float minJumpVelocity;
 
     [Header("Wall Jump")]
     [SerializeField] private float wallJumpPower = 0.5f;
@@ -52,22 +52,21 @@ public class Player : MonoBehaviour
     [SerializeField] private float distanceWallsDetectable = 0.5f;
     [SerializeField] private float wallClingGravityModifier = 0.4f;
 
+    [Header("Dash")]
+    [SerializeField] private float xDashPower = 0.5f;
+    [SerializeField] private float yBoostHorizontalDashPower = 0.2f;
+    private bool canDash;
+
     [Header("Damage")]
     [SerializeField] private float invincibilityTime = 3;
     [SerializeField] private float invincibilityBlinkInterval = 0.0001f;
 
     [Header("Particles")]
     [SerializeField] private ParticleSystem ps;
-    private float extraHSpeed = 0;
-    private float gravityModifier = 1;
-    private int coyoteTime = 0;
-    private Vector3 lastPosition;
-    private float invincibilityCountdown;
-    private float nextInvincibilityBlinkTime;
 
-    public Vector3 startPosition;
 
-    private float minJumpVelocity;
+
+
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -126,32 +125,29 @@ public class Player : MonoBehaviour
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
 
         //if we are hitting a wall we set the hspeed to 0 so we can accelerate away from it quickly
-        if (movementCollisionHandler.collisionInfo.left) 
+        if (movementCollisionHandler.collisionInfo.left)
         {
-            hSpeed = Mathf.Max(hSpeed,0);
-            extraHSpeed = 0;
-            
+            hSpeed = Mathf.Max(hSpeed, 0);
+            hExtraSpeed = 0;
+
         }
-        if (movementCollisionHandler.collisionInfo.right) {
-            hSpeed = Mathf.Min(hSpeed,0);
-            extraHSpeed = 0;
+        if (movementCollisionHandler.collisionInfo.right)
+        {
+            hSpeed = Mathf.Min(hSpeed, 0);
+            hExtraSpeed = 0;
         }
 
         //we dont want extra force once we are on the ground. we also want to continuously move it back to 0
-        if (isGrounded)
-        {
-            extraHSpeed = 0;
-        }
-        extraHSpeed = Mathf.MoveTowards(extraHSpeed, 0, groundFriction);
+        hExtraSpeed = Mathf.MoveTowards(hExtraSpeed, 0, airFriction);
 
         //Update the x component of velocity by hSpeed and any additional extra force
-        velocity.x = hSpeed + extraHSpeed;
+        velocity.x = hSpeed + hExtraSpeed;
 
         // -------------
         // Y Axis Speed
         // -------------
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
-        
+
         gravityModifier = 1;
         if (fastFallButton.IsPressed()) gravityModifier = fastFallModifier;
         if (xInput != 0 && velocity.y < 0 && movementCollisionHandler.OnWallAtDistInDirection(distanceWallsDetectable, (int)Mathf.Sign(xInput)))
@@ -161,9 +157,12 @@ public class Player : MonoBehaviour
 
         velocity.y -= gravity * gravityModifier;
 
-        //Jumping
-        if (isGrounded) coyoteTime = coyoteTimeMax;
-
+        // -- Jumping --
+        if (isGrounded)
+        {
+            coyoteTime = coyoteTimeMax;
+            canDash = true;
+        }
         if (jumpPressed)
         {
             if (coyoteTime > 0)
@@ -179,11 +178,9 @@ public class Player : MonoBehaviour
                 int directionToJump = 0;
                 if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
                 {
-
                     movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump, 0, 0));
-
                     velocity.y = wallJumpPower;
-                    extraHSpeed = directionToJump * wallJumpXPower;
+                    hExtraSpeed = directionToJump * wallJumpXPower;
                     hSpeed = directionToJump * moveSpeed;
                 }
             }
@@ -208,11 +205,10 @@ public class Player : MonoBehaviour
         {
             ps.Play();
         }
-        if (movementCollisionHandler.InGround()) {
-            StartCoroutine(WaitCheckAndDie());
+        if (movementCollisionHandler.InGround())
+        {
+            StartCoroutine(WaitCheckAndDamage());
         }
-        
-
     }
 
     // --------------------------
@@ -267,24 +263,24 @@ public class Player : MonoBehaviour
         }
     }
 
-    
+
     // ------------------------------------
     // Methods that do something to player
     // ------------------------------------
     public void Damage()
     {
-        if(IsInvincible()) return;
+        if (IsInvincible()) return;
         // transform.position = startPosition;
         GameController.Instance.ChangeHealth(-1);
         invincibilityCountdown = invincibilityTime;
-        
+
     }
     public void Shove(int direction)
     {
         invincibilityCountdown = invincibilityTime;
         movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
         velocity.y = jumpPower * 0.5f;
-        // extraHSpeed = -1 * wallJumpXPower;
+        // hExtraSpeed = -1 * wallJumpXPower;
         hSpeed = direction * moveSpeed;
     }
     public void Bounce()
@@ -295,7 +291,7 @@ public class Player : MonoBehaviour
     {
         coyoteTime = coyoteTimeMax;
     }
-    private IEnumerator WaitCheckAndDie() 
+    private IEnumerator WaitCheckAndDamage()
     {
         yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
@@ -335,7 +331,60 @@ public class Player : MonoBehaviour
     {
         jumpReleased = true;
     }
+    void OnAttack()
+    {
+        if (!canDash) return;
+        canDash = false;
+        float directionToDash = Mathf.Sign(transform.localScale.x);
+        velocity.y = yBoostHorizontalDashPower;
+        hExtraSpeed = directionToDash * xDashPower;
+        hSpeed = directionToDash * moveSpeed;
 
+        Vector2 leftJoystickPosition = playerInput.actions["LeftJoystickTilt"].ReadValue<Vector2>();
+
+        float angle = 0;
+        if (leftJoystickPosition != Vector2.zero)
+        {
+            angle = Mathf.Atan2(leftJoystickPosition.y, leftJoystickPosition.x) * Mathf.Rad2Deg;
+            angle = Mathf.Round(angle / 90) * 90;
+        }
+        else if (transform.localScale.x == -1)
+        {
+            angle = 180;
+        }
+
+        if (Mathf.Approximately(angle, -90f))
+        {
+            velocity.x = 0;
+            hExtraSpeed = 0;
+            hSpeed = 0;
+            velocity.y = -terminalYVelocity;
+            return;
+        }
+        if (Mathf.Approximately(angle, 90f))
+        {
+            velocity.x = 0;
+            hExtraSpeed = 0;
+            hSpeed = 0;
+            velocity.y = terminalYVelocity;
+            return;
+        }
+        if (Mathf.Approximately(angle, 0f))
+        {
+            velocity.y = yBoostHorizontalDashPower;
+            hExtraSpeed = 1 * xDashPower;
+            hSpeed = 1 * moveSpeed;
+            return;
+        }
+        if (Mathf.Approximately(angle, 180f))
+        {
+            velocity.y = yBoostHorizontalDashPower;
+            hExtraSpeed = -1 * xDashPower;
+            hSpeed = -1 * moveSpeed;
+            return;
+        }
+
+    }
     void OnMove(InputValue value)
     {
         float moveValue = value.Get<float>();
