@@ -32,7 +32,7 @@ public class WeakSpot : MonoBehaviour
             float enemyTop = transform.position.y + collider.offset.y + collider.bounds.size.y / 2;
             
 
-            if (playerBottom > enemyTop)
+            if (playerBottom > enemyTop && hitPlayer.IsDashing())
             {
                 hitPlayer.ResetCoyoteTime();
                 hitPlayer.Bounce();

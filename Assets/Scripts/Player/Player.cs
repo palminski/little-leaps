@@ -184,11 +184,15 @@ public class Player : MonoBehaviour
                     hExtraSpeed = directionToJump * wallJumpXPower;
                     hSpeed = directionToJump * moveSpeed;
                 }
+                else if (canDash)
+                {
+                    Dash(90);
+                }
             }
         }
         if (jumpReleased)
         {
-            if (velocity.y > minJumpVelocity)
+            if (velocity.y > minJumpVelocity && !isDashing)
             {
                 velocity.y = minJumpVelocity;
             }
@@ -287,7 +291,7 @@ public class Player : MonoBehaviour
     public void Bounce()
     {
         velocity.y = jumpPower;
-        StopDash();
+        StartCoroutine(StopDashingNextFrame());
         canDash = true;
     }
     public void ResetCoyoteTime()
@@ -319,6 +323,51 @@ public class Player : MonoBehaviour
         if (hExtraSpeed != 0) hSpeed = Mathf.Sign(hExtraSpeed) * moveSpeed;
         hExtraSpeed = 0;
         // if (xInput != 0) hSpeed = Mathf.Sign(xInput) * moveSpeed;
+    }
+
+    private IEnumerator StopDashingNextFrame()
+    {
+        yield return new WaitForFixedUpdate();
+        StopDash();
+    }
+
+    private void Dash(float angle)
+    {
+        canDash = false;
+        // StopCoroutine("HandleDashState");
+        StopAllCoroutines();
+        StartCoroutine(HandleDashState());
+        if (Mathf.Approximately(angle, -90f))
+        {
+            velocity.x = 0;
+            hExtraSpeed = 0;
+            hSpeed = 0;
+            velocity.y = -terminalYVelocity;
+            return;
+        }
+        if (Mathf.Approximately(angle, 90f))
+        {
+            movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
+            velocity.x = 0;
+            hExtraSpeed = 0;
+            hSpeed = 0;
+            velocity.y = verticalDashPower;
+            return;
+        }
+        if (Mathf.Approximately(angle, 0f))
+        {
+            velocity.y = 0;
+            hExtraSpeed = 1 * xDashPower;
+            hSpeed = 1 * moveSpeed;
+            return;
+        }
+        if (Mathf.Approximately(angle, 180f))
+        {
+            velocity.y = 0;
+            hExtraSpeed = -1 * xDashPower;
+            hSpeed = -1 * moveSpeed;
+            return;
+        }
     }
 
     // --------------------------------------
@@ -358,8 +407,8 @@ public class Player : MonoBehaviour
     }
     void OnAttack()
     {
-        if (!canDash) return;
-        canDash = false;
+        
+        
 
         Vector2 leftJoystickPosition = playerInput.actions["LeftJoystickTilt"].ReadValue<Vector2>();
 
@@ -373,39 +422,8 @@ public class Player : MonoBehaviour
         {
             angle = 180;
         }
-
-        StartCoroutine(HandleDashState());
-        if (Mathf.Approximately(angle, -90f))
-        {
-            velocity.x = 0;
-            hExtraSpeed = 0;
-            hSpeed = 0;
-            velocity.y = -terminalYVelocity;
-            return;
-        }
-        if (Mathf.Approximately(angle, 90f))
-        {
-            movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
-            velocity.x = 0;
-            hExtraSpeed = 0;
-            hSpeed = 0;
-            velocity.y = verticalDashPower;
-            return;
-        }
-        if (Mathf.Approximately(angle, 0f))
-        {
-            velocity.y = 0;
-            hExtraSpeed = 1 * xDashPower;
-            hSpeed = 1 * moveSpeed;
-            return;
-        }
-        if (Mathf.Approximately(angle, 180f))
-        {
-            velocity.y = 0;
-            hExtraSpeed = -1 * xDashPower;
-            hSpeed = -1 * moveSpeed;
-            return;
-        }
+        if (!canDash && !Mathf.Approximately(angle, -90f)) return;
+        Dash(angle);
 
     }
     void OnMove(InputValue value)
