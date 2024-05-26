@@ -66,6 +66,7 @@ public class Player : MonoBehaviour
     [Header("Particles")]
     [SerializeField] private ParticleSystem ps;
     [SerializeField] private ParticleSystem playerAfterImage;
+    [SerializeField] private GameObject dashBurst;
 
 
 
@@ -333,9 +334,12 @@ public class Player : MonoBehaviour
 
     private void Dash(float angle)
     {
+        print(angle);
         canDash = false;
         // StopCoroutine("HandleDashState");
         StopAllCoroutines();
+    
+        if (dashBurst != null) GameController.Instance.PullFromPool(dashBurst,transform.position + new Vector3 (0,0.5f,0));
         StartCoroutine(HandleDashState());
         if (Mathf.Approximately(angle, -90f))
         {
@@ -361,7 +365,7 @@ public class Player : MonoBehaviour
             hSpeed = 1 * moveSpeed;
             return;
         }
-        if (Mathf.Approximately(angle, 180f))
+        if (Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f))
         {
             velocity.y = 0;
             hExtraSpeed = -1 * xDashPower;
