@@ -181,7 +181,7 @@ public class Player : MonoBehaviour
             else
             {
                 int directionToJump = 0;
-                if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
+                if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump) && xInput != 0)
                 {
                     movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump, 0, 0));
                     velocity.y = wallJumpPower;
@@ -344,7 +344,7 @@ public class Player : MonoBehaviour
     private void Dash(float angle)
     {
         // Fast Fall
-        if (Mathf.Approximately(angle, -90f))
+        if (Mathf.Approximately(angle, -90f) && IsInAir())
         {
             StopAllCoroutines();
             StartCoroutine(HandleDashState(fastFallhDuration));
@@ -368,7 +368,7 @@ public class Player : MonoBehaviour
             return;
         }
         // Dash Sideways
-        if (canDash && Mathf.Approximately(angle, 0f))
+        if (canDash && Mathf.Approximately(angle, 0f) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f,1))
         {
             StopAllCoroutines();
             StartCoroutine(HandleDashState(dashDuration));
@@ -378,7 +378,7 @@ public class Player : MonoBehaviour
             hSpeed = 1 * moveSpeed;
             return;
         }
-        if (canDash && Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f))
+        if ((canDash && Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f)) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f,-1))
         {
             StopAllCoroutines();
             StartCoroutine(HandleDashState(dashDuration));
