@@ -128,7 +128,7 @@ public class GameController : MonoBehaviour
             if (deathObject)
             {
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
-                
+
                 GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
                 _deathObject.transform.SetParent(null);
             }
@@ -136,7 +136,7 @@ public class GameController : MonoBehaviour
             {
                 ChangeScene("Main Menu");
             }
-            
+
         }
         return health;
     }

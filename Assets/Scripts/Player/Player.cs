@@ -56,7 +56,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float dashDuration = 0.4f;
     [SerializeField] private float xDashPower = 0.5f;
     [SerializeField] private float verticalDashPower = 0.2f;
-    private bool canDash;
+    private bool canDash = true;
+    private bool canDoubleJump = true;
     private bool isDashing = false;
 
     [Header("Damage")]
@@ -165,7 +166,7 @@ public class Player : MonoBehaviour
         if (isGrounded)
         {
             coyoteTime = coyoteTimeMax;
-            canDash = true;
+            RefreshDashMoves();
         }
         if (jumpPressed)
         {
@@ -173,7 +174,7 @@ public class Player : MonoBehaviour
             {
                 velocity.y = jumpPower;
                 StopDash();
-                canDash = true;
+                RefreshDashMoves();
             }
             else
             {
@@ -185,7 +186,7 @@ public class Player : MonoBehaviour
                     hExtraSpeed = directionToJump * wallJumpXPower;
                     hSpeed = directionToJump * moveSpeed;
                 }
-                else if (canDash)
+                else if (canDoubleJump)
                 {
                     Dash(90);
                 }
@@ -293,7 +294,7 @@ public class Player : MonoBehaviour
     {
         velocity.y = jumpPower;
         StartCoroutine(StopDashingNextFrame());
-        canDash = true;
+        RefreshDashMoves();
     }
     public void ResetCoyoteTime()
     {
@@ -303,7 +304,12 @@ public class Player : MonoBehaviour
     {
         isDashing = false;
         playerAfterImage.Stop();
-        
+    }
+
+    private void RefreshDashMoves()
+    {
+        canDash = true;
+        canDoubleJump = true;
     }
     private IEnumerator WaitCheckAndDamage()
     {
@@ -316,6 +322,7 @@ public class Player : MonoBehaviour
     private IEnumerator HandleDashState()
     {
         isDashing = true;
+        if (dashBurst != null) GameController.Instance.PullFromPool(dashBurst,transform.position + new Vector3 (0,0.5f,0));
         playerAfterImage.Play();
         yield return new WaitForSeconds(dashDuration);
         isDashing = false;
@@ -334,23 +341,23 @@ public class Player : MonoBehaviour
 
     private void Dash(float angle)
     {
-        print(angle);
-        canDash = false;
-        // StopCoroutine("HandleDashState");
-        StopAllCoroutines();
-    
-        if (dashBurst != null) GameController.Instance.PullFromPool(dashBurst,transform.position + new Vector3 (0,0.5f,0));
-        StartCoroutine(HandleDashState());
+        // Fast Fall
         if (Mathf.Approximately(angle, -90f))
         {
+            StopAllCoroutines();
+            StartCoroutine(HandleDashState());
             velocity.x = 0;
             hExtraSpeed = 0;
             hSpeed = 0;
             velocity.y = -terminalYVelocity;
             return;
         }
-        if (Mathf.Approximately(angle, 90f))
+        // Double Jump
+        if (canDoubleJump && Mathf.Approximately(angle, 90f))
         {
+            StopAllCoroutines();
+            StartCoroutine(HandleDashState());
+            canDoubleJump = false;
             movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
             velocity.x = 0;
             hExtraSpeed = 0;
@@ -358,15 +365,22 @@ public class Player : MonoBehaviour
             velocity.y = verticalDashPower;
             return;
         }
-        if (Mathf.Approximately(angle, 0f))
+        // Dash Sideways
+        if (canDash && Mathf.Approximately(angle, 0f))
         {
+            StopAllCoroutines();
+            StartCoroutine(HandleDashState());
+            canDash = false;
             velocity.y = 0;
             hExtraSpeed = 1 * xDashPower;
             hSpeed = 1 * moveSpeed;
             return;
         }
-        if (Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f))
+        if (canDash && Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f))
         {
+            StopAllCoroutines();
+            StartCoroutine(HandleDashState());
+            canDash = false;
             velocity.y = 0;
             hExtraSpeed = -1 * xDashPower;
             hSpeed = -1 * moveSpeed;
@@ -426,7 +440,6 @@ public class Player : MonoBehaviour
         {
             angle = 180;
         }
-        if (!canDash && !Mathf.Approximately(angle, -90f)) return;
         Dash(angle);
 
     }
