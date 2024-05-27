@@ -54,8 +54,10 @@ public class Player : MonoBehaviour
 
     [Header("Dash")]
     [SerializeField] private float dashDuration = 0.4f;
+    [SerializeField] private float fastFallhDuration = 0.2f;
     [SerializeField] private float xDashPower = 0.5f;
     [SerializeField] private float verticalDashPower = 0.2f;
+    [SerializeField] private float doubleJumpVelocityScaleX = 1;
     private bool canDash = true;
     private bool canDoubleJump = true;
     private bool isDashing = false;
@@ -319,12 +321,12 @@ public class Player : MonoBehaviour
         yield return new WaitForFixedUpdate();
         if (movementCollisionHandler.InGround()) Damage();
     }
-    private IEnumerator HandleDashState()
+    private IEnumerator HandleDashState(float durationOfDash)
     {
         isDashing = true;
         if (dashBurst != null) GameController.Instance.PullFromPool(dashBurst,transform.position + new Vector3 (0,0.5f,0));
         playerAfterImage.Play();
-        yield return new WaitForSeconds(dashDuration);
+        yield return new WaitForSeconds(durationOfDash);
         isDashing = false;
         playerAfterImage.Stop();
         
@@ -345,7 +347,7 @@ public class Player : MonoBehaviour
         if (Mathf.Approximately(angle, -90f))
         {
             StopAllCoroutines();
-            StartCoroutine(HandleDashState());
+            StartCoroutine(HandleDashState(fastFallhDuration));
             velocity.x = 0;
             hExtraSpeed = 0;
             hSpeed = 0;
@@ -356,12 +358,12 @@ public class Player : MonoBehaviour
         if (canDoubleJump && Mathf.Approximately(angle, 90f))
         {
             StopAllCoroutines();
-            StartCoroutine(HandleDashState());
+            StartCoroutine(HandleDashState(dashDuration));
             canDoubleJump = false;
             movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
-            velocity.x = 0;
+            velocity.x = Mathf.Abs(velocity.x) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+            hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
             hExtraSpeed = 0;
-            hSpeed = 0;
             velocity.y = verticalDashPower;
             return;
         }
@@ -369,7 +371,7 @@ public class Player : MonoBehaviour
         if (canDash && Mathf.Approximately(angle, 0f))
         {
             StopAllCoroutines();
-            StartCoroutine(HandleDashState());
+            StartCoroutine(HandleDashState(dashDuration));
             canDash = false;
             velocity.y = 0;
             hExtraSpeed = 1 * xDashPower;
@@ -379,7 +381,7 @@ public class Player : MonoBehaviour
         if (canDash && Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f))
         {
             StopAllCoroutines();
-            StartCoroutine(HandleDashState());
+            StartCoroutine(HandleDashState(dashDuration));
             canDash = false;
             velocity.y = 0;
             hExtraSpeed = -1 * xDashPower;
