@@ -162,7 +162,7 @@ public class Player : MonoBehaviour
         {
             clingTime = clingTimeMax;
         }
-        if (clingTime > 0 && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable))
+        if (clingTime > 0 && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable) && !isDashing)
         {
             gravityModifier = wallClingGravityModifier;
         }
