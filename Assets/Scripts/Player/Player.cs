@@ -51,6 +51,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float wallJumpXPower = 0.5f;
     [SerializeField] private float distanceWallsDetectable = 0.5f;
     [SerializeField] private float wallClingGravityModifier = 0.4f;
+    [SerializeField] private float clingTimeMax = 5;
+    [SerializeField] private float clingTime = 5;
 
     [Header("Dash")]
     [SerializeField] private float dashDuration = 0.4f;
@@ -113,7 +115,7 @@ public class Player : MonoBehaviour
         // -------------
         // X Axis Speed
         // -------------
-        if (xInput != 0)
+        if (xInput != 0 && clingTime == 0)
         {
             hSpeed += Mathf.Sign(xInput) * acceleration;
         }
@@ -157,6 +159,10 @@ public class Player : MonoBehaviour
         gravityModifier = 1;
         if (fastFallButton.IsPressed()) gravityModifier = fastFallModifier;
         if (xInput != 0 && velocity.y < 0 && movementCollisionHandler.OnWallAtDistInDirection(distanceWallsDetectable, (int)Mathf.Sign(xInput)))
+        {
+            clingTime = clingTimeMax;
+        }
+        if (clingTime > 0 && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable))
         {
             gravityModifier = wallClingGravityModifier;
         }
@@ -203,6 +209,7 @@ public class Player : MonoBehaviour
         velocity.y = Mathf.Clamp(velocity.y, -terminalYVelocity, terminalYVelocity);
 
         if (coyoteTime > 0) coyoteTime--;
+        if (clingTime > 0) clingTime--;
         jumpPressed = false;
         jumpReleased = false;
 
