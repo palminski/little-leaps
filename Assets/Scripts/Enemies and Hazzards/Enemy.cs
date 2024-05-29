@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour
 
             float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y  - (hitCollider.bounds.size.y / 2);
             float enemyTop = transform.position.y + collider.offset.y + collider.bounds.size.y / 2;
-            if (playerBottom > enemyTop)
+            if (playerBottom > enemyTop && hitPlayer.IsDashing())
             {
                 
                 return;
@@ -49,6 +49,8 @@ public class Enemy : MonoBehaviour
 
             if (!hitPlayer.IsInvincible())
             {
+                
+
                 int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
                 GameController.Instance.ChangeHealth(-1);
                 hitPlayer.Shove(directionToShove);

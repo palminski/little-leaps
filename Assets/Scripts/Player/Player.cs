@@ -9,25 +9,17 @@ using System.Collections;
 [RequireComponent(typeof(MovementCollisionHandler))]
 public class Player : MonoBehaviour
 {
-
     private MovementCollisionHandler movementCollisionHandler;
-
     private PlayerInput playerInput;
-
     private InputAction jumpAction;
     private InputAction fastFallButton;
     private SpriteRenderer spriteRenderer;
-
     private Animator animator;
-
     private Vector3 velocity;
-
-    private float xInput;
-
-    private float hSpeed;
-
-    private bool jumpPressed;
-    private bool jumpReleased;
+    public Vector3 startPosition;
+    private Vector3 lastPosition;
+    private float invincibilityCountdown;
+    private float nextInvincibilityBlinkTime;
 
     [Header("Horizontal Movement")]
     [SerializeField] private float moveSpeed = 0.4f;
@@ -36,6 +28,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float fastFallModifier = 2;
     [SerializeField] private float groundFriction = 0.1f;
     [SerializeField] private float airFriction = 0.1f;
+    private float xInput;
+    private float hSpeed;
+    private float hExtraSpeed = 0;
 
     [Header("Vertical Movement")]
     [SerializeField] private float jumpPower = 0.7f;
@@ -44,6 +39,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpBuffer = 0.2f;
     [SerializeField] private float gravity = 0.05f;
     [SerializeField] private float terminalYVelocity = 1;
+    private bool jumpPressed;
+    private bool jumpReleased;
+    private float gravityModifier = 1;
+    private int coyoteTime = 0;
+    private float minJumpVelocity;
 
     [Header("Wall Jump")]
     [SerializeField] private float wallJumpPower = 0.5f;
@@ -51,6 +51,19 @@ public class Player : MonoBehaviour
     [SerializeField] private float wallJumpXPower = 0.5f;
     [SerializeField] private float distanceWallsDetectable = 0.5f;
     [SerializeField] private float wallClingGravityModifier = 0.4f;
+    [SerializeField] private float wallJumpForgiveness = 0.02f;
+    [SerializeField] private float clingTimeMax = 5;
+    [SerializeField] private float clingTime = 5;
+
+    [Header("Dash")]
+    [SerializeField] private float dashDuration = 0.4f;
+    [SerializeField] private float fastFallhDuration = 0.2f;
+    [SerializeField] private float xDashPower = 0.5f;
+    [SerializeField] private float verticalDashPower = 0.2f;
+    [SerializeField] private float doubleJumpVelocityScaleX = 1;
+    private bool canDash = true;
+    private bool canDoubleJump = true;
+    private bool isDashing = false;
 
     [Header("Damage")]
     [SerializeField] private float invincibilityTime = 3;
@@ -58,16 +71,11 @@ public class Player : MonoBehaviour
 
     [Header("Particles")]
     [SerializeField] private ParticleSystem ps;
-    private float extraHSpeed = 0;
-    private float gravityModifier = 1;
-    private int coyoteTime = 0;
-    private Vector3 lastPosition;
-    private float invincibilityCountdown;
-    private float nextInvincibilityBlinkTime;
+    [SerializeField] private ParticleSystem playerAfterImage;
 
-    public Vector3 startPosition;
 
-    private float minJumpVelocity;
+
+
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -83,6 +91,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        playerAfterImage.Stop();
         minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpPower);
         invincibilityCountdown = 0;
         startPosition = transform.position;
@@ -107,7 +116,7 @@ public class Player : MonoBehaviour
         // -------------
         // X Axis Speed
         // -------------
-        if (xInput != 0)
+        if (xInput != 0 && clingTime == 0)
         {
             hSpeed += Mathf.Sign(xInput) * acceleration;
         }
@@ -122,75 +131,82 @@ public class Player : MonoBehaviour
                 hSpeed = Mathf.MoveTowards(hSpeed, 0, airFriction);
             }
         }
+        hExtraSpeed = Mathf.MoveTowards(hExtraSpeed, 0, airFriction);
         //limit the hSpeed by out movement speed in both directions
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
 
         //if we are hitting a wall we set the hspeed to 0 so we can accelerate away from it quickly
-        if (movementCollisionHandler.collisionInfo.left) 
+        if (movementCollisionHandler.collisionInfo.left)
         {
-            hSpeed = Mathf.Max(hSpeed,0);
-            extraHSpeed = 0;
-            
-        }
-        if (movementCollisionHandler.collisionInfo.right) {
-            hSpeed = Mathf.Min(hSpeed,0);
-            extraHSpeed = 0;
-        }
+            hSpeed = Mathf.Max(hSpeed, 0);
+            hExtraSpeed = 0;
 
-        //we dont want extra force once we are on the ground. we also want to continuously move it back to 0
-        if (isGrounded)
-        {
-            extraHSpeed = 0;
         }
-        extraHSpeed = Mathf.MoveTowards(extraHSpeed, 0, groundFriction);
+        if (movementCollisionHandler.collisionInfo.right)
+        {
+            hSpeed = Mathf.Min(hSpeed, 0);
+            hExtraSpeed = 0;
+        }
 
         //Update the x component of velocity by hSpeed and any additional extra force
-        velocity.x = hSpeed + extraHSpeed;
+        velocity.x = (isDashing && velocity.y < 0) ? hExtraSpeed : hSpeed + hExtraSpeed;
+        // velocity.x = hSpeed + hExtraSpeed;
 
         // -------------
         // Y Axis Speed
         // -------------
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
-        
+
         gravityModifier = 1;
         if (fastFallButton.IsPressed()) gravityModifier = fastFallModifier;
         if (xInput != 0 && velocity.y < 0 && movementCollisionHandler.OnWallAtDistInDirection(distanceWallsDetectable, (int)Mathf.Sign(xInput)))
         {
+            clingTime = clingTimeMax;
+        }
+        if (clingTime > 0 && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable) && !isDashing)
+        {
             gravityModifier = wallClingGravityModifier;
         }
 
-        velocity.y -= gravity * gravityModifier;
+        if (!isDashing || velocity.y > 0) velocity.y -= gravity * gravityModifier;
 
-        //Jumping
-        if (isGrounded) coyoteTime = coyoteTimeMax;
-
+        // -- Jumping --
+        if (isGrounded)
+        {
+            coyoteTime = coyoteTimeMax;
+            RefreshDashMoves();
+        }
         if (jumpPressed)
         {
-            if (coyoteTime > 0)
+            if (coyoteTime > 0 || movementCollisionHandler.OnGroundAtDist(jumpBuffer))
             {
                 velocity.y = jumpPower;
-            }
-            else if (movementCollisionHandler.OnGroundAtDist(jumpBuffer))
-            {
-                velocity.y = jumpPower;
+                StopDash();
+                RefreshDashMoves();
             }
             else
             {
                 int directionToJump = 0;
-                if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
+                if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump) && xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump))
                 {
-
                     movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump, 0, 0));
-
                     velocity.y = wallJumpPower;
-                    extraHSpeed = directionToJump * wallJumpXPower;
+                    hExtraSpeed = directionToJump * wallJumpXPower;
                     hSpeed = directionToJump * moveSpeed;
+                }
+                else if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
+                {
+                    StartCoroutine(WaitAndTryWallJump(wallJumpForgiveness, directionToJump));
+                }
+                else if (canDoubleJump)
+                {
+                    Dash(90);
                 }
             }
         }
         if (jumpReleased)
         {
-            if (velocity.y > minJumpVelocity)
+            if (velocity.y > minJumpVelocity && !isDashing)
             {
                 velocity.y = minJumpVelocity;
             }
@@ -198,6 +214,7 @@ public class Player : MonoBehaviour
         velocity.y = Mathf.Clamp(velocity.y, -terminalYVelocity, terminalYVelocity);
 
         if (coyoteTime > 0) coyoteTime--;
+        if (clingTime > 0) clingTime--;
         jumpPressed = false;
         jumpReleased = false;
 
@@ -208,11 +225,10 @@ public class Player : MonoBehaviour
         {
             ps.Play();
         }
-        if (movementCollisionHandler.InGround()) {
-            StartCoroutine(WaitCheckAndDie());
+        if (movementCollisionHandler.InGround())
+        {
+            StartCoroutine(WaitCheckAndDamage());
         }
-        
-
     }
 
     // --------------------------
@@ -267,41 +283,140 @@ public class Player : MonoBehaviour
         }
     }
 
-    
+
     // ------------------------------------
     // Methods that do something to player
     // ------------------------------------
     public void Damage()
     {
-        if(IsInvincible()) return;
+        if (IsInvincible()) return;
         // transform.position = startPosition;
         GameController.Instance.ChangeHealth(-1);
         invincibilityCountdown = invincibilityTime;
-        
+
     }
     public void Shove(int direction)
     {
         invincibilityCountdown = invincibilityTime;
         movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
         velocity.y = jumpPower * 0.5f;
-        // extraHSpeed = -1 * wallJumpXPower;
+        StopDash();
         hSpeed = direction * moveSpeed;
     }
     public void Bounce()
     {
         velocity.y = jumpPower;
+        StartCoroutine(StopDashingNextFrame());
+        RefreshDashMoves();
     }
     public void ResetCoyoteTime()
     {
         coyoteTime = coyoteTimeMax;
     }
-    private IEnumerator WaitCheckAndDie() 
+    public void StopDash()
+    {
+        isDashing = false;
+        playerAfterImage.Stop();
+    }
+
+    private void RefreshDashMoves()
+    {
+        canDash = true;
+        canDoubleJump = true;
+    }
+    private IEnumerator WaitCheckAndDamage()
     {
         yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
         if (movementCollisionHandler.InGround()) Damage();
+    }
+    private IEnumerator HandleDashState(float durationOfDash)
+    {
+        isDashing = true;
+        
+        playerAfterImage.Play();
+        yield return new WaitForSeconds(durationOfDash);
+        isDashing = false;
+        playerAfterImage.Stop();
+        
+        if (hExtraSpeed != 0) hSpeed = Mathf.Sign(hExtraSpeed) * moveSpeed;
+        hExtraSpeed = 0;
+        // if (xInput != 0) hSpeed = Mathf.Sign(xInput) * moveSpeed;
+    }
+
+    private IEnumerator WaitAndTryWallJump(float timeToWait, float direction)
+    {
+        yield return new WaitForSeconds(timeToWait);
+        if (xInput !=0 && Mathf.Sign(xInput) == direction)
+        {
+            movementCollisionHandler.Move(new Vector3(wallJumpOffset * direction, 0, 0));
+            velocity.y = wallJumpPower;
+            hExtraSpeed = direction * wallJumpXPower;
+            hSpeed = direction * moveSpeed;
+        }
+        else if (canDoubleJump)
+        {
+            Dash(90);
+        }
+    }
+
+
+
+    private IEnumerator StopDashingNextFrame()
+    {
+        yield return new WaitForFixedUpdate();
+        StopDash();
+    }
+
+    private void Dash(float angle)
+    {
+        // Fast Fall
+        if (Mathf.Approximately(angle, -90f) && IsInAir())
+        {
+            StopAllCoroutines();
+            StartCoroutine(HandleDashState(fastFallhDuration));
+            velocity.x = 0;
+            hExtraSpeed = 0;
+            hSpeed = 0;
+            velocity.y = -terminalYVelocity;
+            return;
+        }
+        // Double Jump
+        if (canDoubleJump && Mathf.Approximately(angle, 90f))
+        {
+            StopAllCoroutines();
+            StartCoroutine(HandleDashState(dashDuration));
+            canDoubleJump = false;
+            movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
+            velocity.x = Mathf.Abs(velocity.x) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+            hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+            hExtraSpeed = 0;
+            velocity.y = verticalDashPower;
+            return;
+        }
+        // Dash Sideways
+        if (canDash && Mathf.Approximately(angle, 0f) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f,1))
+        {
+            StopAllCoroutines();
+            StartCoroutine(HandleDashState(dashDuration));
+            canDash = false;
+            velocity.y = 0;
+            hExtraSpeed = 1 * xDashPower;
+            hSpeed = 1 * moveSpeed;
+            return;
+        }
+        if ((canDash && Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f)) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f,-1))
+        {
+            StopAllCoroutines();
+            StartCoroutine(HandleDashState(dashDuration));
+            canDash = false;
+            velocity.y = 0;
+            hExtraSpeed = -1 * xDashPower;
+            hSpeed = -1 * moveSpeed;
+            return;
+        }
     }
 
     // --------------------------------------
@@ -319,6 +434,10 @@ public class Player : MonoBehaviour
     {
         return !movementCollisionHandler.OnGround();
     }
+    public bool IsDashing()
+    {
+        return isDashing;
+    }
     public Vector3 GetLastPosition()
     {
         return lastPosition;
@@ -335,7 +454,26 @@ public class Player : MonoBehaviour
     {
         jumpReleased = true;
     }
+    void OnAttack()
+    {
+        
+        
 
+        Vector2 leftJoystickPosition = playerInput.actions["LeftJoystickTilt"].ReadValue<Vector2>();
+
+        float angle = 0;
+        if (leftJoystickPosition != Vector2.zero)
+        {
+            angle = Mathf.Atan2(leftJoystickPosition.y, leftJoystickPosition.x) * Mathf.Rad2Deg;
+            angle = Mathf.Round(angle / 90) * 90;
+        }
+        else if (transform.localScale.x == -1)
+        {
+            angle = 180;
+        }
+        Dash(angle);
+
+    }
     void OnMove(InputValue value)
     {
         float moveValue = value.Get<float>();
