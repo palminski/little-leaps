@@ -69,7 +69,6 @@ public class Player : MonoBehaviour
     [Header("Particles")]
     [SerializeField] private ParticleSystem ps;
     [SerializeField] private ParticleSystem playerAfterImage;
-    [SerializeField] private GameObject dashBurst;
 
 
 
@@ -181,7 +180,7 @@ public class Player : MonoBehaviour
             else
             {
                 int directionToJump = 0;
-                if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump) && xInput != 0)
+                if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump) && xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump))
                 {
                     movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump, 0, 0));
                     velocity.y = wallJumpPower;
@@ -324,7 +323,7 @@ public class Player : MonoBehaviour
     private IEnumerator HandleDashState(float durationOfDash)
     {
         isDashing = true;
-        if (dashBurst != null) GameController.Instance.PullFromPool(dashBurst,transform.position + new Vector3 (0,0.5f,0));
+        
         playerAfterImage.Play();
         yield return new WaitForSeconds(durationOfDash);
         isDashing = false;
