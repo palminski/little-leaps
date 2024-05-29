@@ -51,6 +51,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float wallJumpXPower = 0.5f;
     [SerializeField] private float distanceWallsDetectable = 0.5f;
     [SerializeField] private float wallClingGravityModifier = 0.4f;
+    [SerializeField] private float wallJumpForgiveness = 0.02f;
     [SerializeField] private float clingTimeMax = 5;
     [SerializeField] private float clingTime = 5;
 
@@ -192,6 +193,10 @@ public class Player : MonoBehaviour
                     velocity.y = wallJumpPower;
                     hExtraSpeed = directionToJump * wallJumpXPower;
                     hSpeed = directionToJump * moveSpeed;
+                }
+                else if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
+                {
+                    StartCoroutine(WaitAndTryWallJump(wallJumpForgiveness, directionToJump));
                 }
                 else if (canDoubleJump)
                 {
@@ -340,6 +345,24 @@ public class Player : MonoBehaviour
         hExtraSpeed = 0;
         // if (xInput != 0) hSpeed = Mathf.Sign(xInput) * moveSpeed;
     }
+
+    private IEnumerator WaitAndTryWallJump(float timeToWait, float direction)
+    {
+        yield return new WaitForSeconds(timeToWait);
+        if (xInput !=0 && Mathf.Sign(xInput) == direction)
+        {
+            movementCollisionHandler.Move(new Vector3(wallJumpOffset * direction, 0, 0));
+            velocity.y = wallJumpPower;
+            hExtraSpeed = direction * wallJumpXPower;
+            hSpeed = direction * moveSpeed;
+        }
+        else if (canDoubleJump)
+        {
+            Dash(90);
+        }
+    }
+
+
 
     private IEnumerator StopDashingNextFrame()
     {
