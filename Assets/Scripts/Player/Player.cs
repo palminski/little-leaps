@@ -348,10 +348,13 @@ public class Player : MonoBehaviour
 
     private IEnumerator WaitAndTryWallJump(float timeToWait, float direction)
     {
-        velocity.y = 0;
+        float startingY = transform.position.y;
         yield return new WaitForSeconds(timeToWait);
+        float yAdjustment = startingY- transform.position.y;
+        
         if (xInput !=0 && Mathf.Sign(xInput) == direction)
         {
+            movementCollisionHandler.Move(new Vector3(0,yAdjustment,0));
             movementCollisionHandler.Move(new Vector3(wallJumpOffset * direction, 0, 0));
             velocity.y = wallJumpPower;
             hExtraSpeed = direction * wallJumpXPower;
@@ -359,6 +362,7 @@ public class Player : MonoBehaviour
         }
         else if (canDoubleJump)
         {
+            movementCollisionHandler.Move(new Vector3(0,yAdjustment,0));
             Dash(90);
         }
     }
