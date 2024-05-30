@@ -348,6 +348,7 @@ public class Player : MonoBehaviour
 
     private IEnumerator WaitAndTryWallJump(float timeToWait, float direction)
     {
+        velocity.y = 0;
         yield return new WaitForSeconds(timeToWait);
         if (xInput !=0 && Mathf.Sign(xInput) == direction)
         {
@@ -456,9 +457,6 @@ public class Player : MonoBehaviour
     }
     void OnAttack()
     {
-        
-        
-
         Vector2 leftJoystickPosition = playerInput.actions["LeftJoystickTilt"].ReadValue<Vector2>();
 
         float angle = 0;
