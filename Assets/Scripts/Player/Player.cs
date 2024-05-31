@@ -50,6 +50,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float wallJumpOffset = 0.5f;
     [SerializeField] private float wallJumpXPower = 0.5f;
     [SerializeField] private float distanceWallsDetectable = 0.5f;
+    [SerializeField] private float distanceClingStarts = 0.2f;
     [SerializeField] private float wallClingGravityModifier = 0.4f;
     [SerializeField] private float wallJumpForgiveness = 0.02f;
     [SerializeField] private float clingTimeMax = 5;
@@ -159,7 +160,7 @@ public class Player : MonoBehaviour
 
         gravityModifier = 1;
         if (fastFallButton.IsPressed()) gravityModifier = fastFallModifier;
-        if (xInput != 0 && velocity.y < 0 && movementCollisionHandler.OnWallAtDistInDirection(distanceWallsDetectable, (int)Mathf.Sign(xInput)))
+        if (xInput != 0 && velocity.y < 0 && movementCollisionHandler.OnWallAtDistInDirection(distanceClingStarts, (int)Mathf.Sign(xInput)))
         {
             clingTime = clingTimeMax;
         }
@@ -180,6 +181,7 @@ public class Player : MonoBehaviour
         {
             if (coyoteTime > 0 || movementCollisionHandler.OnGroundAtDist(jumpBuffer))
             {
+                clingTime = 0;
                 velocity.y = jumpPower;
                 StopDash();
                 RefreshDashMoves();
@@ -189,6 +191,7 @@ public class Player : MonoBehaviour
                 int directionToJump = 0;
                 if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump) && xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump))
                 {
+                    clingTime = 0;
                     movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump, 0, 0));
                     velocity.y = wallJumpPower;
                     hExtraSpeed = directionToJump * wallJumpXPower;
@@ -211,7 +214,8 @@ public class Player : MonoBehaviour
                 velocity.y = minJumpVelocity;
             }
         }
-        velocity.y = Mathf.Clamp(velocity.y, -terminalYVelocity, terminalYVelocity);
+
+        velocity.y = Mathf.Clamp(velocity.y, -terminalYVelocity * gravityModifier, terminalYVelocity);
 
         if (coyoteTime > 0) coyoteTime--;
         if (clingTime > 0) clingTime--;
@@ -349,20 +353,29 @@ public class Player : MonoBehaviour
     private IEnumerator WaitAndTryWallJump(float timeToWait, float direction)
     {
         float startingY = transform.position.y;
-        yield return new WaitForSeconds(timeToWait);
-        float yAdjustment = startingY- transform.position.y;
-        
-        if (xInput !=0 && Mathf.Sign(xInput) == direction)
+        float elapsedTime = 0f;
+        while (elapsedTime < timeToWait)
         {
-            movementCollisionHandler.Move(new Vector3(0,yAdjustment,0));
-            movementCollisionHandler.Move(new Vector3(wallJumpOffset * direction, 0, 0));
-            velocity.y = wallJumpPower;
-            hExtraSpeed = direction * wallJumpXPower;
-            hSpeed = direction * moveSpeed;
+            elapsedTime += Time.deltaTime;
+            if (xInput != 0 && Mathf.Sign(xInput) == direction)
+            {
+                clingTime = 0;
+                movementCollisionHandler.Move(new Vector3(wallJumpOffset * direction, 0, 0));
+                velocity.y = wallJumpPower;
+                hExtraSpeed = direction * wallJumpXPower;
+                hSpeed = direction * moveSpeed;
+                yield break;
+            }
+            yield return null;
         }
-        else if (canDoubleJump)
+
+        yield return new WaitForSeconds(timeToWait);
+        float yAdjustment = startingY - transform.position.y;
+
+
+        if (canDoubleJump)
         {
-            movementCollisionHandler.Move(new Vector3(0,yAdjustment,0));
+            movementCollisionHandler.Move(new Vector3(0, yAdjustment, 0));
             Dash(90);
         }
     }
