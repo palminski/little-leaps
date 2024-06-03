@@ -54,7 +54,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float wallClingGravityModifier = 0.4f;
     [SerializeField] private float wallJumpForgiveness = 0.02f;
     [SerializeField] private float clingTimeMax = 5;
-    [SerializeField] private float clingTime = 5;
+    [SerializeField] private int maxWallJumpTime = 5;
+    private float clingTime = 5;
+    private int wallJumpTime = 0;
+
+    private int directionToJump;
 
     [Header("Dash")]
     [SerializeField] private float dashDuration = 0.4f;
@@ -113,7 +117,11 @@ public class Player : MonoBehaviour
     {
         lastPosition = transform.position;
         bool isGrounded = movementCollisionHandler.OnGround();
-
+        if (coyoteTime <= 0 && velocity.x != 0 && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) {
+            
+            wallJumpTime = maxWallJumpTime;
+        }
+        
         // -------------
         // X Axis Speed
         // -------------
@@ -175,7 +183,7 @@ public class Player : MonoBehaviour
         if (isGrounded)
         {
             coyoteTime = coyoteTimeMax;
-            RefreshDashMoves();
+            if(!isDashing) RefreshDashMoves();
         }
         if (jumpPressed)
         {
@@ -188,8 +196,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                int directionToJump = 0;
-                if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump) && xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump))
+                if ((wallJumpTime > 0 || movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) && ((xInput == 0 && (wallJumpTime > 0 || clingTime > 0)) || (xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump))))
                 {
                     clingTime = 0;
                     movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump, 0, 0));
@@ -197,7 +204,7 @@ public class Player : MonoBehaviour
                     hExtraSpeed = directionToJump * wallJumpXPower;
                     hSpeed = directionToJump * moveSpeed;
                 }
-                else if (movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
+                else if (wallJumpTime > 0 || movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
                 {
                     StartCoroutine(WaitAndTryWallJump(wallJumpForgiveness, directionToJump));
                 }
@@ -219,6 +226,10 @@ public class Player : MonoBehaviour
 
         if (coyoteTime > 0) coyoteTime--;
         if (clingTime > 0) clingTime--;
+        if (wallJumpTime > 0) wallJumpTime--;
+        if (wallJumpTime <= 0) {
+            directionToJump = 0;
+        }
         jumpPressed = false;
         jumpReleased = false;
 
