@@ -368,7 +368,7 @@ public class Player : MonoBehaviour
         while (elapsedTime < timeToWait)
         {
             elapsedTime += Time.deltaTime;
-            if (xInput != 0 && Mathf.Sign(xInput) == direction)
+            if ((xInput != 0 && Mathf.Sign(xInput) == direction) || wallJumpTime > 0 && (Mathf.Sign(xInput) == direction || xInput == 0))
             {
                 clingTime = 0;
                 movementCollisionHandler.Move(new Vector3(wallJumpOffset * direction, 0, 0));
