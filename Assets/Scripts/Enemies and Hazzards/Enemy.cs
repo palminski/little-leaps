@@ -20,20 +20,21 @@ public class Enemy : MonoBehaviour
 
 
     private GameObject player;
-
+    private GameObject playerAttack;
     
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        
+        playerAttack = GameObject.FindGameObjectWithTag("PlayerAttack");
     }
 
     void OnTriggerEnter2D(Collider2D hitCollider)
     {
         if (hitCollider.gameObject == player)
         {
+            
             Player hitPlayer = player.GetComponent<Player>();
 
             Collider2D collider;
@@ -56,7 +57,29 @@ public class Enemy : MonoBehaviour
                 hitPlayer.Shove(directionToShove);
             }
         }
+        if (hitCollider.gameObject == playerAttack)
+        {
+            
+            Player hitPlayer = player.GetComponent<Player>();
+            Collider2D collider;
+            collider = GetComponent<Collider2D>();
+
+            float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y  - (hitCollider.bounds.size.y / 2);
+            float enemyTop = transform.position.y + collider.offset.y + collider.bounds.size.y / 2;
+            
+
+            if (playerBottom > enemyTop && hitPlayer.IsDashing())
+            {
+                hitPlayer.ResetCoyoteTime();
+                hitPlayer.Bounce();
+                GameController.Instance.PullFromPool(blood,transform.position);
+
+                KillEnemy();
+                
+            }
+        }
     }
+    
 
     public void DamageEnemy(int damage=1) {
         health -= damage;

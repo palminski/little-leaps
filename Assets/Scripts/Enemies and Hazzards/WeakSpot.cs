@@ -5,6 +5,7 @@ using UnityEngine;
 public class WeakSpot : MonoBehaviour
 {
     private GameObject player;
+    private GameObject playerAttack;
 
     [SerializeField]
     private GameObject blood;
@@ -15,6 +16,7 @@ public class WeakSpot : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        playerAttack = GameObject.FindGameObjectWithTag("PlayerAttack");
         enemy = GetComponentInParent<Enemy>();
     }
 
