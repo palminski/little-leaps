@@ -164,7 +164,9 @@ public class Player : MonoBehaviour
         // -------------
         // Y Axis Speed
         // -------------
-        if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
+        if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) {
+            velocity.y = 0;
+        }
 
         gravityModifier = 1;
         if (fastFallButton.IsPressed()) gravityModifier = fastFallModifier;
@@ -222,7 +224,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        velocity.y = Mathf.Clamp(velocity.y, -terminalYVelocity * gravityModifier, terminalYVelocity);
+        velocity.y = Mathf.Clamp(velocity.y, -terminalYVelocity * gravityModifier, terminalYVelocity * 5);
 
         if (coyoteTime > 0) coyoteTime--;
         if (clingTime > 0) clingTime--;
@@ -318,9 +320,10 @@ public class Player : MonoBehaviour
         StopDash();
         hSpeed = direction * moveSpeed;
     }
-    public void Bounce()
+    public void Bounce(float bounceMultiplier = 1f)
     {
-        velocity.y = jumpPower;
+        velocity.y = jumpPower * bounceMultiplier;
+        print(velocity.y);
         StartCoroutine(StopDashingNextFrame());
         RefreshDashMoves();
     }
@@ -397,6 +400,7 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
         StopDash();
+        print(velocity.y);
     }
 
     private void Dash(float angle)
