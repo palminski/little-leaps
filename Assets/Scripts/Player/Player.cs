@@ -165,7 +165,8 @@ public class Player : MonoBehaviour
         // Y Axis Speed
         // -------------
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) {
-            velocity.y = 0;
+            // velocity.y = 0;
+            StartCoroutine(WaitAndSetVelocity());
         }
 
         gravityModifier = 1;
@@ -512,5 +513,12 @@ public class Player : MonoBehaviour
     void OnToggleRoom()
     {
         GameController.Instance.ToggleRoomState();
+    }
+
+    IEnumerator WaitAndSetVelocity() {
+        yield return new WaitForFixedUpdate();
+        if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) {
+            velocity.y = 0;
+        }
     }
 }

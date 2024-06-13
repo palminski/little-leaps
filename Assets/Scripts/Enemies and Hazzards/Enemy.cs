@@ -12,7 +12,13 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int health = 1;
     [SerializeField] private bool invincible = false;
     [SerializeField] private GameObject blood;
+    [SerializeField] private GameObject[] objectsToSpawnOnDeath;
 
+    [Header("Vulnerabilities")]
+    [SerializeField] private bool canSwapColors = false;
+    [SerializeField] private bool vulnerableFromTop;
+    [SerializeField] private bool vulnerableFromSide;
+    
     [Header("Purple Vulnerabilities")]
     [SerializeField] private bool purpleVulnerableFromTop;
     [SerializeField] private bool purpleVulnerableFromSide;
@@ -25,8 +31,7 @@ public class Enemy : MonoBehaviour
     private GameObject player;
     private GameObject playerAttack;
 
-    private bool vulnerableFromTop;
-    private bool vulnerableFromSide;
+    
 
 
 
@@ -39,12 +44,18 @@ public class Enemy : MonoBehaviour
 
     private void OnEnable()
     {
-        GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
-        UpdateVulnerabilities();
+        if (canSwapColors)
+        {
+            GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
+            UpdateVulnerabilities();
+        }
     }
     private void OnDisable()
     {
-        GameController.Instance.OnRoomStateChanged -= HandleRoomStateChange;
+        if (canSwapColors)
+        {
+            GameController.Instance.OnRoomStateChanged -= HandleRoomStateChange;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D hitCollider)
@@ -127,6 +138,9 @@ public class Enemy : MonoBehaviour
         {
             light.transform.SetParent(null);
             light.Fade();
+        }
+        foreach (GameObject objectToSpawn in objectsToSpawnOnDeath) {
+            Instantiate(objectToSpawn, transform.position, Quaternion.identity);
         }
         Destroy(gameObject);
     }
