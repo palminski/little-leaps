@@ -47,9 +47,9 @@ public class Portal : MonoBehaviour
 
         if (hitCollider.gameObject == player)
         {
-
+            Player playerScript = player.GetComponent<Player>();
             LevelConnection.ActiveConnection = levelConnection;
-            
+            if(playerScript) playerScript.RemovePlayer();
             GameController.Instance.ChangeScene(targetSceneName);
         }
     }

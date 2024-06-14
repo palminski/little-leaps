@@ -51,6 +51,7 @@ public class Interactable : MonoBehaviour
     }
 
     private bool CanInteractWith() {
+        if (!playerTransform) return false;
         if (Vector2.Distance(transform.position, playerTransform.position) <= interactionDistance) return true;
         return false;
     }

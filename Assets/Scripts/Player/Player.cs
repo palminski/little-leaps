@@ -4,6 +4,7 @@ using UnityEngine.Animations;
 using UnityEngine.UIElements.Experimental;
 using Unity.VisualScripting;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(MovementCollisionHandler))]
@@ -73,6 +74,7 @@ public class Player : MonoBehaviour
     [Header("Damage")]
     [SerializeField] private float invincibilityTime = 3;
     [SerializeField] private float invincibilityBlinkInterval = 0.0001f;
+    [SerializeField] private GameObject damageObject;
 
     [Header("Particles")]
     [SerializeField] private ParticleSystem ps;
@@ -117,11 +119,12 @@ public class Player : MonoBehaviour
     {
         lastPosition = transform.position;
         bool isGrounded = movementCollisionHandler.OnGround();
-        if (coyoteTime <= 0 && velocity.x != 0 && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) {
-            
+        if (coyoteTime <= 0 && velocity.x != 0 && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
+        {
+
             wallJumpTime = maxWallJumpTime;
         }
-        
+
         // -------------
         // X Axis Speed
         // -------------
@@ -164,7 +167,11 @@ public class Player : MonoBehaviour
         // -------------
         // Y Axis Speed
         // -------------
-        if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below) velocity.y = 0;
+        if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below)
+        {
+            // velocity.y = 0;
+            StartCoroutine(WaitAndSetVelocity());
+        }
 
         gravityModifier = 1;
         if (fastFallButton.IsPressed()) gravityModifier = fastFallModifier;
@@ -183,7 +190,7 @@ public class Player : MonoBehaviour
         if (isGrounded)
         {
             coyoteTime = coyoteTimeMax;
-            if(!isDashing) RefreshDashMoves();
+            if (!isDashing) RefreshDashMoves();
         }
         if (jumpPressed)
         {
@@ -222,12 +229,13 @@ public class Player : MonoBehaviour
             }
         }
 
-        velocity.y = Mathf.Clamp(velocity.y, -terminalYVelocity * gravityModifier, terminalYVelocity);
+        velocity.y = Mathf.Clamp(velocity.y, -terminalYVelocity * gravityModifier, terminalYVelocity * 5);
 
         if (coyoteTime > 0) coyoteTime--;
         if (clingTime > 0) clingTime--;
         if (wallJumpTime > 0) wallJumpTime--;
-        if (wallJumpTime <= 0) {
+        if (wallJumpTime <= 0)
+        {
             directionToJump = 0;
         }
         jumpPressed = false;
@@ -302,13 +310,34 @@ public class Player : MonoBehaviour
     // ------------------------------------
     // Methods that do something to player
     // ------------------------------------
-    public void Damage()
+    public void Damage(int damageDelt = 1, int directionToToss = 0)
     {
         if (IsInvincible()) return;
         // transform.position = startPosition;
-        GameController.Instance.ChangeHealth(-1);
-        invincibilityCountdown = invincibilityTime;
+        GameController.Instance.ChangeHealth(-damageDelt, true);
+        // invincibilityCountdown = invincibilityTime;
 
+        if (damageObject)
+        {
+            Rigidbody2D damageObjectRigidBody = Instantiate(damageObject, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity).GetComponent<Rigidbody2D>();
+            if (damageObjectRigidBody)
+            {
+                damageObjectRigidBody.AddForce(new Vector2(200 * directionToToss, 200));
+            }
+            RemovePlayer();
+        }
+
+
+    }
+    public void RemovePlayer()
+    {
+            GameLight light = GetComponentInChildren<GameLight>();
+            if (light)
+            {
+                light.transform.SetParent(null);
+                light.Fade();
+                Destroy(gameObject);
+            }
     }
     public void Shove(int direction)
     {
@@ -318,9 +347,10 @@ public class Player : MonoBehaviour
         StopDash();
         hSpeed = direction * moveSpeed;
     }
-    public void Bounce()
+    public void Bounce(float bounceMultiplier = 1f)
     {
-        velocity.y = jumpPower;
+        velocity.y = jumpPower * bounceMultiplier;
+        print(velocity.y);
         StartCoroutine(StopDashingNextFrame());
         RefreshDashMoves();
     }
@@ -350,12 +380,12 @@ public class Player : MonoBehaviour
     private IEnumerator HandleDashState(float durationOfDash)
     {
         isDashing = true;
-        
+
         playerAfterImage.Play();
         yield return new WaitForSeconds(durationOfDash);
         isDashing = false;
         playerAfterImage.Stop();
-        
+
         if (hExtraSpeed != 0) hSpeed = Mathf.Sign(hExtraSpeed) * moveSpeed;
         hExtraSpeed = 0;
         // if (xInput != 0) hSpeed = Mathf.Sign(xInput) * moveSpeed;
@@ -397,6 +427,7 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
         StopDash();
+        print(velocity.y);
     }
 
     private void Dash(float angle)
@@ -426,7 +457,7 @@ public class Player : MonoBehaviour
             return;
         }
         // Dash Sideways
-        if (canDash && Mathf.Approximately(angle, 0f) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f,1))
+        if (canDash && Mathf.Approximately(angle, 0f) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f, 1))
         {
             StopAllCoroutines();
             StartCoroutine(HandleDashState(dashDuration));
@@ -436,7 +467,7 @@ public class Player : MonoBehaviour
             hSpeed = 1 * moveSpeed;
             return;
         }
-        if ((canDash && Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f)) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f,-1))
+        if ((canDash && Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f)) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f, -1))
         {
             StopAllCoroutines();
             StartCoroutine(HandleDashState(dashDuration));
@@ -508,5 +539,14 @@ public class Player : MonoBehaviour
     void OnToggleRoom()
     {
         GameController.Instance.ToggleRoomState();
+    }
+
+    IEnumerator WaitAndSetVelocity()
+    {
+        yield return new WaitForFixedUpdate();
+        if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below)
+        {
+            velocity.y = 0;
+        }
     }
 }
