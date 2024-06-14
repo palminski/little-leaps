@@ -314,7 +314,7 @@ public class Player : MonoBehaviour
     {
         if (IsInvincible()) return;
         // transform.position = startPosition;
-        GameController.Instance.ChangeHealth(-damageDelt);
+        GameController.Instance.ChangeHealth(-damageDelt, true);
         // invincibilityCountdown = invincibilityTime;
 
         if (damageObject)

@@ -116,9 +116,8 @@ public class GameController : MonoBehaviour
         OnUpdateHUD?.Invoke();
         return score;
     }
-    public int ChangeHealth(int healthChange)
+    public int ChangeHealth(int healthChange, bool shouldResetRoom = false)
     {
-        int startingHealth = health;
         if (healthChange < 0) OnPlayerDamaged?.Invoke();
         health += healthChange;
         ChangeCharge(0);
@@ -140,7 +139,7 @@ public class GameController : MonoBehaviour
             }
 
         }
-        else if(startingHealth > health)
+        else if(shouldResetRoom)
         {
             StartCoroutine(WaitAndChangeScene(waitTimeAfterDamage));
         }
