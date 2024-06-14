@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-
+//DEPTICATED???
 public class HazardousToPlayer : MonoBehaviour
 {
     [SerializeField]
@@ -36,7 +36,7 @@ public class HazardousToPlayer : MonoBehaviour
             if (!hitPlayer.IsInvincible())
             {
                 int directionToShove = (player.transform.position.x > lastPosition.x) ? 1 : -1;
-                GameController.Instance.ChangeHealth(-damage);
+                hitPlayer.Damage(1, directionToShove);
                 
                 hitPlayer.Shove(directionToShove);
             }

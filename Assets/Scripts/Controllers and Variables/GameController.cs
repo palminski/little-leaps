@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour
     public static float GlobalSkinWidth => Instance.globalVariables.globalSkinWidth;
     public static GameController Instance { get; private set; }
     public Dictionary<string, Queue<GameObject>> objectPool = new Dictionary<string, Queue<GameObject>>();
+    [SerializeField] private float waitTimeAfterDamage;
     [SerializeField] private Animator levelChangerAnimator;
     private int score;
     public int Score
@@ -117,6 +118,7 @@ public class GameController : MonoBehaviour
     }
     public int ChangeHealth(int healthChange)
     {
+        int startingHealth = health;
         if (healthChange < 0) OnPlayerDamaged?.Invoke();
         health += healthChange;
         ChangeCharge(0);
@@ -138,7 +140,17 @@ public class GameController : MonoBehaviour
             }
 
         }
+        else if(startingHealth > health)
+        {
+            StartCoroutine(WaitAndChangeScene(waitTimeAfterDamage));
+        }
         return health;
+    }
+
+    IEnumerator WaitAndChangeScene(float timeToWait)
+    {
+        yield return new WaitForSeconds(timeToWait);
+        ChangeScene(SceneManager.GetActiveScene().name);
     }
 
     public int ChangeCharge(int chargeChange)

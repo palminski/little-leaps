@@ -76,8 +76,8 @@ public class FloatAtPlayer : MonoBehaviour
 
     private bool PlayerInRange()
     {
-        
-        if (Vector3.Distance(transform.position, player.transform.position) > playerDetectionRadius) return false;
+        if (!player) return false;
+        if (player && Vector3.Distance(transform.position, player.transform.position) > playerDetectionRadius) return false;
 
         Vector3 rayStartPosition = transform.position;
         float distance = Vector2.Distance(player.transform.position, rayStartPosition);
