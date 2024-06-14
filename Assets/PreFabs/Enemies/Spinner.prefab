@@ -211,10 +211,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d847c148964e1f4f8da5f35041f2d9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 0
   pointValue: 100
+  bounceMultiplier: 1
   health: 1
+  invincible: 0
   blood: {fileID: 7157367465512552725, guid: 9d457ae5531f8364e82771533d6bfe9f, type: 3}
+  objectsToSpawnOnDeath: []
+  canSwapColors: 0
+  vulnerableFromTop: 1
+  vulnerableFromSide: 0
+  purpleVulnerableFromTop: 0
+  purpleVulnerableFromSide: 0
+  greenVulnerableFromTop: 0
+  greenVulnerableFromSide: 0
 --- !u!50 &3658460609603209622
 Rigidbody2D:
   serializedVersion: 4

@@ -4893,7 +4893,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.058535576, y: 0.20780742}
+  m_Offset: {x: 0, y: 0.37830085}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -4904,7 +4904,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.74949455, y: 0.4677837}
+  m_Size: {x: 0.74949455, y: 0.80877054}
   m_EdgeRadius: 0
 --- !u!50 &7623433174864460848
 Rigidbody2D:
@@ -9829,6 +9829,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6631661580992002475}
   - component: {fileID: 5239471135122581825}
+  - component: {fileID: 1079108625319205950}
   m_Layer: 0
   m_Name: Light 2D
   m_TagString: Untagged
@@ -9901,6 +9902,19 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!114 &1079108625319205950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7495175413401491952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcf2ca90f982d674ca3d84e693acdb7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeSpeed: 0.1
 --- !u!1 &8177042357306595083
 GameObject:
   m_ObjectHideFlags: 0
@@ -10102,6 +10116,7 @@ MonoBehaviour:
   doubleJumpVelocityScaleX: 0.9
   invincibilityTime: 1
   invincibilityBlinkInterval: 0.05
+  damageObject: {fileID: 2271255665232264494, guid: 712f67fd438de3e48920ec1e1a6234e6, type: 3}
   ps: {fileID: 8818750094180516987}
   playerAfterImage: {fileID: 6918043963511426191}
 --- !u!114 &2095105948704731533
