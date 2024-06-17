@@ -67,7 +67,7 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
+            collectedObjects = SaveDataManager.LoadGameData().collectedObjects ?? new HashSet<string>();
             SceneManager.sceneLoaded += OnSceneLoad;
         }
         else
@@ -90,6 +90,7 @@ public class GameController : MonoBehaviour
     {
         levelChangerAnimator.Play("Fade_In", 0, 0f);
         objectPool = new Dictionary<string, Queue<GameObject>>();
+
     }
 
     // ------------------------------
@@ -125,7 +126,10 @@ public class GameController : MonoBehaviour
         OnUpdateHUD?.Invoke();
         if (health <= 0)
         {
+            //Reset Game State
             health = 5;
+            collectedObjects.Clear();
+
             if (deathObject)
             {
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -135,6 +139,7 @@ public class GameController : MonoBehaviour
             }
             else
             {
+                
                 ChangeScene("Main Menu");
             }
 
@@ -228,6 +233,7 @@ public class GameController : MonoBehaviour
 
         SaveData gameData = SaveDataManager.LoadGameData();
         gameData.score = score;
+        gameData.collectedObjects = collectedObjects;
         SaveDataManager.SaveGameData(gameData);
     }
     private void OnApplicationQuit()
