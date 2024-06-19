@@ -68,7 +68,7 @@ public class Enemy : MonoBehaviour
 
             float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y - (hitCollider.bounds.size.y / 2);
             float enemyTop = transform.position.y + collider.offset.y + collider.bounds.size.y / 2;
-            if (vulnerableFromTop && playerBottom > enemyTop && hitPlayer.IsDashing())
+            if (vulnerableFromTop && playerBottom > enemyTop )
             {
                 return;
             }
@@ -106,6 +106,16 @@ public class Enemy : MonoBehaviour
                 hitPlayer.Bounce(bounceMultiplier);
                 
 
+                DamageEnemy(1, true);
+            }
+            else if (vulnerableFromTop && playerBottom > enemyTop)
+            {
+                
+                hitPlayer.ResetCoyoteTime();
+                player.transform.position = new Vector3(player.transform.position.x, enemyTop,player.transform.position.z);
+                hitPlayer.Bounce(1);
+                
+
                 DamageEnemy();
             }
 
@@ -119,18 +129,19 @@ public class Enemy : MonoBehaviour
     }
 
 
-    public void DamageEnemy(int damage = 1)
+    public void DamageEnemy(int damage = 1, bool IsDashing = false)
     {
         if (invincible) return;
         health -= damage;
         if (health <= 0)
         {
-            KillEnemy();
+            KillEnemy(IsDashing);
         }
     }
 
-    public void KillEnemy()
+    public void KillEnemy(bool bonusPoints = false)
     {
+        print("here");
         // GameController.Instance.AddToScore(pointValue);
         if (blood) GameController.Instance.PullFromPool(blood, transform.position);
         GameLight light = GetComponentInChildren<GameLight>();
@@ -143,6 +154,8 @@ public class Enemy : MonoBehaviour
             Instantiate(objectToSpawn, transform.position, Quaternion.identity);
         }
         Destroy(gameObject);
+        GameController.Instance.AddToScore(pointValue);
+        // if (bonusPoints) GameController.Instance.AddToScore(pointValue);
     }
 
 
