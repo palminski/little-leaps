@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.Universal;
 
 public class Enemy : MonoBehaviour
@@ -13,6 +14,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private bool invincible = false;
     [SerializeField] private GameObject blood;
     [SerializeField] private GameObject[] objectsToSpawnOnDeath;
+    [SerializeField] private bool canRespwan = false;
 
     [Header("Vulnerabilities")]
     [SerializeField] private bool canSwapColors = false;
@@ -32,12 +34,18 @@ public class Enemy : MonoBehaviour
     private GameObject playerAttack;
 
     
-
+    private string enemyId;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        enemyId = $"{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
+        if (GameController.Instance.CollectedObjects.Contains(enemyId)) {
+            if(!canRespwan) Destroy(gameObject);
+            pointValue = 0;
+        }
+
         player = GameObject.FindGameObjectWithTag("Player");
         playerAttack = GameObject.FindGameObjectWithTag("PlayerAttack");
     }
@@ -105,6 +113,7 @@ public class Enemy : MonoBehaviour
                 player.transform.position = new Vector3(player.transform.position.x, enemyTop,player.transform.position.z);
                 hitPlayer.Bounce(bounceMultiplier);
                 
+                print("1");
 
                 DamageEnemy(1, true);
             }
@@ -115,7 +124,7 @@ public class Enemy : MonoBehaviour
                 player.transform.position = new Vector3(player.transform.position.x, enemyTop,player.transform.position.z);
                 hitPlayer.Bounce(1);
                 
-
+                print("2");
                 DamageEnemy();
             }
 
@@ -141,7 +150,7 @@ public class Enemy : MonoBehaviour
 
     public void KillEnemy(bool bonusPoints = false)
     {
-        print("here");
+        
         // GameController.Instance.AddToScore(pointValue);
         if (blood) GameController.Instance.PullFromPool(blood, transform.position);
         GameLight light = GetComponentInChildren<GameLight>();
@@ -153,9 +162,10 @@ public class Enemy : MonoBehaviour
         foreach (GameObject objectToSpawn in objectsToSpawnOnDeath) {
             Instantiate(objectToSpawn, transform.position, Quaternion.identity);
         }
+        GameController.Instance.TagObjectStringAsCollected(enemyId);
         Destroy(gameObject);
         GameController.Instance.AddToScore(pointValue);
-        // if (bonusPoints) GameController.Instance.AddToScore(pointValue);
+        if (bonusPoints) GameController.Instance.AddToScore(pointValue);
     }
 
 
