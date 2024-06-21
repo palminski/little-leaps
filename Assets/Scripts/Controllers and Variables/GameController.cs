@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     public Dictionary<string, Queue<GameObject>> objectPool = new Dictionary<string, Queue<GameObject>>();
     [SerializeField] private float waitTimeAfterDamage;
     [SerializeField] private Animator levelChangerAnimator;
+    [SerializeField] private PointCounter pointCounter;
     private int score;
     public int Score
     {
@@ -244,5 +245,17 @@ public class GameController : MonoBehaviour
     public void TestDialogueSystem()
     {
         Debug.Log("TEST");
+    }
+
+    public void ShowPointCounter(int pointsToAdd, Vector3 position)
+    {
+        if (!pointCounter) return;
+        pointCounter.transform.position = position;
+        pointCounter.AddPointsToTotal(pointsToAdd);
+    }
+
+    public void EndPointCombo()
+    {
+        pointCounter.EndCombo();
     }
 }

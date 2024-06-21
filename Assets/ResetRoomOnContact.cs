@@ -9,7 +9,7 @@ public class ResetRoomOnContact : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        print(player);
+        
     }
 
     void OnTriggerEnter2D(Collider2D hitCollider)

@@ -44,7 +44,6 @@ public class Interactable : MonoBehaviour
     
     void OnInteract() {
         if (CanInteractWith() && (FindObjectOfType<DialogueManager>() == null)) {
-            print("test");
             dialogueSystem.GetComponent<DialogueManager>().currentDialogue = dialogueToStart;
             Instantiate(dialogueSystem, transform.position + dialogueSpawnLocationOffset, Quaternion.identity);
         }

@@ -121,7 +121,6 @@ public class Player : MonoBehaviour
         bool isGrounded = movementCollisionHandler.OnGround();
         if (coyoteTime <= 0 && velocity.x != 0 && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
         {
-
             wallJumpTime = maxWallJumpTime;
         }
 
@@ -137,6 +136,7 @@ public class Player : MonoBehaviour
             if (isGrounded)
             {
                 hSpeed = Mathf.MoveTowards(hSpeed, 0, groundFriction);
+                GameController.Instance.EndPointCombo();
             }
             else
             {
@@ -198,6 +198,7 @@ public class Player : MonoBehaviour
             {
                 clingTime = 0;
                 velocity.y = jumpPower;
+                GameController.Instance.EndPointCombo();
                 StopDash();
                 RefreshDashMoves();
             }
@@ -350,7 +351,6 @@ public class Player : MonoBehaviour
     public void Bounce(float bounceMultiplier = 1f)
     {
         velocity.y = jumpPower * bounceMultiplier;
-        print(velocity.y);
         StartCoroutine(StopDashingNextFrame());
         RefreshDashMoves();
     }
@@ -427,7 +427,7 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
         StopDash();
-        print(velocity.y);
+        
     }
 
     private void Dash(float angle)

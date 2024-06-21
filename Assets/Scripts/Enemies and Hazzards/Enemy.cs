@@ -113,7 +113,7 @@ public class Enemy : MonoBehaviour
                 player.transform.position = new Vector3(player.transform.position.x, enemyTop,player.transform.position.z);
                 hitPlayer.Bounce(bounceMultiplier);
                 
-                print("1");
+               
 
                 DamageEnemy(1, true);
             }
@@ -124,7 +124,7 @@ public class Enemy : MonoBehaviour
                 player.transform.position = new Vector3(player.transform.position.x, enemyTop,player.transform.position.z);
                 hitPlayer.Bounce(1);
                 
-                print("2");
+                
                 DamageEnemy();
             }
 
@@ -165,7 +165,12 @@ public class Enemy : MonoBehaviour
         GameController.Instance.TagObjectStringAsCollected(enemyId);
         Destroy(gameObject);
         GameController.Instance.AddToScore(pointValue);
-        if (bonusPoints) GameController.Instance.AddToScore(pointValue);
+        if (pointValue > 0) GameController.Instance.ShowPointCounter(pointValue, transform.position);
+        if (bonusPoints)
+        {
+            GameController.Instance.AddToScore(pointValue);
+            if (pointValue > 0) GameController.Instance.ShowPointCounter(pointValue, transform.position);
+        } 
     }
 
 
