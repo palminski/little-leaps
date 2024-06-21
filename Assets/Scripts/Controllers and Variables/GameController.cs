@@ -247,11 +247,11 @@ public class GameController : MonoBehaviour
         Debug.Log("TEST");
     }
 
-    public void ShowPointCounter(int pointsToAdd, Vector3 position)
+    public void ShowPointCounter(int pointsToAdd, Vector3 position, bool isCombo = true)
     {
         if (!pointCounter) return;
         pointCounter.transform.position = position;
-        pointCounter.AddPointsToTotal(pointsToAdd);
+        pointCounter.AddPointsToTotal(pointsToAdd, isCombo);
     }
 
     public void EndPointCombo()

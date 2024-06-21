@@ -52,6 +52,7 @@ public class Coin : MonoBehaviour
         if (hitCollider.gameObject == player)
         {
             GameController.Instance.AddToScore(pointValue);
+            GameController.Instance.ShowPointCounter(pointValue, player.transform.position + new Vector3(0,1,0), false);
             GameController.Instance.ChangeCharge(chargeValue);
             if (coinParticleSystem)
             {

@@ -8,15 +8,22 @@ public class PointCounter : MonoBehaviour
 {
     private GameObject player;
     [SerializeField] private TMP_Text pointText;
+    [SerializeField] private TMP_Text backgroundText;
+    [SerializeField] private Vector3 offsetFromPlayer;
     private int currentPoints = 0;
 
     private bool canCombo = false;
+
+    private bool stickToPlayer = false;
     void Awake()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    // Update is called once per frame
+    void Update()
+    {
+        if (stickToPlayer) JumpToPlayer();
+    }
     void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -27,23 +34,30 @@ public class PointCounter : MonoBehaviour
         player = GameObject.FindWithTag("Player");
         StopAllCoroutines();
         gameObject.SetActive(false);
+        stickToPlayer = false;
+        currentPoints = 0;
     }
 
     public void JumpToPlayer()
     {
-        if (player) transform.position = player.transform.position;
+        if (player) transform.position = player.transform.position + offsetFromPlayer;
     }
 
-    public void AddPointsToTotal(int pointsToAdd)
+    public void AddPointsToTotal(int pointsToAdd, bool isCombo = true)
     {
         gameObject.SetActive(true);
         if (!canCombo)
         {
             StopAllCoroutines();
-            currentPoints = 0;
+            if (isCombo){
+                currentPoints = 0;
+                stickToPlayer = false;
+            } 
+            if (!isCombo) stickToPlayer = true;
         }
         currentPoints += pointsToAdd;
         pointText.text = currentPoints.ToString();
+        if (backgroundText) backgroundText.text = currentPoints.ToString();
         StartCombo();
         
     }
@@ -65,5 +79,6 @@ public class PointCounter : MonoBehaviour
         yield return new WaitForSeconds(0.7f);
         currentPoints = 0;
         gameObject.SetActive(false);
+        stickToPlayer = false;
     }
 }
