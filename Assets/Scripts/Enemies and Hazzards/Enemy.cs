@@ -110,7 +110,7 @@ public class Enemy : MonoBehaviour
             {
                 
                 hitPlayer.ResetCoyoteTime();
-                player.transform.position = new Vector3(player.transform.position.x, enemyTop,player.transform.position.z);
+                player.transform.position = new Vector3(player.transform.position.x, enemyTop + 0.5f,player.transform.position.z);
                 hitPlayer.Bounce(bounceMultiplier);
                 
                
@@ -121,7 +121,7 @@ public class Enemy : MonoBehaviour
             {
                 
                 hitPlayer.ResetCoyoteTime();
-                player.transform.position = new Vector3(player.transform.position.x, enemyTop,player.transform.position.z);
+                player.transform.position = new Vector3(player.transform.position.x, enemyTop + 0.5f,player.transform.position.z);
                 hitPlayer.Bounce(1);
                 
                 
