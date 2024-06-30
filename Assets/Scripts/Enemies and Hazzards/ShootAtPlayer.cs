@@ -53,7 +53,14 @@ public class ShootAtPlayer : MonoBehaviour
         {
 
             currentBullet = GameController.Instance.PullFromPool(bullet, transform.position);
-            if (player) currentBullet.GetComponent<bullet>().TargetPoint(player.transform.position);
+            if (player && player.transform.position.y < transform.position.y) 
+            {
+                currentBullet.GetComponent<bullet>().TargetPoint(player.transform.position);
+            } 
+            else
+            {
+                currentBullet.GetComponent<bullet>().TargetPoint(transform.position + new Vector3(Random.Range(-1f,1f), -1f, 0));
+            }
             spriteRenderer.color = startingColor;
 
             Collider2D bulletCollider = currentBullet.GetComponent<Collider2D>();
