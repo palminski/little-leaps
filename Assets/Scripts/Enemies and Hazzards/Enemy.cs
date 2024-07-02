@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.Universal;
 
 public class Enemy : MonoBehaviour
@@ -13,6 +14,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private bool invincible = false;
     [SerializeField] private GameObject blood;
     [SerializeField] private GameObject[] objectsToSpawnOnDeath;
+    [SerializeField] private bool canRespwan = false;
 
     [Header("Vulnerabilities")]
     [SerializeField] private bool canSwapColors = false;
@@ -32,12 +34,18 @@ public class Enemy : MonoBehaviour
     private GameObject playerAttack;
 
     
-
+    private string enemyId;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        enemyId = $"{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
+        if (GameController.Instance.CollectedObjects.Contains(enemyId)) {
+            if(!canRespwan) Destroy(gameObject);
+            pointValue = 0;
+        }
+
         player = GameObject.FindGameObjectWithTag("Player");
         playerAttack = GameObject.FindGameObjectWithTag("PlayerAttack");
     }
@@ -68,7 +76,7 @@ public class Enemy : MonoBehaviour
 
             float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y - (hitCollider.bounds.size.y / 2);
             float enemyTop = transform.position.y + collider.offset.y + collider.bounds.size.y / 2;
-            if (vulnerableFromTop && playerBottom > enemyTop && hitPlayer.IsDashing())
+            if (vulnerableFromTop && playerBottom > enemyTop )
             {
                 return;
             }
@@ -102,10 +110,21 @@ public class Enemy : MonoBehaviour
             {
                 
                 hitPlayer.ResetCoyoteTime();
-                player.transform.position = new Vector3(player.transform.position.x, enemyTop,player.transform.position.z);
+                player.transform.position = new Vector3(player.transform.position.x, enemyTop + 0.5f,player.transform.position.z);
                 hitPlayer.Bounce(bounceMultiplier);
                 
+               
 
+                DamageEnemy(1, true);
+            }
+            else if (vulnerableFromTop && playerBottom > enemyTop)
+            {
+                
+                hitPlayer.ResetCoyoteTime();
+                player.transform.position = new Vector3(player.transform.position.x, enemyTop + 0.5f,player.transform.position.z);
+                hitPlayer.Bounce(1);
+                
+                
                 DamageEnemy();
             }
 
@@ -119,18 +138,19 @@ public class Enemy : MonoBehaviour
     }
 
 
-    public void DamageEnemy(int damage = 1)
+    public void DamageEnemy(int damage = 1, bool IsDashing = false)
     {
         if (invincible) return;
         health -= damage;
         if (health <= 0)
         {
-            KillEnemy();
+            KillEnemy(IsDashing);
         }
     }
 
-    public void KillEnemy()
+    public void KillEnemy(bool bonusPoints = false)
     {
+        
         // GameController.Instance.AddToScore(pointValue);
         if (blood) GameController.Instance.PullFromPool(blood, transform.position);
         GameLight light = GetComponentInChildren<GameLight>();
@@ -142,7 +162,15 @@ public class Enemy : MonoBehaviour
         foreach (GameObject objectToSpawn in objectsToSpawnOnDeath) {
             Instantiate(objectToSpawn, transform.position, Quaternion.identity);
         }
+        GameController.Instance.TagObjectStringAsCollected(enemyId);
         Destroy(gameObject);
+        GameController.Instance.AddToScore(pointValue);
+        if (pointValue > 0) GameController.Instance.ShowPointCounter(pointValue, transform.position);
+        if (bonusPoints)
+        {
+            GameController.Instance.AddToScore(pointValue);
+            if (pointValue > 0) GameController.Instance.ShowPointCounter(pointValue, transform.position);
+        } 
     }
 
 

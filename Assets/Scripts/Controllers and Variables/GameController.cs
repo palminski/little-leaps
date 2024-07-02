@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     public Dictionary<string, Queue<GameObject>> objectPool = new Dictionary<string, Queue<GameObject>>();
     [SerializeField] private float waitTimeAfterDamage;
     [SerializeField] private Animator levelChangerAnimator;
+    [SerializeField] private PointCounter pointCounter;
     private int score;
     public int Score
     {
@@ -67,7 +68,7 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
+            collectedObjects = SaveDataManager.LoadGameData().collectedObjects ?? new HashSet<string>();
             SceneManager.sceneLoaded += OnSceneLoad;
         }
         else
@@ -90,6 +91,7 @@ public class GameController : MonoBehaviour
     {
         levelChangerAnimator.Play("Fade_In", 0, 0f);
         objectPool = new Dictionary<string, Queue<GameObject>>();
+
     }
 
     // ------------------------------
@@ -125,7 +127,10 @@ public class GameController : MonoBehaviour
         OnUpdateHUD?.Invoke();
         if (health <= 0)
         {
+            //Reset Game State
             health = 5;
+            collectedObjects.Clear();
+
             if (deathObject)
             {
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -135,6 +140,7 @@ public class GameController : MonoBehaviour
             }
             else
             {
+                
                 ChangeScene("Main Menu");
             }
 
@@ -228,6 +234,7 @@ public class GameController : MonoBehaviour
 
         SaveData gameData = SaveDataManager.LoadGameData();
         gameData.score = score;
+        gameData.collectedObjects = collectedObjects;
         SaveDataManager.SaveGameData(gameData);
     }
     private void OnApplicationQuit()
@@ -238,5 +245,17 @@ public class GameController : MonoBehaviour
     public void TestDialogueSystem()
     {
         Debug.Log("TEST");
+    }
+
+    public void ShowPointCounter(int pointsToAdd, Vector3 position, bool isCombo = true)
+    {
+        if (!pointCounter) return;
+        pointCounter.transform.position = position;
+        pointCounter.AddPointsToTotal(pointsToAdd, isCombo);
+    }
+
+    public void EndPointCombo()
+    {
+        pointCounter.EndCombo();
     }
 }

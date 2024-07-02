@@ -35,6 +35,9 @@ public class CameraControls : MonoBehaviour
     [Header("Color")]
      private float colorFadeSpeed = 2;
      private float colorDarkness = 0.8f;
+     private float finalColorDarkness = 0.9f;
+
+     private Color targetColor;
     private Camera cam;
     private Color colorForRS0;
 
@@ -55,6 +58,13 @@ public class CameraControls : MonoBehaviour
         highestPoint = transform.position.y;
         if (!tilemap) tilemap = GameObject.Find("environment").GetComponent<Tilemap>();
 
+        if (GameController.Instance.RoomState == RoomColor.Purple) {
+            targetColor = Color.Lerp(colorForRS0, Color.black, finalColorDarkness);
+        }
+        else {
+            targetColor = Color.Lerp(colorForRS1, Color.black, finalColorDarkness);
+        }
+        cam.backgroundColor = targetColor;
     }
 
     void FixedUpdate()
@@ -99,7 +109,7 @@ public class CameraControls : MonoBehaviour
     
     private void Update()
     {
-        cam.backgroundColor = Color.Lerp(cam.backgroundColor, Color.black, colorFadeSpeed*Time.deltaTime);
+        cam.backgroundColor = Color.Lerp(cam.backgroundColor, targetColor, colorFadeSpeed*Time.deltaTime);
     }
 
     public void SnapToPosition(Transform target)
@@ -111,10 +121,11 @@ public class CameraControls : MonoBehaviour
     {
         if (GameController.Instance.RoomState == RoomColor.Purple) {
             cam.backgroundColor = Color.Lerp(colorForRS0, Color.black, colorDarkness);
-            
+            targetColor = Color.Lerp(colorForRS0, Color.black, finalColorDarkness);
         }
         else {
             cam.backgroundColor = Color.Lerp(colorForRS1, Color.black, colorDarkness);
+            targetColor = Color.Lerp(colorForRS1, Color.black, finalColorDarkness);
         }
     }
 

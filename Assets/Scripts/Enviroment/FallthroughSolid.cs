@@ -26,6 +26,7 @@ public class FallthroughSolid : MonoBehaviour
         playerControls = new PlayerControls();
         passableIndex = LayerMask.NameToLayer("PlayerCanPass");
         solidIndex = LayerMask.NameToLayer("SolidPlatform");
+        gameObject.layer = solidIndex;
     }
 
     void OnEnable() {
