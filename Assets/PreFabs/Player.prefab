@@ -4960,7 +4960,7 @@ Transform:
   m_GameObject: {fileID: 5909921113795742098}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10099,11 +10099,11 @@ MonoBehaviour:
   coyoteTimeMax: 4
   jumpBuffer: 0.5
   gravity: 0.06
-  terminalYVelocity: 1
+  terminalYVelocity: 0.8
   wallJumpPower: 0.75
   wallJumpOffset: 0.5
   wallJumpXPower: 0.32
-  distanceWallsDetectable: 0.3
+  distanceWallsDetectable: 0.15
   distanceClingStarts: 0.05
   wallClingGravityModifier: 0.2
   wallJumpForgiveness: 0.02
