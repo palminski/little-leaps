@@ -48,10 +48,14 @@ public class GameController : MonoBehaviour
         get { return charge; }
     }
 
+    
+
     public int ChargeMax
     {
         get { return 100; }
     }
+
+    
 
     private HashSet<string> collectedObjects = new HashSet<string>();
     public HashSet<string> CollectedObjects

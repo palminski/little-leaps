@@ -332,6 +332,11 @@ public class Player : MonoBehaviour
 
 
     }
+
+    public void SetPlayerSpawnPointToTransform(Transform transform)
+    {
+        startPosition = transform.position;
+    }
     public void RemovePlayer()
     {
             GameLight light = GetComponentInChildren<GameLight>();
