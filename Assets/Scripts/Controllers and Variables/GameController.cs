@@ -116,6 +116,11 @@ public class GameController : MonoBehaviour
     // ------------------------------
     // Update Variables in Controller
     // ------------------------------
+    public void ResetGameState()
+    {
+            health = 5;
+            collectedObjects.Clear();
+    }
     public int AddToScore(int pointsToAdd)
     {
         score += pointsToAdd;
@@ -124,45 +129,61 @@ public class GameController : MonoBehaviour
     }
     public int ChangeHealth(int healthChange, bool shouldResetRoom = false)
     {
+        if( health <= 0) return 0;
         if (healthChange < 0) OnPlayerDamaged?.Invoke();
         health += healthChange;
         ChangeCharge(0);
         health = Mathf.Clamp(health, 0, maxHealth);
         OnUpdateHUD?.Invoke();
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        Player playerScript = player.GetComponent<Player>();
         if (health <= 0)
         {
             //Reset Game State
-            health = 5;
-            collectedObjects.Clear();
+            
 
             if (deathObject)
             {
-                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                // GameObject player = GameObject.FindGameObjectWithTag("Player");
                 
                 GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
                 _deathObject.transform.SetParent(null);
+                // print(player);
+                _deathObject.GetComponentInChildren<DeathScript>().SetPlayer(player);
+                
             }
             else
             {
-                
+                ResetGameState();
                 ChangeScene("Main Menu");
             }
 
         }
-        else if(shouldResetRoom)
+        else if(healthChange < 0)
         {
-            StartCoroutine(WaitAndChangeScene(waitTimeAfterDamage));
+
+            if(shouldResetRoom) {
+                StartCoroutine(WaitAndChangeScene(waitTimeAfterDamage));
+
+            }
+            else 
+            {
+                playerScript.HideAndStartRespawn();
+            }
         }
         return health;
     }
 
-    public IEnumerator WaitAndReactivateGameObjectAtPosition(GameObject objectToReactivate, Vector3 position, float timeToWait)
+    public IEnumerator WaitAndReactivatePlayer(Player player, float timeToWait)
     {
         
         yield return new WaitForSeconds(timeToWait);
+        if (player)
+        {
+            player.Respawn();
+        }
         
-        objectToReactivate.transform.position = position;
-        objectToReactivate.SetActive(true);
     }
 
     IEnumerator WaitAndChangeScene(float timeToWait)

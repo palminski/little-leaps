@@ -9914,7 +9914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcf2ca90f982d674ca3d84e693acdb7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeSpeed: 0.1
+  fadeSpeed: 0.3
 --- !u!1 &8177042357306595083
 GameObject:
   m_ObjectHideFlags: 0
@@ -10113,10 +10113,12 @@ MonoBehaviour:
   fastFallhDuration: 0.18
   xDashPower: 0.92
   verticalDashPower: 0.75
+  downDashPower: 1
   doubleJumpVelocityScaleX: 0.9
   invincibilityTime: 1
   invincibilityBlinkInterval: 0.05
   damageObject: {fileID: 2271255665232264494, guid: 712f67fd438de3e48920ec1e1a6234e6, type: 3}
+  respawnObject: {fileID: 2271255665232264494, guid: 712f67fd438de3e48920ec1e1a6234e6, type: 3}
   ps: {fileID: 8818750094180516987}
   playerAfterImage: {fileID: 6918043963511426191}
 --- !u!114 &2095105948704731533

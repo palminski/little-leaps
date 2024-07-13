@@ -44,7 +44,7 @@ public class MainMenu : MonoBehaviour
         // SaveData saveData = SaveDataManager.LoadGameData();
         // GameController.Instance.AddToScore(saveData.score);
         LevelConnection.ActiveConnection = null;
-        GameController.Instance.ChangeHealth(100);
+        GameController.Instance.ResetGameState();
         GameController.Instance.ChangeScene("Main Room");
     }
     public void Debug()

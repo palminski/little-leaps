@@ -76,6 +76,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float invincibilityTime = 3;
     [SerializeField] private float invincibilityBlinkInterval = 0.0001f;
     [SerializeField] private GameObject damageObject;
+    [SerializeField] private GameObject respawnObject;
 
     [Header("Particles")]
     [SerializeField] private ParticleSystem ps;
@@ -106,12 +107,6 @@ public class Player : MonoBehaviour
     }
     private void OnEnable()
     {
-        xInput=0;
-        StopDash();
-        velocity.x=0;
-        hSpeed=0;
-        velocity.y=0;
-        hExtraSpeed = 0;
         jumpAction.Enable();
     }
     private void OnDisable()
@@ -205,7 +200,7 @@ public class Player : MonoBehaviour
         {
             if (coyoteTime > 0 || movementCollisionHandler.OnGroundAtDist(jumpBuffer))
             {
-                if(coyoteTime <= 0) movementCollisionHandler.Move(new Vector3(0,-1,0));
+                if (coyoteTime <= 0) movementCollisionHandler.Move(new Vector3(0, -1, 0));
                 clingTime = 0;
                 velocity.y = jumpPower;
                 GameController.Instance.EndPointCombo();
@@ -328,32 +323,58 @@ public class Player : MonoBehaviour
         // transform.position = startPosition;
         GameController.Instance.ChangeHealth(-damageDelt, false);
         // invincibilityCountdown = invincibilityTime;
-            if(GameController.Instance.Health < 5)
-            {
-                GameController.Instance.StartCoroutine(GameController.Instance.WaitAndReactivateGameObjectAtPosition(gameObject,startPosition, 1f));
-                gameObject.SetActive(false);
-            }
+
+    }
+
+    public void HideAndStartRespawn()
+    {
+
+        GameLight light = GetComponentInChildren<GameLight>();
+        GameObject newLight = Instantiate(light.gameObject, light.gameObject.transform);
+        light = newLight.GetComponentInChildren<GameLight>();
+        if (light)
+        {
+            light.transform.SetParent(null);
+            light.Fade();
+        }
+
+        GameController.Instance.StartCoroutine(GameController.Instance.WaitAndReactivatePlayer(this, 1f));
+        gameObject.SetActive(false);
+
         if (damageObject)
         {
             Instantiate(damageObject, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
-            
-            
-            
-            
         }
-
-
     }
-    
+
+    public void Respawn()
+    {
+        invincibilityCountdown = invincibilityTime;
+        xInput = 0;
+        StopDash();
+        velocity.x = 0;
+        hSpeed = 0;
+        velocity.y = 0;
+        hExtraSpeed = 0;
+        Vector3 newScale = new(transform.position.x < startPosition.x ? -1 : 1, 1, 1);
+        transform.position = startPosition;
+        transform.localScale = newScale;
+        if (respawnObject)
+        {
+            Instantiate(respawnObject, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
+        }
+        gameObject.SetActive(true);
+    }
+
     public void RemovePlayer()
     {
         GameLight light = GetComponentInChildren<GameLight>();
-            if (light)
-            {
-                light.transform.SetParent(null);
-                light.Fade();
-                Destroy(gameObject);
-            }
+        if (light)
+        {
+            light.transform.SetParent(null);
+            light.Fade();
+            Destroy(gameObject);
+        }
     }
     public void SetPlayerSpawnPointToTransform(Transform transform)
     {
@@ -391,7 +412,7 @@ public class Player : MonoBehaviour
     private IEnumerator WaitCheckAndDamage()
     {
         yield return new WaitForFixedUpdate();
-        
+
         if (movementCollisionHandler.InGround()) Damage();
     }
     private IEnumerator HandleDashState(float durationOfDash)
@@ -444,7 +465,7 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
         StopDash();
-        
+
     }
 
     private void Dash(float angle)
