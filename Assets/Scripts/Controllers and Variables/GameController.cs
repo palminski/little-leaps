@@ -138,7 +138,7 @@ public class GameController : MonoBehaviour
             if (deathObject)
             {
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
-
+                
                 GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
                 _deathObject.transform.SetParent(null);
             }
@@ -154,6 +154,15 @@ public class GameController : MonoBehaviour
             StartCoroutine(WaitAndChangeScene(waitTimeAfterDamage));
         }
         return health;
+    }
+
+    public IEnumerator WaitAndReactivateGameObjectAtPosition(GameObject objectToReactivate, Vector3 position, float timeToWait)
+    {
+        
+        yield return new WaitForSeconds(timeToWait);
+        
+        objectToReactivate.transform.position = position;
+        objectToReactivate.SetActive(true);
     }
 
     IEnumerator WaitAndChangeScene(float timeToWait)

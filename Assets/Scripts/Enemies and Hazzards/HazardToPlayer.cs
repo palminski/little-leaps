@@ -23,7 +23,7 @@ public class HazardToPlayer : MonoBehaviour
             {
                 int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
                 hitPlayer.Damage(1, directionToShove);
-                hitPlayer.Shove(directionToShove);
+                // hitPlayer.Shove(directionToShove);
             }
         }
     }

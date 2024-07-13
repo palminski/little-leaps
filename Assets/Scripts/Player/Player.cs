@@ -106,6 +106,12 @@ public class Player : MonoBehaviour
     }
     private void OnEnable()
     {
+        xInput=0;
+        StopDash();
+        velocity.x=0;
+        hSpeed=0;
+        velocity.y=0;
+        hExtraSpeed = 0;
         jumpAction.Enable();
     }
     private void OnDisable()
@@ -320,32 +326,38 @@ public class Player : MonoBehaviour
     {
         if (IsInvincible()) return;
         // transform.position = startPosition;
-        GameController.Instance.ChangeHealth(-damageDelt, true);
+        GameController.Instance.ChangeHealth(-damageDelt, false);
         // invincibilityCountdown = invincibilityTime;
-
+            if(GameController.Instance.Health < 5)
+            {
+                GameController.Instance.StartCoroutine(GameController.Instance.WaitAndReactivateGameObjectAtPosition(gameObject,startPosition, 1f));
+                gameObject.SetActive(false);
+            }
         if (damageObject)
         {
             Instantiate(damageObject, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
             
-            RemovePlayer();
+            
+            
+            
         }
 
 
     }
-
-    public void SetPlayerSpawnPointToTransform(Transform transform)
-    {
-        startPosition = transform.position;
-    }
+    
     public void RemovePlayer()
     {
-            GameLight light = GetComponentInChildren<GameLight>();
+        GameLight light = GetComponentInChildren<GameLight>();
             if (light)
             {
                 light.transform.SetParent(null);
                 light.Fade();
                 Destroy(gameObject);
             }
+    }
+    public void SetPlayerSpawnPointToTransform(Transform transform)
+    {
+        startPosition = transform.position;
     }
     public void Shove(int direction)
     {
