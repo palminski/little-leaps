@@ -364,6 +364,7 @@ public class Player : MonoBehaviour
             Instantiate(respawnObject, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
         }
         gameObject.SetActive(true);
+        StopDash();
     }
 
     public void RemovePlayer()

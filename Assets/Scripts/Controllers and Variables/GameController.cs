@@ -151,6 +151,7 @@ public class GameController : MonoBehaviour
                 _deathObject.transform.SetParent(null);
                 // print(player);
                 _deathObject.GetComponentInChildren<DeathScript>().SetPlayer(player);
+                player.SetActive(false);
                 
             }
             else
