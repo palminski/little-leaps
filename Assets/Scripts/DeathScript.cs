@@ -11,11 +11,8 @@ public class DeathScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
-        transform.localScale = player.transform.localScale;
-        transform.localScale = player.transform.localScale;
-        Camera.main.GetComponent<CameraControls>().canMove = false;
         playerDeathImage = GetComponent<Image>();
+        Camera.main.GetComponent<CameraControls>().canMove = false;
 
         if (GameController.Instance.RoomState == RoomColor.Purple) {
             playerDeathImage.color = GameController.ColorForPurple;
@@ -32,8 +29,17 @@ public class DeathScript : MonoBehaviour
         newColor.a -= fadeSpeed * Time.deltaTime;
         if (newColor.a <= 0) {
              GameController.Instance.ChangeScene("Main Menu");
+             GameController.Instance.ResetGameState();
              Destroy(gameObject);
         }
         playerDeathImage.color = newColor;
+    }
+
+    public void SetPlayer(GameObject player)
+    {
+        
+        transform.localScale = player.transform.localScale;
+        transform.localScale = player.transform.localScale;
+        
     }
 }

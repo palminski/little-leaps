@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+[RequireComponent(typeof(Enemy))]
 [RequireComponent(typeof(MovementCollisionHandler))]
 public class EnemyPatrol : MonoBehaviour
 {
@@ -20,7 +20,7 @@ public class EnemyPatrol : MonoBehaviour
     [SerializeField]
     private float hopDetectionHeight = 1;
 
-
+private Enemy enemy;
 
     [SerializeField]
     private bool startRight = true;
@@ -39,6 +39,7 @@ public class EnemyPatrol : MonoBehaviour
     void Start()
     {
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
+        enemy = GetComponent<Enemy>();
         collider2d = GetComponent<Collider2D>();
         direction = startRight ? 1 : -1;
     }
@@ -83,6 +84,10 @@ public class EnemyPatrol : MonoBehaviour
             Vector3 newScale = new(direction, 1, 1);
             transform.localScale = newScale;
         }
+        if (movementCollisionHandler.InGround())
+        {
+            StartCoroutine(WaitCheckAndDamage());
+        }
     }
 
     private bool IsAtEdge()
@@ -115,5 +120,12 @@ public class EnemyPatrol : MonoBehaviour
     private void TurnAround()
     {
         direction = -direction;
+    }
+
+    private IEnumerator WaitCheckAndDamage()
+    {
+        yield return new WaitForFixedUpdate();
+
+        if (movementCollisionHandler.InGround()) enemy.KillEnemy();
     }
 }

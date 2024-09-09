@@ -33,9 +33,9 @@ public class CameraControls : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
 
     [Header("Color")]
-     private float colorFadeSpeed = 2;
-     private float colorDarkness = 0.8f;
-     private float finalColorDarkness = 0.9f;
+    [SerializeField] private float colorFadeSpeed = 2;
+    [SerializeField] private float colorDarkness = 0.8f;
+    [SerializeField] private float finalColorDarkness = 1f;
 
      private Color targetColor;
     private Camera cam;

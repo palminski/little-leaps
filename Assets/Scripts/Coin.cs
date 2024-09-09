@@ -66,7 +66,7 @@ public class Coin : MonoBehaviour
     }
 
     private bool ShouldMoveTowardsPlayer() {
-        if (player && Vector2.Distance(transform.position, player.transform.position) <= magnetRadius) return true;
+        if (player && player.activeSelf && Vector2.Distance(transform.position, player.transform.position) <= magnetRadius) return true;
         return false;
     }
 

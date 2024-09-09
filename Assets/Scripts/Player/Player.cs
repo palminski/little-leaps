@@ -66,6 +66,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float fastFallhDuration = 0.2f;
     [SerializeField] private float xDashPower = 0.5f;
     [SerializeField] private float verticalDashPower = 0.2f;
+    [SerializeField] private float downDashPower = 1f;
     [SerializeField] private float doubleJumpVelocityScaleX = 1;
     private bool canDash = true;
     private bool canDoubleJump = true;
@@ -75,6 +76,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float invincibilityTime = 3;
     [SerializeField] private float invincibilityBlinkInterval = 0.0001f;
     [SerializeField] private GameObject damageObject;
+    [SerializeField] private GameObject respawnObject;
 
     [Header("Particles")]
     [SerializeField] private ParticleSystem ps;
@@ -186,7 +188,9 @@ public class Player : MonoBehaviour
 
         if (!isDashing || velocity.y > 0) velocity.y -= gravity * gravityModifier;
 
+        //
         // -- Jumping --
+        //
         if (isGrounded)
         {
             coyoteTime = coyoteTimeMax;
@@ -196,6 +200,7 @@ public class Player : MonoBehaviour
         {
             if (coyoteTime > 0 || movementCollisionHandler.OnGroundAtDist(jumpBuffer))
             {
+                if (coyoteTime <= 0) movementCollisionHandler.Move(new Vector3(0, -1, 0));
                 clingTime = 0;
                 velocity.y = jumpPower;
                 GameController.Instance.EndPointCombo();
@@ -204,7 +209,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                if ((wallJumpTime > 0 || movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) && ((xInput == 0 && (wallJumpTime > 0 || clingTime > 0)) || (xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump))))
+                if ((wallJumpTime > 0 || movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) && ((xInput == 0) || (xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump))))
                 {
                     clingTime = 0;
                     movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump, 0, 0));
@@ -230,7 +235,8 @@ public class Player : MonoBehaviour
             }
         }
 
-        velocity.y = Mathf.Clamp(velocity.y, -terminalYVelocity * gravityModifier, terminalYVelocity * 5);
+        float lowerLimit = isDashing ? downDashPower : terminalYVelocity;
+        velocity.y = Mathf.Clamp(velocity.y, -lowerLimit, terminalYVelocity * 5);
 
         if (coyoteTime > 0) coyoteTime--;
         if (clingTime > 0) clingTime--;
@@ -315,30 +321,65 @@ public class Player : MonoBehaviour
     {
         if (IsInvincible()) return;
         // transform.position = startPosition;
-        GameController.Instance.ChangeHealth(-damageDelt, true);
+        GameController.Instance.ChangeHealth(-damageDelt, false);
         // invincibilityCountdown = invincibilityTime;
+
+    }
+
+    public void HideAndStartRespawn()
+    {
+
+        GameLight light = GetComponentInChildren<GameLight>();
+        GameObject newLight = Instantiate(light.gameObject, light.gameObject.transform);
+        light = newLight.GetComponentInChildren<GameLight>();
+        if (light)
+        {
+            light.transform.SetParent(null);
+            light.Fade();
+        }
+
+        GameController.Instance.StartCoroutine(GameController.Instance.WaitAndReactivatePlayer(this, 1f));
+        gameObject.SetActive(false);
 
         if (damageObject)
         {
-            Rigidbody2D damageObjectRigidBody = Instantiate(damageObject, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity).GetComponent<Rigidbody2D>();
-            if (damageObjectRigidBody)
-            {
-                damageObjectRigidBody.AddForce(new Vector2(200 * directionToToss, 200));
-            }
-            RemovePlayer();
+            Instantiate(damageObject, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
         }
-
-
     }
+
+    public void Respawn()
+    {
+        invincibilityCountdown = invincibilityTime;
+        xInput = 0;
+        StopDash();
+        velocity.x = 0;
+        hSpeed = 0;
+        velocity.y = 0;
+        hExtraSpeed = 0;
+        Vector3 newScale = new(transform.position.x < startPosition.x ? -1 : 1, 1, 1);
+        transform.position = startPosition;
+        transform.localScale = newScale;
+        if (respawnObject)
+        {
+            Instantiate(respawnObject, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
+        }
+        gameObject.SetActive(true);
+        StopDash();
+    }
+
     public void RemovePlayer()
     {
-            GameLight light = GetComponentInChildren<GameLight>();
-            if (light)
-            {
-                light.transform.SetParent(null);
-                light.Fade();
-                Destroy(gameObject);
-            }
+        GameLight light = GetComponentInChildren<GameLight>();
+        if (light)
+        {
+            light.transform.SetParent(null);
+            light.Fade();
+            Destroy(gameObject);
+        }
+    }
+    public void SetPlayerSpawnPointToTransform(Transform transform)
+    {
+        startPosition = transform.position;
     }
     public void Shove(int direction)
     {
@@ -372,9 +413,7 @@ public class Player : MonoBehaviour
     private IEnumerator WaitCheckAndDamage()
     {
         yield return new WaitForFixedUpdate();
-        yield return new WaitForFixedUpdate();
-        yield return new WaitForFixedUpdate();
-        yield return new WaitForFixedUpdate();
+
         if (movementCollisionHandler.InGround()) Damage();
     }
     private IEnumerator HandleDashState(float durationOfDash)
@@ -427,7 +466,7 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
         StopDash();
-        
+
     }
 
     private void Dash(float angle)
@@ -440,7 +479,7 @@ public class Player : MonoBehaviour
             velocity.x = 0;
             hExtraSpeed = 0;
             hSpeed = 0;
-            velocity.y = -terminalYVelocity;
+            velocity.y = -downDashPower;
             return;
         }
         // Double Jump

@@ -4960,7 +4960,7 @@ Transform:
   m_GameObject: {fileID: 5909921113795742098}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9914,7 +9914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcf2ca90f982d674ca3d84e693acdb7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeSpeed: 0.1
+  fadeSpeed: 0.3
 --- !u!1 &8177042357306595083
 GameObject:
   m_ObjectHideFlags: 0
@@ -10099,11 +10099,11 @@ MonoBehaviour:
   coyoteTimeMax: 4
   jumpBuffer: 0.5
   gravity: 0.06
-  terminalYVelocity: 1
+  terminalYVelocity: 0.8
   wallJumpPower: 0.75
   wallJumpOffset: 0.5
   wallJumpXPower: 0.32
-  distanceWallsDetectable: 0.3
+  distanceWallsDetectable: 0.15
   distanceClingStarts: 0.05
   wallClingGravityModifier: 0.2
   wallJumpForgiveness: 0.02
@@ -10113,10 +10113,12 @@ MonoBehaviour:
   fastFallhDuration: 0.18
   xDashPower: 0.92
   verticalDashPower: 0.75
+  downDashPower: 1
   doubleJumpVelocityScaleX: 0.9
   invincibilityTime: 1
   invincibilityBlinkInterval: 0.05
   damageObject: {fileID: 2271255665232264494, guid: 712f67fd438de3e48920ec1e1a6234e6, type: 3}
+  respawnObject: {fileID: 2271255665232264494, guid: 712f67fd438de3e48920ec1e1a6234e6, type: 3}
   ps: {fileID: 8818750094180516987}
   playerAfterImage: {fileID: 6918043963511426191}
 --- !u!114 &2095105948704731533
