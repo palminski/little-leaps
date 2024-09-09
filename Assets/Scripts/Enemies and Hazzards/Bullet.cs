@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class bullet : MonoBehaviour
@@ -22,16 +23,30 @@ public class bullet : MonoBehaviour
         transform.Translate(speed * Time.deltaTime * direction);
     }
 
-    public void TargetPoint(Vector3 target) {
+    public void TargetPoint(Vector3 target)
+    {
         direction = Vector3.Normalize(target - transform.position);
     }
 
     void OnTriggerEnter2D(Collider2D hitCollider)
     {
-        if (hitCollider.gameObject.CompareTag("PlayerAttack")) return;
+        if (hitCollider.gameObject.CompareTag("PlayerAttack"))
+        {
+            return;
+        }
+        if (hitCollider.gameObject.CompareTag("Player"))
+        {
+            Player player = hitCollider.gameObject.GetComponent<Player>();
+            int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
+            player.Damage(1, directionToShove);
+            ps.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+            ps.transform.SetParent(null);
+            gameObject.SetActive(false);
+        }
+
         ps.Stop(false, ParticleSystemStopBehavior.StopEmitting);
         ps.transform.SetParent(null);
         gameObject.SetActive(false);
-        
+
     }
 }

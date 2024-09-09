@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+[RequireComponent(typeof(Enemy))]
 [RequireComponent(typeof(MovementCollisionHandler))]
 public class EnemyFloatAimless : MonoBehaviour
 {
@@ -13,8 +13,8 @@ public class EnemyFloatAimless : MonoBehaviour
     private Vector2 startDirection;
     
     private Vector2 direction = new(1,1);
-
     
+    private Enemy enemy;
 
     private MovementCollisionHandler movementCollisionHandler;
     
@@ -24,7 +24,7 @@ public class EnemyFloatAimless : MonoBehaviour
     void Start()
     {
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
-        
+        enemy = GetComponent<Enemy>();
     
 
         direction = startDirection.normalized;    
@@ -57,10 +57,21 @@ public class EnemyFloatAimless : MonoBehaviour
             Vector3 newScale = new(Mathf.Sign(direction.x), 1, 1);
             transform.localScale = newScale;
         }
+        if (movementCollisionHandler.InGround())
+        {
+            StartCoroutine(WaitCheckAndDamage());
+        }
     }
 
     void OnDrawGizmos()
     {
         Debug.DrawRay(transform.position, startDirection.normalized, Color.cyan);
+    }
+
+    private IEnumerator WaitCheckAndDamage()
+    {
+        yield return new WaitForFixedUpdate();
+
+        if (movementCollisionHandler.InGround()) enemy.KillEnemy();
     }
 }
