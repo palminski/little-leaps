@@ -48,19 +48,25 @@ public class GameController : MonoBehaviour
         get { return charge; }
     }
 
-    
+
 
     public int ChargeMax
     {
         get { return 100; }
     }
 
-    
+
 
     private HashSet<string> collectedObjects = new HashSet<string>();
     public HashSet<string> CollectedObjects
     {
         get { return collectedObjects; }
+    }
+
+    private Dictionary<string, GameObject> followingObjects = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> FollowingObjects
+    {
+        get { return followingObjects; }
     }
 
     // ----------------------------------------------------------------------------------
@@ -96,6 +102,21 @@ public class GameController : MonoBehaviour
         levelChangerAnimator.Play("Fade_In", 0, 0f);
         objectPool = new Dictionary<string, Queue<GameObject>>();
 
+        foreach (KeyValuePair<string, GameObject> entry in followingObjects)
+        {
+            if (entry.Value)
+            {
+                FollowPlayer followPlayer = entry.Value.GetComponent<FollowPlayer>();
+                if (followPlayer)
+                {
+                    followPlayer.AssignToPlayer();
+                }
+                else
+                {
+                    RemoveFollowingObject(entry.Key);
+                }
+            }
+        }
     }
 
     // ------------------------------
@@ -118,8 +139,16 @@ public class GameController : MonoBehaviour
     // ------------------------------
     public void ResetGameState()
     {
-            health = 5;
-            collectedObjects.Clear();
+        health = 5;
+        collectedObjects.Clear();
+        foreach (KeyValuePair<string, GameObject> entry in followingObjects)
+        {
+            if (entry.Value)
+            {
+                Destroy(entry.Value);
+            }
+        }
+        followingObjects.Clear();
     }
     public int AddToScore(int pointsToAdd)
     {
@@ -129,7 +158,7 @@ public class GameController : MonoBehaviour
     }
     public int ChangeHealth(int healthChange, bool shouldResetRoom = false)
     {
-        if( health <= 0) return 0;
+        if (health <= 0) return 0;
         if (healthChange < 0) OnPlayerDamaged?.Invoke();
         health += healthChange;
         ChangeCharge(0);
@@ -141,18 +170,18 @@ public class GameController : MonoBehaviour
         if (health <= 0)
         {
             //Reset Game State
-            
+
 
             if (deathObject)
             {
                 // GameObject player = GameObject.FindGameObjectWithTag("Player");
-                
+
                 GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
                 _deathObject.transform.SetParent(null);
                 // print(player);
                 _deathObject.GetComponentInChildren<DeathScript>().SetPlayer(player);
                 player.SetActive(false);
-                
+
             }
             else
             {
@@ -161,14 +190,15 @@ public class GameController : MonoBehaviour
             }
 
         }
-        else if(healthChange < 0)
+        else if (healthChange < 0)
         {
 
-            if(shouldResetRoom) {
+            if (shouldResetRoom)
+            {
                 StartCoroutine(WaitAndChangeScene(waitTimeAfterDamage));
 
             }
-            else 
+            else
             {
                 playerScript.HideAndStartRespawn();
             }
@@ -178,13 +208,13 @@ public class GameController : MonoBehaviour
 
     public IEnumerator WaitAndReactivatePlayer(Player player, float timeToWait)
     {
-        
+
         yield return new WaitForSeconds(timeToWait);
         if (player)
         {
             player.Respawn();
         }
-        
+
     }
 
     IEnumerator WaitAndChangeScene(float timeToWait)
@@ -215,6 +245,22 @@ public class GameController : MonoBehaviour
     public void TagObjectStringAsCollected(string objectKey)
     {
         collectedObjects.Add(objectKey);
+    }
+
+    public void AddFollowingObjects(string objectKey, GameObject gameObject)
+    {
+        if (followingObjects.ContainsKey(objectKey)) return;
+        followingObjects.Add(objectKey, gameObject);
+    }
+    public void RemoveFollowingObject(string objectKey)
+    {
+        if (!followingObjects.ContainsKey(objectKey)) return;
+        followingObjects.TryGetValue(objectKey, out GameObject obj);
+        if (obj)
+        {
+            Destroy(obj);
+        }
+        followingObjects.Remove(objectKey);
     }
 
 
