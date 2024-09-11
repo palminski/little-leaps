@@ -1776,6 +1776,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4416711328762207460, guid: ea941d3f03aa65948a8ecce9c157aa94, type: 3}
+      propertyPath: behavior
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4416711328762207460, guid: ea941d3f03aa65948a8ecce9c157aa94, type: 3}
+      propertyPath: OpenEvent
+      value: 
+      objectReference: {fileID: 11400000, guid: 03df8f9f1ce0dee4c8580f543f7f7995, type: 2}
+    - target: {fileID: 4416711328762207460, guid: ea941d3f03aa65948a8ecce9c157aa94, type: 3}
       propertyPath: localWaypoints.Array.data[1].x
       value: 0
       objectReference: {fileID: 0}
@@ -6678,7 +6686,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactionDistance: 1
   outlineMaterial: {fileID: 2100000, guid: e99751a4f56540c4490adbe2e5f1ed7c, type: 2}
-  dialogueToStart: {fileID: 11400000, guid: bcf068c3bb9c0e14b9ccd067190d35c2, type: 2}
+  dialogueToStart: {fileID: 11400000, guid: 3d81e02dc7346754cbfcf68efe268203, type: 2}
   dialogueSystem: {fileID: 1286314456686462224, guid: eacb05bdc7a7c01458573d4a9af89e99, type: 3}
   dialogueSpawnLocationOffset: {x: 0, y: 1, z: 0}
 --- !u!114 &881695255
@@ -18552,11 +18560,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3911635333811037663, guid: df9e5e2295b9a57429880485069f505a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.83774567
+      value: -9.337746
       objectReference: {fileID: 0}
     - target: {fileID: 3911635333811037663, guid: df9e5e2295b9a57429880485069f505a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.3947067
+      value: 10.605293
       objectReference: {fileID: 0}
     - target: {fileID: 3911635333811037663, guid: df9e5e2295b9a57429880485069f505a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -20177,19 +20185,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: -0.012878301
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.407827
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.24726337
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.23069002
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5658948705658991358, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_Name
