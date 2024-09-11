@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     private float nextInvincibilityBlinkTime;
 
     [Header("Horizontal Movement")]
-    [SerializeField] private float moveSpeed = 0.4f;
+    [SerializeField] public float moveSpeed = 0.4f;
     [SerializeField] private float finalMoveSpeedScale = 0.4f;
     [SerializeField] private float acceleration = 0.1f;
     [SerializeField] private float fastFallModifier = 2;

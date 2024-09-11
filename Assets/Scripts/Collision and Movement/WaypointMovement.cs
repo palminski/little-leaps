@@ -1,17 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class WaypointMovement : MonoBehaviour
 {
-
-public enum MovementBehavior
+    private string doorId;
+    public enum MovementBehavior
     {
         Default,
         StopOnInactiveColor,
         ColorCorespondsToWaypoint,
+        OpenOnTrigger,
     }
-public MovementBehavior behavior = MovementBehavior.Default;
+
+
+    public MovementBehavior behavior = MovementBehavior.Default;
 
     public Vector3[] localWaypoints;
     private Vector3[] globalWaypoints;
@@ -29,35 +32,77 @@ public MovementBehavior behavior = MovementBehavior.Default;
     private float percentBetweenWaypoints;
     private float nextMoveTime;
 
+    [SerializeField]
+    private DialogueEvent OpenEvent;
+
+    private bool shouldMove = false;
 
 
-    
 
     [Header("Color Toggle Settings")]
 
     [SerializeField]
     private RoomColor activeOnRoomColor;
 
-    
+
 
     //===================================================================================================
     // Start is called before the first frame update
     void Start()
     {
+        doorId = $"{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
+        if (behavior == MovementBehavior.OpenOnTrigger)
+        {
+            if (GameController.Instance.CollectedObjects.Contains(doorId))
+            {
+                shouldMove = true;
+            }
+        }
+
+        percentBetweenWaypoints = 1;
         globalWaypoints = new Vector3[localWaypoints.Length];
         for (int i = 0; i < localWaypoints.Length; i++)
         {
             globalWaypoints[i] = localWaypoints[i] + transform.position;
         }
+        SetInitialPosition();
     }
 
     private void OnEnable()
     {
         GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
+        if (OpenEvent)
+        {
+            OpenEvent.OnEventRaised.AddListener(OnEventRaised);
+        }
     }
     private void OnDisable()
     {
         GameController.Instance.OnRoomStateChanged -= HandleRoomStateChange;
+        if (OpenEvent)
+        {
+            OpenEvent.OnEventRaised.RemoveListener(OnEventRaised);
+        }
+    }
+
+    public void SetInitialPosition()
+    {
+        if (behavior == MovementBehavior.Default)
+        {
+
+        }
+        else if (behavior == MovementBehavior.StopOnInactiveColor)
+        {
+
+        }
+        else if (behavior == MovementBehavior.ColorCorespondsToWaypoint)
+        {
+
+        }
+        else
+        {
+
+        }
     }
 
     public virtual Vector3 CalculatePlatformMovement()
@@ -68,14 +113,21 @@ public MovementBehavior behavior = MovementBehavior.Default;
             return Vector3.zero;
         }
 
-        if (behavior == MovementBehavior.Default) {
+        if (behavior == MovementBehavior.Default)
+        {
             return MovementDefault();
         }
-        else if (behavior == MovementBehavior.StopOnInactiveColor) {
+        else if (behavior == MovementBehavior.StopOnInactiveColor)
+        {
             return MovementStopOnInactiveColor();
         }
-        else {
+        else if (behavior == MovementBehavior.ColorCorespondsToWaypoint)
+        {
             return MovementColorCorespondsToWaypoint();
+        }
+        else
+        {
+            return MovementOpenOnTrigger();
         }
     }
 
@@ -142,20 +194,39 @@ public MovementBehavior behavior = MovementBehavior.Default;
     {
 
         fromWaypointIndex = activeOnRoomColor == GameController.Instance.RoomState ? 0 : 1;
-            int toWaypointIndex = activeOnRoomColor == GameController.Instance.RoomState ? 1 : 0;
-            float distBetweenWaypoints = Vector3.Distance(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex]);
-            percentBetweenWaypoints += speed / distBetweenWaypoints;
-            percentBetweenWaypoints = Mathf.Clamp01(percentBetweenWaypoints);
-            float easedPercentBetweenWaypoints = Ease(percentBetweenWaypoints);
+        int toWaypointIndex = activeOnRoomColor == GameController.Instance.RoomState ? 1 : 0;
+        float distBetweenWaypoints = Vector3.Distance(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex]);
+        percentBetweenWaypoints += speed / distBetweenWaypoints;
+        percentBetweenWaypoints = Mathf.Clamp01(percentBetweenWaypoints);
+        float easedPercentBetweenWaypoints = Ease(percentBetweenWaypoints);
+        print(percentBetweenWaypoints);
+        Vector3 newPos = Vector3.Lerp(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex], easedPercentBetweenWaypoints);
 
-            Vector3 newPos = Vector3.Lerp(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex], easedPercentBetweenWaypoints);
+        if (percentBetweenWaypoints >= 1)
+        {
+            percentBetweenWaypoints = 1;
 
-            if (percentBetweenWaypoints >= 1)
-            {
-                percentBetweenWaypoints = 1;
-                
-            }
-            return newPos - transform.position;
+        }
+        return newPos - transform.position;
+    }
+
+    private Vector3 MovementOpenOnTrigger()
+    {
+
+        fromWaypointIndex = shouldMove ? 0 : 1;
+        int toWaypointIndex = shouldMove ? 1 : 0;
+        float distBetweenWaypoints = Vector3.Distance(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex]);
+        percentBetweenWaypoints += speed / distBetweenWaypoints;
+        percentBetweenWaypoints = Mathf.Clamp01(percentBetweenWaypoints);
+        float easedPercentBetweenWaypoints = Ease(percentBetweenWaypoints);
+        Vector3 newPos = Vector3.Lerp(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex], easedPercentBetweenWaypoints);
+
+        if (percentBetweenWaypoints >= 1)
+        {
+            percentBetweenWaypoints = 1;
+
+        }
+        return newPos - transform.position;
     }
 
 
@@ -186,10 +257,18 @@ public MovementBehavior behavior = MovementBehavior.Default;
         if (behavior == MovementBehavior.ColorCorespondsToWaypoint)
         {
 
-int toWaypointIndex = activeOnRoomColor == GameController.Instance.RoomState ? 1 : 0;
+            int toWaypointIndex = activeOnRoomColor == GameController.Instance.RoomState ? 1 : 0;
             float distBetweenWaypoints = Vector3.Distance(transform.position, globalWaypoints[toWaypointIndex]);
             percentBetweenWaypoints = 1 - percentBetweenWaypoints;
-            
+
         }
+    }
+
+    void OnEventRaised()
+    {
+        if (shouldMove) return;
+        GameController.Instance.TagObjectStringAsCollected(doorId);
+        percentBetweenWaypoints = 1 - percentBetweenWaypoints;
+        shouldMove = true;
     }
 }

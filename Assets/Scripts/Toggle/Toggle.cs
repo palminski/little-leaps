@@ -4,21 +4,38 @@ using UnityEngine;
 
 public class Toggle : MonoBehaviour
 {
+    public enum ToggleBehavior
+    {
+        OnRoomColor,
+        OnKey,
+    }
+    public ToggleBehavior behavior = ToggleBehavior.OnRoomColor;
     [SerializeField]
-    private GameObject objectForState0;
+    private GameObject objectForOn;
 
     [SerializeField]
-    private GameObject objectForState1;
+    private GameObject objectForOff;
 
     [SerializeField]
     private bool toggleDelay;
 
+    [SerializeField] private string requiredKey;
 
-    private void OnEnable() {
-        GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
+
+    private void OnEnable()
+    {
+        if (behavior == ToggleBehavior.OnRoomColor)
+        {
+            GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
+        }
+
     }
-    private void OnDisable() {
-        GameController.Instance.OnRoomStateChanged -= HandleRoomStateChange;
+    private void OnDisable()
+    {
+        if (behavior == ToggleBehavior.OnRoomColor)
+        {
+            GameController.Instance.OnRoomStateChanged -= HandleRoomStateChange;
+        }
     }
 
     // Start is called before the first frame update
@@ -27,36 +44,60 @@ public class Toggle : MonoBehaviour
         ToggleChildren();
     }
 
-    private void HandleRoomStateChange() {
-        if (toggleDelay) {
+    private void HandleRoomStateChange()
+    {
+        if (toggleDelay)
+        {
             StartCoroutine(ToggleChildrenCoroutine());
         }
-        else {
+        else
+        {
             ToggleChildren();
         }
-        
+
     }
 
-    private void ToggleChildren() {
-        if (GameController.Instance.RoomState == 0) {
-            if (objectForState0) {
-                objectForState0.SetActive(true);
+    public bool shouldToggle()
+    {
+        if (behavior == ToggleBehavior.OnRoomColor)
+        {
+            return GameController.Instance.RoomState == 0;
+        }
+        else if (behavior == ToggleBehavior.OnKey)
+        {
+            return GameController.Instance.FollowingObjects.ContainsKey(requiredKey);
+        }
+        return false;
+    }
+
+    private void ToggleChildren()
+    {
+        if (shouldToggle())
+        {
+            if (objectForOn)
+            {
+                objectForOn.SetActive(true);
             }
-            if (objectForState1) {
-                objectForState1.SetActive(false);
+            if (objectForOff)
+            {
+                objectForOff.SetActive(false);
             }
         }
-        else {
-            if (objectForState0) {
-                objectForState0.SetActive(false);
+        else
+        {
+            if (objectForOn)
+            {
+                objectForOn.SetActive(false);
             }
-            if (objectForState1) {
-                objectForState1.SetActive(true);
+            if (objectForOff)
+            {
+                objectForOff.SetActive(true);
             }
         }
     }
 
-    private IEnumerator ToggleChildrenCoroutine() {
+    private IEnumerator ToggleChildrenCoroutine()
+    {
         yield return new WaitForSeconds(0.05f);
         // yield return new WaitForFixedUpdate();
         // yield return new WaitForFixedUpdate();
