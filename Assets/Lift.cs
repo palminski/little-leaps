@@ -6,13 +6,16 @@ using UnityEngine.SceneManagement;
 public class Lift : MonoBehaviour
 {
     private string id;
-    private bool isActive = false;
+    private Animator animator;
+    [SerializeField] private bool isActive = false;
     [SerializeField] private string requiredKey;
     [SerializeField] private DialogueEvent ActivateEvent;
     [SerializeField] private float interactionDistance = 1f;
     [SerializeField] private Transform interactionPoint;
     [SerializeField] private string targetSceneName;
-    [SerializeField] private Material outlineMaterial; private SpriteRenderer spriteRenderer;
+    [SerializeField] private Material outlineMaterial;
+    [SerializeField] private SpriteRenderer veins;
+    private SpriteRenderer spriteRenderer;
     private Material startingMaterial;
     private Transform playerTransform;
 
@@ -25,7 +28,7 @@ public class Lift : MonoBehaviour
     {
         id = $"Lift{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
         if (GameController.Instance.CollectedObjects.Contains(id)) isActive = true;
-
+        animator = GetComponent<Animator>();
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         spriteRenderer = GetComponent<SpriteRenderer>();
         startingMaterial = spriteRenderer.material;
@@ -35,14 +38,11 @@ public class Lift : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (CanInteractWith() && outlineMaterial)
-        {
-            spriteRenderer.material = outlineMaterial;
-        }
-        else
-        {
-            spriteRenderer.material = startingMaterial;
-        }
+        Color currentColor = veins.color;
+        Color.RGBToHSV(currentColor, out float h, out float s, out float v);
+        v = isActive ? 1 : 0.25f;
+        Color newColor = Color.HSVToRGB(h, s, v);
+        veins.color = newColor;
     }
 
     private void OnEnable()
@@ -71,14 +71,16 @@ public class Lift : MonoBehaviour
     {
         if (CanInteractWith())
         {
-            
+
             if (waypointMovement)
             {
-                waypointMovement.TriggerShouldMove();
+
                 Player playerScript = playerTransform.GetComponent<Player>();
                 // LevelConnection.ActiveConnection = levelConnection;
-                if (playerScript) playerScript.RemovePlayer();
-                GameController.Instance.ChangeScene(targetSceneName);
+                if (playerScript) playerScript.SetInputEnabled(false);
+                spriteRenderer.sortingOrder = 60;
+                animator.SetTrigger("Close Lift");
+                StartCoroutine(WaitAndChangeScene());
             }
         }
     }
@@ -89,4 +91,16 @@ public class Lift : MonoBehaviour
         GameController.Instance.TagObjectStringAsCollected(id);
         GameController.Instance.RemoveFollowingObject(requiredKey);
     }
+
+    private IEnumerator WaitAndChangeScene()
+    {
+        yield return new WaitForSeconds(1.4f);
+        Player playerScript = playerTransform.GetComponent<Player>();
+        if (playerScript) playerScript.RemovePlayer();
+        waypointMovement.TriggerShouldMove();
+        yield return new WaitForSeconds(0.5f);
+        GameController.Instance.ChangeScene(targetSceneName);
+    }
 }
+
+

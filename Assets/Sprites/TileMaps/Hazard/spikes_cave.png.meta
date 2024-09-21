@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8b22a69a40dd0c946a24052f5cb5e656
+guid: 90094da3a9610f049b31580fb7478036
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -45,7 +45,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 36
@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -123,106 +123,231 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: spikes_color_retract_0
+      name: spikes_cave_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 72
+        width: 36
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -18, y: 18}
+        - {x: -18, y: -18}
+        - {x: 18, y: -18}
+        - {x: 18, y: 18}
+      physicsShape:
+      - - {x: 18, y: 16}
+        - {x: 11, y: 16}
+        - {x: 11, y: 2}
+        - {x: 11, y: -4}
+        - {x: 11, y: -11}
+        - {x: -16, y: -11}
+        - {x: -16, y: -18}
+        - {x: 18, y: -18}
+        - {x: 18, y: 12}
+      tessellationDetail: 0.2
+      bones: []
+      spriteID: cc3461088de1e8a42adbf4d18085b931
+      internalID: -373997034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spikes_cave_1
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 72
+        width: 36
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -16, y: -11}
+        - {x: -16, y: -18}
+        - {x: 18, y: -18}
+        - {x: 16, y: -18}
+        - {x: 16, y: -11}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 602e5ffde335fdf4aa50bd7061dc2cb8
+      internalID: 1480445252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spikes_cave_2
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 72
+        width: 36
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: 4, y: -11}
+        - {x: -11, y: -11}
+        - {x: -11, y: 14}
+        - {x: -13, y: 16}
+        - {x: -18, y: 16}
+        - {x: -18, y: -18}
+        - {x: 16, y: -18}
+        - {x: 16, y: -13}
+        - {x: 14, y: -11}
+      tessellationDetail: 0
+      bones: []
+      spriteID: a185d2e6d9a14de448881880b84c559a
+      internalID: -197749552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spikes_cave_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 36
+        width: 36
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: 18, y: 16}
+        - {x: 11, y: 16}
+        - {x: 11, y: -16}
+        - {x: 18, y: -16}
+        - {x: 18, y: 3}
+      tessellationDetail: 0
+      bones: []
+      spriteID: c77d7ca2b72f3574ea5badb91e9d0454
+      internalID: -1029349440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spikes_cave_4
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 36
+        width: 36
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -18, y: 16}
+        - {x: -18, y: -18}
+        - {x: -18, y: -16}
+        - {x: -11, y: -16}
+        - {x: -11, y: 16}
+        - {x: -18, y: 16}
+      tessellationDetail: 0
+      bones: []
+      spriteID: d097434da53a6ad4ab8a832377019821
+      internalID: -226280450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spikes_cave_5
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 36
-        height: 72
+        height: 36
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 72, z: 0, w: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
-      tessellationDetail: 0
+      physicsShape:
+      - - {x: -16, y: 18}
+        - {x: -16, y: 11}
+        - {x: -7, y: 11}
+        - {x: -3, y: 11}
+        - {x: 0, y: 11}
+        - {x: 11, y: 11}
+        - {x: 11, y: 7}
+        - {x: 11, y: -16}
+        - {x: 18, y: -16}
+        - {x: 18, y: 18}
+      tessellationDetail: 0.2
       bones: []
-      spriteID: ae3221317b9cc3e4ea6e343ee37ef625
-      internalID: 1738373837
+      spriteID: 85ffa74a08d97d14b9358e0ae55b3e4c
+      internalID: -230758151
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spikes_color_retract_1
+      name: spikes_cave_6
       rect:
         serializedVersion: 2
         x: 36
         y: 0
         width: 36
-        height: 72
+        height: 36
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 72, z: 0, w: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: -5, y: 18}
+        - {x: -16, y: 18}
+        - {x: -16, y: 6}
+        - {x: 16, y: 6}
+        - {x: 16, y: 18}
       tessellationDetail: 0
       bones: []
-      spriteID: 773f969af989b324eb0bb5065e570448
-      internalID: 1098983319
+      spriteID: dabb15a34a37caf46b2ff6c487faa9c0
+      internalID: 951549387
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spikes_color_retract_2
+      name: spikes_cave_7
       rect:
         serializedVersion: 2
         x: 72
         y: 0
         width: 36
-        height: 72
+        height: 36
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 72, z: 0, w: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
-      tessellationDetail: 0
+      physicsShape:
+      - - {x: 14, y: 11}
+        - {x: 16, y: 11}
+        - {x: 16, y: 18}
+        - {x: -18, y: 18}
+        - {x: -18, y: -16}
+        - {x: -11, y: -16}
+        - {x: -11, y: 10}
+        - {x: 3, y: 12}
+        - {x: 7, y: 11}
+      tessellationDetail: 0.2
       bones: []
-      spriteID: ba5c27cbbfcacc44ba78987e30f70fc0
-      internalID: -1367058912
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spikes_color_retract_3
-      rect:
-        serializedVersion: 2
-        x: 108
-        y: 0
-        width: 36
-        height: 72
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 72, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a75ea74ccf7d3fe4686c557192cebb55
-      internalID: 779833881
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spikes_color_retract_4
-      rect:
-        serializedVersion: 2
-        x: 144
-        y: 0
-        width: 36
-        height: 72
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 72, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ae90bad43821d51428786212041ec3ed
-      internalID: -225481757
+      spriteID: 5c41dc9de611dc74199c1048948bfb9b
+      internalID: -1666864957
       vertices: []
       indices: 
       edges: []
@@ -238,11 +363,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      spikes_color_retract_0: 1738373837
-      spikes_color_retract_1: 1098983319
-      spikes_color_retract_2: -1367058912
-      spikes_color_retract_3: 779833881
-      spikes_color_retract_4: -225481757
+      spikes_cave_0: -373997034
+      spikes_cave_1: 1480445252
+      spikes_cave_2: -197749552
+      spikes_cave_3: -1029349440
+      spikes_cave_4: -226280450
+      spikes_cave_5: -230758151
+      spikes_cave_6: 951549387
+      spikes_cave_7: -1666864957
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
