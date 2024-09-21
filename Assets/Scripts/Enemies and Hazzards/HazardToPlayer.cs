@@ -15,6 +15,7 @@ public class HazardToPlayer : MonoBehaviour
     // void OnTriggerStay2D(Collider2D collision)
     void OnTriggerStay2D(Collider2D collision)
     {
+        print("foo");
         if (collision.gameObject == player)
         {
             Player hitPlayer = player.GetComponent<Player>();

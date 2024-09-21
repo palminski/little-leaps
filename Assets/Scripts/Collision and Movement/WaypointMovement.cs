@@ -199,7 +199,6 @@ public class WaypointMovement : MonoBehaviour
         percentBetweenWaypoints += speed / distBetweenWaypoints;
         percentBetweenWaypoints = Mathf.Clamp01(percentBetweenWaypoints);
         float easedPercentBetweenWaypoints = Ease(percentBetweenWaypoints);
-        print(percentBetweenWaypoints);
         Vector3 newPos = Vector3.Lerp(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex], easedPercentBetweenWaypoints);
 
         if (percentBetweenWaypoints >= 1)
@@ -268,6 +267,13 @@ public class WaypointMovement : MonoBehaviour
     {
         if (shouldMove) return;
         GameController.Instance.TagObjectStringAsCollected(doorId);
+        percentBetweenWaypoints = 1 - percentBetweenWaypoints;
+        shouldMove = true;
+    }
+
+    public void TriggerShouldMove()
+    {
+        if (shouldMove) return;
         percentBetweenWaypoints = 1 - percentBetweenWaypoints;
         shouldMove = true;
     }

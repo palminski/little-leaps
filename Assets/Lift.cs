@@ -1,21 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Lift : MonoBehaviour
 {
+    private string id;
+    private Animator animator;
+    [SerializeField] private bool isActive = false;
     [SerializeField] private string requiredKey;
     [SerializeField] private DialogueEvent ActivateEvent;
-    // Start is called before the first frame update
+    [SerializeField] private float interactionDistance = 1f;
+    [SerializeField] private Transform interactionPoint;
+    [SerializeField] private string targetSceneName;
+    [SerializeField] private Material outlineMaterial;
+    [SerializeField] private SpriteRenderer veins;
+    private SpriteRenderer spriteRenderer;
+    private Material startingMaterial;
+    private Transform playerTransform;
+
+    [SerializeField] private WaypointMovement waypointMovement;
+
+
+
+
     void Start()
     {
-        
+        id = $"Lift{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
+        if (GameController.Instance.CollectedObjects.Contains(id)) isActive = true;
+        animator = GetComponent<Animator>();
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        startingMaterial = spriteRenderer.material;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        Color currentColor = veins.color;
+        Color.RGBToHSV(currentColor, out float h, out float s, out float v);
+        v = isActive ? 1 : 0.25f;
+        Color newColor = Color.HSVToRGB(h, s, v);
+        veins.color = newColor;
     }
 
     private void OnEnable()
@@ -33,10 +60,47 @@ public class Lift : MonoBehaviour
         }
     }
 
+    private bool CanInteractWith()
+    {
+        if (!playerTransform || !interactionPoint || !isActive) return false;
+        if (Vector2.Distance(interactionPoint.position, playerTransform.position) <= interactionDistance) return true;
+        return false;
+    }
+
+    void OnInteract()
+    {
+        if (CanInteractWith())
+        {
+
+            if (waypointMovement)
+            {
+
+                Player playerScript = playerTransform.GetComponent<Player>();
+                // LevelConnection.ActiveConnection = levelConnection;
+                if (playerScript) playerScript.SetInputEnabled(false);
+                spriteRenderer.sortingOrder = 60;
+                animator.SetTrigger("Close Lift");
+                StartCoroutine(WaitAndChangeScene());
+            }
+        }
+    }
+
     void OnEventRaised()
     {
-
+        isActive = true;
+        GameController.Instance.TagObjectStringAsCollected(id);
         GameController.Instance.RemoveFollowingObject(requiredKey);
-        GameController.Instance.TagObjectStringAsCollected(requiredKey);
+    }
+
+    private IEnumerator WaitAndChangeScene()
+    {
+        yield return new WaitForSeconds(1.4f);
+        Player playerScript = playerTransform.GetComponent<Player>();
+        if (playerScript) playerScript.RemovePlayer();
+        waypointMovement.TriggerShouldMove();
+        yield return new WaitForSeconds(0.5f);
+        GameController.Instance.ChangeScene(targetSceneName);
     }
 }
+
+

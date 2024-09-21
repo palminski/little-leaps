@@ -377,7 +377,11 @@ public class Player : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void SetPlayerSpawnPointToTransform(Transform transform)
+
+    public void SetInputEnabled(bool shouldEnable) {
+        playerInput.enabled = shouldEnable;
+    }
+     public void SetPlayerSpawnPointToTransform(Transform transform)
     {
         startPosition = transform.position;
     }
