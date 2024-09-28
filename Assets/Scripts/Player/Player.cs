@@ -475,6 +475,7 @@ public class Player : MonoBehaviour
 
     private void Dash(float angle)
     {
+        GameController.Instance.InvokePlayerDashed();
         // Fast Fall
         if (Mathf.Approximately(angle, -90f) && IsInAir())
         {

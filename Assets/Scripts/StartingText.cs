@@ -19,7 +19,23 @@ public class StartingText : MonoBehaviour
     {
 
         textElement = GetComponent<TMP_Text>();
-        startingText = textElement.text;
+        SaveData gameData = SaveDataManager.LoadGameData();
+        gameData.highScores.Sort((a,b) => b.CompareTo(a));
+        // startingText = textElement.text;
+        startingText = $@"SYSTEM RESET INITIATED...
+[SUCCESS] - CURRENT RESET: 776776
+PREVIOUS RECORDS:
+
+";
+int scoreIndex = 0;
+foreach(int score in gameData.highScores)
+{
+    startingText += $"RECORD_{scoreIndex} = {score}\n";
+    scoreIndex++;
+}
+startingText += $@"
+READY TO BEGIN
+AWAITING USER INPUT...";
         
         currentIndex = 0;
         StartCoroutine(TypeSentence(startingText));

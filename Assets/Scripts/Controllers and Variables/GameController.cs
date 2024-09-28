@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 // using UnityEditor.Build.Content;
 using UnityEngine;
+using Unity.VisualScripting.Dependencies.NCalc;
 
 public class GameController : MonoBehaviour
 {
@@ -123,6 +124,7 @@ public class GameController : MonoBehaviour
     // Events
     // ------------------------------
     public event Action OnRoomStateChanged;
+    public event Action OnPlayerDashed;
     public event Action OnUpdateHUD;
     public event Action OnPlayerDamaged;
 
@@ -133,6 +135,11 @@ public class GameController : MonoBehaviour
         return roomState;
     }
 
+    public void InvokePlayerDashed()
+    {
+        OnPlayerDashed?.Invoke();
+    }
+
 
     // ------------------------------
     // Update Variables in Controller
@@ -140,7 +147,15 @@ public class GameController : MonoBehaviour
     public void ResetGameState()
     {
         health = 5;
+        UpdateHighScores();
+        score = 0;
         collectedObjects.Clear();
+
+        SaveData gameData = SaveDataManager.LoadGameData();
+        gameData.score = score;
+        gameData.collectedObjects = collectedObjects;
+        SaveDataManager.SaveGameData(gameData);
+
         foreach (KeyValuePair<string, GameObject> entry in followingObjects)
         {
             if (entry.Value)
@@ -150,6 +165,17 @@ public class GameController : MonoBehaviour
         }
         followingObjects.Clear();
     }
+
+    private void UpdateHighScores() {
+        SaveData gameData = SaveDataManager.LoadGameData();
+        gameData.highScores.Add(score);
+        gameData.highScores.Sort((a,b) => b.CompareTo(a));
+        while (gameData.highScores.Count > 10) {
+            gameData.highScores.RemoveAt(gameData.highScores.Count - 1);
+        }
+        SaveDataManager.SaveGameData(gameData);
+    }
+
     public int AddToScore(int pointsToAdd)
     {
         score += pointsToAdd;
@@ -170,8 +196,6 @@ public class GameController : MonoBehaviour
         if (health <= 0)
         {
             //Reset Game State
-
-
             if (deathObject)
             {
                 // GameObject player = GameObject.FindGameObjectWithTag("Player");

@@ -34,10 +34,12 @@ public class TileToggle : MonoBehaviour
     private void OnEnable()
     {
         GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
+        GameController.Instance.OnPlayerDashed += HandlePlayerDashed;
     }
     private void OnDisable()
     {
         GameController.Instance.OnRoomStateChanged -= HandleRoomStateChange;
+        GameController.Instance.OnPlayerDashed -= HandlePlayerDashed;
     }
 
     private Color deactiveColor;
@@ -72,6 +74,15 @@ public class TileToggle : MonoBehaviour
         else
         {
             Deactivate();
+        }
+    }
+
+    private void HandlePlayerDashed()
+    {
+        // UpdateColor();
+        if (activeOnRoomColor != GameController.Instance.RoomState)
+        {
+            if (tileCollider) tileCollider.enabled = false;
         }
     }
 

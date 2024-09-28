@@ -164,13 +164,14 @@ public class Enemy : MonoBehaviour
         }
         GameController.Instance.TagObjectStringAsCollected(enemyId);
         Destroy(gameObject);
-        GameController.Instance.AddToScore(pointValue);
-        if (pointValue > 0) GameController.Instance.ShowPointCounter(pointValue, transform.position);
+
+        int pointsToAdd = pointValue;
         if (bonusPoints)
         {
-            GameController.Instance.AddToScore(pointValue);
-            if (pointValue > 0) GameController.Instance.ShowPointCounter(pointValue, transform.position);
+            pointsToAdd += 100;
         } 
+        GameController.Instance.AddToScore(pointsToAdd);
+        if (pointValue > 0) GameController.Instance.ShowPointCounter(pointsToAdd, transform.position);
     }
 
 
