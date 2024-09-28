@@ -11,7 +11,7 @@ public class PointCounter : MonoBehaviour
     [SerializeField] private TMP_Text backgroundText;
     [SerializeField] private Vector3 offsetFromPlayer;
     private int currentPoints = 0;
-
+    private int combo = 0;
     private bool canCombo = false;
 
     private bool stickToPlayer = false;
@@ -55,7 +55,12 @@ public class PointCounter : MonoBehaviour
             } 
             if (!isCombo) stickToPlayer = true;
         }
-        currentPoints += pointsToAdd;
+        currentPoints += pointsToAdd + (isCombo ? pointsToAdd*combo : 0);
+        if (isCombo)
+        {
+            GameController.Instance.AddToScore(pointsToAdd*combo);
+            combo++;
+        } 
         pointText.text = currentPoints.ToString();
         if (backgroundText) backgroundText.text = currentPoints.ToString();
         StartCombo();
@@ -71,6 +76,7 @@ public class PointCounter : MonoBehaviour
     {
         if (canCombo == false) return;
         canCombo = false;
+        combo = 0;
         if (gameObject.activeSelf) StartCoroutine(WaitAndHide());
     }
 
