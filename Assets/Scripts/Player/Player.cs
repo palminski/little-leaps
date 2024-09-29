@@ -75,6 +75,7 @@ public class Player : MonoBehaviour
     [Header("Damage")]
     [SerializeField] private float invincibilityTime = 3;
     [SerializeField] private float invincibilityBlinkInterval = 0.0001f;
+    [SerializeField] private float wallOverlapThreshold = 0.005f;
     [SerializeField] private GameObject damageObject;
     [SerializeField] private GameObject respawnObject;
 
@@ -119,6 +120,7 @@ public class Player : MonoBehaviour
     // -------------------
     private void FixedUpdate()
     {
+
         lastPosition = transform.position;
         bool isGrounded = movementCollisionHandler.OnGround();
         if (coyoteTime <= 0 && velocity.x != 0 && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
@@ -196,6 +198,19 @@ public class Player : MonoBehaviour
             coyoteTime = coyoteTimeMax;
             if (!isDashing) RefreshDashMoves();
         }
+        //Check if player needs to be pushed out of a wall
+        if (movementCollisionHandler.InGround())
+        {
+            if (movementCollisionHandler.CheckAndCorrectOverlap(wallOverlapThreshold))
+            {
+                Damage();
+                // StartCoroutine(WaitCheckAndDamage());
+            }
+            else
+            {
+                coyoteTime = 0;
+            }
+        }
         if (jumpPressed)
         {
             if (coyoteTime > 0 || movementCollisionHandler.OnGroundAtDist(jumpBuffer))
@@ -255,10 +270,7 @@ public class Player : MonoBehaviour
         {
             ps.Play();
         }
-        if (movementCollisionHandler.InGround())
-        {
-            StartCoroutine(WaitCheckAndDamage());
-        }
+
     }
 
     // --------------------------
@@ -378,10 +390,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void SetInputEnabled(bool shouldEnable) {
+    public void SetInputEnabled(bool shouldEnable)
+    {
         playerInput.enabled = shouldEnable;
     }
-     public void SetPlayerSpawnPointToTransform(Transform transform)
+    public void SetPlayerSpawnPointToTransform(Transform transform)
     {
         startPosition = transform.position;
     }
