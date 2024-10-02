@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Toggle : MonoBehaviour
@@ -65,7 +66,7 @@ public class Toggle : MonoBehaviour
         }
         else if (behavior == ToggleBehavior.OnKey)
         {
-            return GameController.Instance.FollowingObjects.ContainsKey(requiredKey);
+            return GameController.Instance.FollowingObjects.Values.Any(obj => obj.Name ==requiredKey);
         }
         return false;
     }

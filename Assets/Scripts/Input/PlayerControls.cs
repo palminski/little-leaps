@@ -303,6 +303,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""47936181-a0b0-4374-a0c7-c72ed194a749"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""b57e5e3a-5aa9-4338-bdc5-bb5017aec2a5"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",

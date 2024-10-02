@@ -169,6 +169,7 @@ public class MovementCollisionHandler : RaycastController
     }
 
     public bool OnGroundAtDist(float distance) {
+        updateRaycastOrigins();
         for (int i = 0; i < yRayCount; i++) {
             RaycastHit2D collision = Physics2D.Raycast(raycastOrigins.bottomLeft + i * verticalRaySpacing * Vector2.right, Vector2.down, distance, collidableLayers);
             if (collision.collider)
@@ -213,6 +214,31 @@ public class MovementCollisionHandler : RaycastController
         } 
 
         return false;
+    }
+
+    public bool CheckAndCorrectOverlap(float threshold) {
+        Vector2 boxCenter = boxCollider.bounds.center;
+        Vector2 boxSize = boxCollider.bounds.size;
+        Collider2D overlapCollider = Physics2D.OverlapBox(boxCenter,boxSize,0,collidableLayers);
+        if (overlapCollider != null)
+        {
+
+            var colliderDistance = boxCollider.Distance(overlapCollider);
+            print(colliderDistance.distance + " - "+threshold);
+            if (colliderDistance.isOverlapped &&  Mathf.Abs(colliderDistance.distance) <= Mathf.Abs(threshold))
+            {
+                transform.position += (Vector3)colliderDistance.normal * colliderDistance.distance;
+                if (InGround())
+                {
+                    return true;
+                }
+                return false;
+                
+            }
+            return true;
+        }
+        return false;
+        
     }
 
     // void OnDrawGizmos() {
