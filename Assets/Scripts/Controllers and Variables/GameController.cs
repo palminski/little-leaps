@@ -7,6 +7,18 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using Unity.VisualScripting.Dependencies.NCalc;
 
+public class FollowingObject
+{
+    public string Name {get; private set;}
+    public GameObject Object {get; private set;}
+
+    public FollowingObject( string name, GameObject obj)
+    {
+        Name = name;
+        Object = obj;
+    }
+}
+
 public class GameController : MonoBehaviour
 {
     public GameObject deathObject;
@@ -64,11 +76,17 @@ public class GameController : MonoBehaviour
         get { return collectedObjects; }
     }
 
-    private Dictionary<string, GameObject> followingObjects = new Dictionary<string, GameObject>();
-    public Dictionary<string, GameObject> FollowingObjects
+    private Dictionary<string, FollowingObject> followingObjects = new Dictionary<string, FollowingObject>();
+    public Dictionary<string, FollowingObject> FollowingObjects
     {
         get { return followingObjects; }
     }
+
+    // private List<FollowingObject> followingObjects = new List<FollowingObject>();
+    // public List<FollowingObject> FollowingObjects
+    // {
+    //     get { return followingObjects; }
+    // }
 
     // ----------------------------------------------------------------------------------
 
@@ -103,14 +121,17 @@ public class GameController : MonoBehaviour
         levelChangerAnimator.Play("Fade_In", 0, 0f);
         objectPool = new Dictionary<string, Queue<GameObject>>();
 
-        foreach (KeyValuePair<string, GameObject> entry in followingObjects)
+        int i = 1;
+        foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
         {
-            if (entry.Value)
+            if (entry.Value != null)
             {
-                FollowPlayer followPlayer = entry.Value.GetComponent<FollowPlayer>();
+                FollowPlayer followPlayer = entry.Value.Object.GetComponent<FollowPlayer>();
                 if (followPlayer)
                 {
+                    followPlayer.offset = i;
                     followPlayer.AssignToPlayer();
+                    i++;
                 }
                 else
                 {
@@ -156,11 +177,11 @@ public class GameController : MonoBehaviour
         gameData.collectedObjects = collectedObjects;
         SaveDataManager.SaveGameData(gameData);
 
-        foreach (KeyValuePair<string, GameObject> entry in followingObjects)
+        foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
         {
-            if (entry.Value)
+            if (entry.Value.Object)
             {
-                Destroy(entry.Value);
+                Destroy(entry.Value.Object);
             }
         }
         followingObjects.Clear();
@@ -216,7 +237,14 @@ public class GameController : MonoBehaviour
         }
         else if (healthChange < 0)
         {
-
+            foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
+            {
+                if (entry.Value.Object)
+                {
+                    Destroy(entry.Value.Object);
+                }
+            }
+            followingObjects.Clear();
             if (shouldResetRoom)
             {
                 StartCoroutine(WaitAndChangeScene(waitTimeAfterDamage));
@@ -271,18 +299,32 @@ public class GameController : MonoBehaviour
         collectedObjects.Add(objectKey);
     }
 
-    public void AddFollowingObjects(string objectKey, GameObject gameObject)
+    public void AddFollowingObjects(string key, string name, GameObject gameObject)
     {
-        if (followingObjects.ContainsKey(objectKey)) return;
-        followingObjects.Add(objectKey, gameObject);
+        if (followingObjects.ContainsKey(key)) return;
+        FollowingObject followingObject = new FollowingObject(name,gameObject);
+        followingObjects.Add(key, followingObject);
+        int i = 1;
+        foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
+        {
+            if (entry.Value != null)
+            {
+                FollowPlayer followPlayer = entry.Value.Object.GetComponent<FollowPlayer>();
+                if (followPlayer)
+                {
+                    followPlayer.offset = i;
+                    i++;
+                }
+            }
+        }
     }
     public void RemoveFollowingObject(string objectKey)
     {
         if (!followingObjects.ContainsKey(objectKey)) return;
-        followingObjects.TryGetValue(objectKey, out GameObject obj);
-        if (obj)
+        followingObjects.TryGetValue(objectKey, out FollowingObject obj);
+        if (obj != null)
         {
-            Destroy(obj);
+            Destroy(obj.Object);
         }
         followingObjects.Remove(objectKey);
     }

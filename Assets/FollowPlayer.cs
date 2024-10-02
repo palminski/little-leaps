@@ -9,7 +9,7 @@ public class FollowPlayer : MonoBehaviour
     [SerializeField] private float magnetRadius = 1;
     [SerializeField] private float maxSpeed = 2;
 
-    [SerializeField] public Vector3 offset;
+    public int offset;
 
     private Vector3 targetPosition;
     // Start is called before the first frame update
@@ -32,7 +32,7 @@ public class FollowPlayer : MonoBehaviour
             targetPosition = player.transform.position;
         }
         Vector2 vectorToPlayer = targetPosition - transform.position;
-        float distanceToPlayer = vectorToPlayer.magnitude - 1f;
+        float distanceToPlayer = vectorToPlayer.magnitude - 1f * offset;
         Vector2 moveDirection = vectorToPlayer.normalized;
 
 

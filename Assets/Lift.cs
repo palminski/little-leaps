@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -87,9 +88,19 @@ public class Lift : MonoBehaviour
 
     void OnEventRaised()
     {
-        isActive = true;
-        GameController.Instance.TagObjectStringAsCollected(id);
-        GameController.Instance.RemoveFollowingObject(requiredKey);
+        Dictionary<string, FollowingObject> followingObjects = GameController.Instance.FollowingObjects;
+        foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
+        {
+            if (entry.Value.Name == requiredKey)
+            {
+                isActive = true;
+                GameController.Instance.TagObjectStringAsCollected(entry.Key);
+                GameController.Instance.TagObjectStringAsCollected(id);
+                GameController.Instance.RemoveFollowingObject(entry.Key);
+                break;
+            }
+        }
+        
     }
 
     private IEnumerator WaitAndChangeScene()
