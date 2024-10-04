@@ -37,6 +37,24 @@ public class GameController : MonoBehaviour
         get { return score; }
     }
 
+    private float bonusTimer = 0;
+    public float BonusTimer
+    {
+        get { return bonusTimer; }
+    }
+
+    private string currentTimer = "";
+    public string CurrentTimer
+    {
+        get { return currentTimer; }
+    }
+
+    private int timer;
+    public int Timer
+    {
+        get { return timer; }
+    }
+
     private RoomColor roomState = RoomColor.Purple;
     public RoomColor RoomState
     {
@@ -112,8 +130,18 @@ public class GameController : MonoBehaviour
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
+            UpdateHighScores();
             Application.Quit();
 #endif
+        }
+
+        if (bonusTimer > 0)
+        {
+            bonusTimer -= Time.deltaTime;
+        }
+        else
+        {
+            bonusTimer = 0;
         }
     }
     private void OnSceneLoad(Scene scene, LoadSceneMode mode)
@@ -256,6 +284,21 @@ public class GameController : MonoBehaviour
             }
         }
         return health;
+    }
+
+    public void startTimer(float timerValue, string timerName)
+    {
+        currentTimer = timerName;
+        bonusTimer = timerValue;
+    }
+
+    public void stopTimer()
+    {
+        int pointsToAdd = 100 * (int) bonusTimer;
+        print(bonusTimer + " - " + pointsToAdd);
+        currentTimer = "";
+        AddToScore(pointsToAdd);  
+        bonusTimer = 0f;
     }
 
     public IEnumerator WaitAndReactivatePlayer(Player player, float timeToWait)
