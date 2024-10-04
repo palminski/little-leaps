@@ -196,6 +196,7 @@ public class Player : MonoBehaviour
         if (isGrounded)
         {
             coyoteTime = coyoteTimeMax;
+            
             if (!isDashing) RefreshDashMoves();
         }
         //Check if player needs to be pushed out of a wall
@@ -410,7 +411,7 @@ public class Player : MonoBehaviour
     {
         velocity.y = jumpPower * bounceMultiplier;
         StartCoroutine(StopDashingNextFrame());
-        RefreshDashMoves();
+        
     }
     public void ResetCoyoteTime()
     {
@@ -483,7 +484,7 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
         StopDash();
-
+        RefreshDashMoves();
     }
 
     private void Dash(float angle)

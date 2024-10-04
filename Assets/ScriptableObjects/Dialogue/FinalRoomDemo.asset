@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7522d7d9b205b734b95fb33790c047dc, type: 3}
+  m_Name: FinalRoomDemo
+  m_EditorClassIdentifier: 
+  dialogueSentences:
+  - text: 'This is the final room in this demo.
+
+      Your timer has been set to
+      0 and you have been awarded 100 points for each remaining second.'
+    dialogueOptions: []
+  - text: Would you like to exchange chips?
+    dialogueOptions:
+    - option: Yes
+      nextDialogue: {fileID: 0}
+      optionEvent: {fileID: 11400000, guid: 973f039e60f019c48bdf92d857f530da, type: 2}
+    - option: No
+      nextDialogue: {fileID: 0}
+      optionEvent: {fileID: 0}
+  - text: 'Please proceed through the next door to return to starting room.
+
+      There
+      is still a bit more to explore if you haven''t discovered a way to ride the
+      lift to the sub level.'
+    dialogueOptions: []
