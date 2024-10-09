@@ -12,14 +12,15 @@ public class TimerController : MonoBehaviour
     {
         if (shouldStartTimer)
         {
-            if (GameController.Instance.CollectedObjects.Contains(timerName)) return;
-            GameController.Instance.startTimer(bonusTimerValue, timerName);
-            GameController.Instance.CollectedObjects.Add(timerName);
+            // if (GameController.Instance.CollectedObjects.Contains(timerName)) return;
+            // GameController.Instance.startTimer(bonusTimerValue, timerName);
+            // GameController.Instance.CollectedObjects.Add(timerName);
         }
         else
         {
-            if (GameController.Instance.CurrentTimer != timerName) return;
-            GameController.Instance.stopTimer();
+            if (GameController.Instance.CollectedObjects.Contains(timerName)) return;
+            GameController.Instance.CollectedObjects.Add(timerName);
+            GameController.Instance.StopTimer();
         }
     }
 

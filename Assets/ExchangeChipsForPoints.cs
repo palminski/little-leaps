@@ -41,6 +41,7 @@ public class ExchangeChipsForPoints : MonoBehaviour
         foreach (string key in idsToRemove)
         {
             GameController.Instance.TagObjectStringAsCollected(key);
+            GameController.Instance.AddToTimer(30);
             GameController.Instance.AddToScore(5000 * multiplier);
             GameController.Instance.RemoveFollowingObject(key);
             multiplier++;

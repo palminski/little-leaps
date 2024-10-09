@@ -12,6 +12,9 @@ public class Interactable : MonoBehaviour
     private Material outlineMaterial;
 
     [SerializeField]
+    private Material prompt;
+
+    [SerializeField]
     private Dialogue dialogueToStart;
 
 
@@ -43,13 +46,13 @@ public class Interactable : MonoBehaviour
     }
     
     void OnInteract() {
-        if (CanInteractWith() && (FindObjectOfType<DialogueManager>() == null)) {
+        if (dialogueToStart != null && CanInteractWith() && (FindObjectOfType<DialogueManager>() == null)) {
             dialogueSystem.GetComponent<DialogueManager>().currentDialogue = dialogueToStart;
             Instantiate(dialogueSystem, transform.position + dialogueSpawnLocationOffset, Quaternion.identity);
         }
     }
 
-    private bool CanInteractWith() {
+    public bool CanInteractWith() {
         if (!playerTransform) return false;
         if (Vector2.Distance(transform.position, playerTransform.position) <= interactionDistance) return true;
         return false;
