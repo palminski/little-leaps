@@ -50,6 +50,7 @@ public class Portal : MonoBehaviour
             Player playerScript = player.GetComponent<Player>();
             LevelConnection.ActiveConnection = levelConnection;
             if(playerScript) playerScript.RemovePlayer();
+            GameController.Instance.ResumeTimer();
             GameController.Instance.ChangeScene(targetSceneName);
         }
     }

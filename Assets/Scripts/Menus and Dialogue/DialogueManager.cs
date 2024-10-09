@@ -27,8 +27,12 @@ public class DialogueManager : MonoBehaviour
 
         currentIndex = 0;
         StartCoroutine(TypeSentence(currentDialogue.dialogueSentences[currentIndex].text));
-        playerInput = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInput>();
-        playerInput.enabled = false;
+        if (GameObject.FindGameObjectWithTag("Player"))
+        {
+            playerInput = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInput>();
+            playerInput.enabled = false;
+        }
+
 
     }
 
@@ -44,11 +48,11 @@ public class DialogueManager : MonoBehaviour
             CompleteSentence();
             return;
         }
-        if (AreDialogueOptionsVisable()) 
+        if (AreDialogueOptionsVisable())
         {
             DialogueOption dialogueOption = currentDialogue.dialogueSentences[currentIndex].dialogueOptions[dialogueOptionIndex];
 
-            if(dialogueOption.nextDialogue) 
+            if (dialogueOption.nextDialogue)
             {
                 currentDialogue = dialogueOption.nextDialogue;
                 currentIndex = 0;
@@ -56,7 +60,7 @@ public class DialogueManager : MonoBehaviour
                 return;
             }
 
-            if(dialogueOption.optionEvent != null) 
+            if (dialogueOption.optionEvent != null)
             {
                 dialogueOption.optionEvent.Raise();
             }
@@ -64,15 +68,18 @@ public class DialogueManager : MonoBehaviour
         DisplayNextSentence();
     }
 
-    void OnNavigateLeft() {
+    void OnNavigateLeft()
+    {
         if (AreDialogueOptionsVisable()) UpdateOptionIndex(-1);
     }
 
-    void OnNavigateRight() {
+    void OnNavigateRight()
+    {
         if (AreDialogueOptionsVisable()) UpdateOptionIndex(1);
     }
 
-    private void UpdateOptionIndex(int ammount) {
+    private void UpdateOptionIndex(int ammount)
+    {
         print("navigate");
         int maxIndex = currentDialogue.dialogueSentences[currentIndex].dialogueOptions.Count - 1;
         optionsElement.text = "";
@@ -97,7 +104,7 @@ public class DialogueManager : MonoBehaviour
 
         dialogueOptionIndex = 0;
 
-        
+
         optionsElement.text = "";
 
         for (int i = 0; i < dialogueOptions.Count; i++)
@@ -125,6 +132,11 @@ public class DialogueManager : MonoBehaviour
         if (currentIndex == lastIndex)
         {
             Destroy(gameObject);
+            ChangeRoomAfterDialogue changeRoomAfterDialogue = GetComponent<ChangeRoomAfterDialogue>();
+            if (changeRoomAfterDialogue != null)
+            {
+                changeRoomAfterDialogue.ChangeRoom();
+            }
             return;
         }
         currentIndex++;

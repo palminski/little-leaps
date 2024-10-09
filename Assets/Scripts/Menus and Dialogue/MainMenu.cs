@@ -45,7 +45,7 @@ public class MainMenu : MonoBehaviour
         // GameController.Instance.AddToScore(saveData.score);
         LevelConnection.ActiveConnection = null;
         GameController.Instance.ResetGameState();
-        GameController.Instance.ChangeScene("Main Room");
+        GameController.Instance.ChangeScene("1_start");
     }
     public void Debug()
     {

@@ -37,18 +37,19 @@ public class GameController : MonoBehaviour
         get { return score; }
     }
 
+    private bool timerMoving;
+    public bool TimerMoving
+    {
+        get { return timerMoving; }
+    }
     private float bonusTimer = 0;
     public float BonusTimer
     {
         get { return bonusTimer; }
     }
 
-    private string currentTimer = "";
-    public string CurrentTimer
-    {
-        get { return currentTimer; }
-    }
 
+    [SerializeField] private int  timerStartValue = 300;
     private int timer;
     public int Timer
     {
@@ -111,15 +112,23 @@ public class GameController : MonoBehaviour
     // ---------------------------------------------------------------------------------- 
     void Awake()
     {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
             collectedObjects = SaveDataManager.LoadGameData().collectedObjects ?? new HashSet<string>();
             SceneManager.sceneLoaded += OnSceneLoad;
+
+            if (player != null) {
+                StartTimer(timerStartValue);
+            }
         }
         else
         {
+            if (player != null && !Instance.TimerMoving) {
+                Instance.StartTimer(timerStartValue);
+            }
             Destroy(gameObject);
         }
     }
@@ -135,13 +144,32 @@ public class GameController : MonoBehaviour
 #endif
         }
 
-        if (bonusTimer > 0)
+        if (bonusTimer > 0 )
         {
-            bonusTimer -= Time.deltaTime;
+            if (timerMoving)
+            {
+                bonusTimer -= Time.deltaTime;
+            }
         }
-        else
+        else if(timerMoving)
         {
             bonusTimer = 0;
+            timerMoving = false;
+            if (deathObject)
+            {
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
+                _deathObject.transform.SetParent(null);
+                // print(player);
+                _deathObject.GetComponentInChildren<DeathScript>().SetPlayer(player);
+                player.SetActive(false);
+
+            }
+            else
+            {
+                ResetGameState();
+                ChangeScene("Main Menu");
+            }
         }
     }
     private void OnSceneLoad(Scene scene, LoadSceneMode mode)
@@ -195,6 +223,9 @@ public class GameController : MonoBehaviour
     // ------------------------------
     public void ResetGameState()
     {
+        bonusTimer = 0;
+        timerMoving = false;
+
         health = 5;
         UpdateHighScores();
         score = 0;
@@ -235,7 +266,7 @@ public class GameController : MonoBehaviour
     {
         if (health <= 0) return 0;
         if (healthChange < 0) OnPlayerDamaged?.Invoke();
-        health += healthChange;
+        // health += healthChange;
         ChangeCharge(0);
         health = Mathf.Clamp(health, 0, maxHealth);
         OnUpdateHUD?.Invoke();
@@ -248,7 +279,6 @@ public class GameController : MonoBehaviour
             if (deathObject)
             {
                 // GameObject player = GameObject.FindGameObjectWithTag("Player");
-
                 GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
                 _deathObject.transform.SetParent(null);
                 // print(player);
@@ -286,19 +316,29 @@ public class GameController : MonoBehaviour
         return health;
     }
 
-    public void startTimer(float timerValue, string timerName)
+    public void StartTimer(float timerValue)
     {
-        currentTimer = timerName;
+        timerMoving = true;
         bonusTimer = timerValue;
     }
-
-    public void stopTimer()
+    public void ResumeTimer()
+    {
+        timerMoving = true;
+    }
+    public void AddToTimer(int timeToAdd)
+    {
+        bonusTimer += timeToAdd;
+        if (bonusTimer > 3599) 
+        {
+            bonusTimer = 3599;
+        }
+    }
+    public void StopTimer()
     {
         int pointsToAdd = 100 * (int) bonusTimer;
         print(bonusTimer + " - " + pointsToAdd);
-        currentTimer = "";
-        AddToScore(pointsToAdd);  
-        bonusTimer = 0f;
+        AddToScore(pointsToAdd);
+        timerMoving = false;
     }
 
     public IEnumerator WaitAndReactivatePlayer(Player player, float timeToWait)
