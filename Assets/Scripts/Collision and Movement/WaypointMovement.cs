@@ -11,6 +11,7 @@ public class WaypointMovement : MonoBehaviour
         StopOnInactiveColor,
         ColorCorespondsToWaypoint,
         OpenOnTrigger,
+        MoveOnPreseure,
     }
 
 
@@ -33,11 +34,12 @@ public class WaypointMovement : MonoBehaviour
     private float nextMoveTime;
 
     [SerializeField]
-    private DialogueEvent OpenEvent;
+    private TriggerEvent OpenEvent;
 
     private bool shouldMove = false;
 
-
+    private PlatformController platformController;
+    private FallthroughSolid fallthroughSolid;
 
     [Header("Color Toggle Settings")]
 
@@ -66,6 +68,11 @@ public class WaypointMovement : MonoBehaviour
             globalWaypoints[i] = localWaypoints[i] + transform.position;
         }
         SetInitialPosition();
+        if (behavior == MovementBehavior.MoveOnPreseure)
+        {
+            platformController = GetComponent<PlatformController>();
+            fallthroughSolid = GetComponent<FallthroughSolid>();
+        }
     }
 
     private void OnEnable()
@@ -124,6 +131,10 @@ public class WaypointMovement : MonoBehaviour
         else if (behavior == MovementBehavior.ColorCorespondsToWaypoint)
         {
             return MovementColorCorespondsToWaypoint();
+        }
+        else if (behavior == MovementBehavior.MoveOnPreseure)
+        {
+            return MoveOnPreseure();
         }
         else
         {
@@ -228,7 +239,23 @@ public class WaypointMovement : MonoBehaviour
         return newPos - transform.position;
     }
 
+    private Vector3 MoveOnPreseure()
+    {
+        fromWaypointIndex = platformController.PassengerOnPlatform() && (fallthroughSolid == null || fallthroughSolid.IsPlayerAbove()) ? 0 : 1;
+        int toWaypointIndex = platformController.PassengerOnPlatform() && (fallthroughSolid == null || fallthroughSolid.IsPlayerAbove()) ? 1 : 0;
+        float distBetweenWaypoints = Vector3.Distance(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex]);
+        percentBetweenWaypoints += speed / distBetweenWaypoints;
+        percentBetweenWaypoints = Mathf.Clamp01(percentBetweenWaypoints);
+        float easedPercentBetweenWaypoints = Ease(percentBetweenWaypoints);
+        Vector3 newPos = Vector3.Lerp(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex], easedPercentBetweenWaypoints);
 
+        if (percentBetweenWaypoints >= 1)
+        {
+            percentBetweenWaypoints = 1;
+
+        }
+        return newPos - transform.position;
+    }
 
     public float Ease(float x)
     {

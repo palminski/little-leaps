@@ -24,7 +24,9 @@ public class Coin : MonoBehaviour
     public ParticleSystem coinParticleSystem;
 
     private string coinId;
-    
+
+    private bool shouldMoveTowardsPlayer;
+    private float speed;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,14 +38,16 @@ public class Coin : MonoBehaviour
 
     void Update()
     {
-        if (ShouldMoveTowardsPlayer())
+        if (player && player.activeSelf && Vector2.Distance(transform.position, player.transform.position) <= magnetRadius) shouldMoveTowardsPlayer = true;
+        if (player && shouldMoveTowardsPlayer)
         {
             Vector2 vectorToPlayer = player.transform.position - transform.position;
             float distanceToPlayer = vectorToPlayer.magnitude;
             Vector2 moveDirection = vectorToPlayer.normalized;
             
-            float speed = (1-distanceToPlayer/magnetRadius) * maxSpeed;
-            transform.position += (Vector3)(moveDirection * speed * Time.deltaTime);
+            speed = Mathf.Max(speed,((1-distanceToPlayer/magnetRadius) * maxSpeed));
+            speed += Time.deltaTime * speed;
+            transform.position += (Vector3)(speed * Time.deltaTime * moveDirection);
         }
     }
 

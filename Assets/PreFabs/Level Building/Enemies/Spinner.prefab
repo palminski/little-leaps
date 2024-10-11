@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 986170193251059734}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -17.36, y: 11.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -144,18 +144,18 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0014333725, y: -0.25513822}
+  m_Offset: {x: 0.0012185574, y: -0.41581613}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1.3888888, y: 1.3888888}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.47538948, y: 0.48972356}
+  m_Size: {x: 0.6621653, y: 0.55882466}
   m_EdgeRadius: 0
 --- !u!114 &8753561298230794352
 MonoBehaviour:
@@ -192,8 +192,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0.03
-  scaredOfHeights: 0
-  canHop: 1
+  scaredOfHeights: 1
+  canHop: 0
   hopDetectionDist: 0.25
   hopDetectionHeight: 1.39
   startRight: 0
@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointValue: 100
-  bounceMultiplier: 1
+  bounceMultiplier: 1.1
   health: 1
   invincible: 0
   blood: {fileID: 7157367465512552725, guid: 9d457ae5531f8364e82771533d6bfe9f, type: 3}

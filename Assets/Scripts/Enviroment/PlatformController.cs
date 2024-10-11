@@ -77,6 +77,7 @@ public class PlatformController : RaycastController
 
     void CalculatePassengerMovement(Vector3 velocity)
     {
+        
         HashSet<Transform> movedPassengers = new HashSet<Transform>();
         passengerMovements = new List<PassengerMovement>();
 
@@ -170,6 +171,21 @@ public class PlatformController : RaycastController
                 }
             }
         }
+    }
+
+    public bool PassengerOnPlatform()
+    {
+        float rayLength = skinWidth * 2;
+        Vector2 rayOrigin = raycastOrigins.topLeft;
+        for (int i = 0; i < yRayCount; i++)
+            {
+                RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, Vector2.up, rayLength, passengerMask);
+                if (collision.transform)
+                {
+                    return true;
+                }
+            }
+        return false;
     }
 
     struct PassengerMovement

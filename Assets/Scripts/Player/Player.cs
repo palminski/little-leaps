@@ -410,7 +410,9 @@ public class Player : MonoBehaviour
     public void Bounce(float bounceMultiplier = 1f)
     {
         velocity.y = jumpPower * bounceMultiplier;
-        StartCoroutine(StopDashingNextFrame());
+        if (gameObject.activeSelf) {
+            StartCoroutine(StopDashingNextFrame());
+        }
         
     }
     public void ResetCoyoteTime()
@@ -525,7 +527,7 @@ public class Player : MonoBehaviour
             hSpeed = 1 * moveSpeed;
             return;
         }
-        if ((canDash && Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f)) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f, -1))
+        if (canDash && (Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f)) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f, -1))
         {
             StopAllCoroutines();
             StartCoroutine(HandleDashState(dashDuration));
