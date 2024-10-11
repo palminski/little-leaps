@@ -158,6 +158,12 @@ public class GameController : MonoBehaviour
             if (deathObject)
             {
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if (!player)
+                {
+                    ResetGameState();
+                    ChangeScene("Main Menu");
+                    return;
+                }
                 GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
                 _deathObject.transform.SetParent(null);
                 // print(player);
@@ -278,12 +284,17 @@ public class GameController : MonoBehaviour
             //Reset Game State
             if (deathObject)
             {
+                player.SetActive(true);
+                print("1");
                 // GameObject player = GameObject.FindGameObjectWithTag("Player");
                 GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
                 _deathObject.transform.SetParent(null);
                 // print(player);
+                print("2");
+
                 _deathObject.GetComponentInChildren<DeathScript>().SetPlayer(player);
                 player.SetActive(false);
+                print("3");
 
             }
             else

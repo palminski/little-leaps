@@ -51,7 +51,7 @@ public class FallthroughSolid : MonoBehaviour
         }
     }
 
-    private bool IsPlayerAbove(){
+    public bool IsPlayerAbove(){
         if (!playerCollider) return false;
         float playerBottom = playerCollider.bounds.min.y;
         float platformTop = platformCollider.bounds.max.y;

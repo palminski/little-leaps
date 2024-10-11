@@ -43,10 +43,14 @@ public class bullet : MonoBehaviour
             ps.transform.SetParent(null);
             gameObject.SetActive(false);
         }
+        else if (hitCollider.gameObject.layer == LayerMask.NameToLayer("Solid"))
+        {
+            ps.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+            ps.transform.SetParent(null);
+            gameObject.SetActive(false);
+        }
 
-        ps.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-        ps.transform.SetParent(null);
-        gameObject.SetActive(false);
+        
 
     }
 }
