@@ -314,6 +314,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""dd461546-6ebd-4f45-bc35-a531802e8306"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""b57e5e3a-5aa9-4338-bdc5-bb5017aec2a5"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
@@ -466,6 +477,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""9092c171-8b5a-4350-a6a0-654e11068fd3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Back"",
+                    ""type"": ""Button"",
+                    ""id"": ""b362a7a4-dc4e-4988-83f7-b9db94cdac95"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -725,6 +745,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e2331409-0cec-41c1-9903-d2a260493376"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1181359d-7b7c-48e3-9935-fc86477a098d"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -748,6 +790,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Menu_NavigateDown = m_Menu.FindAction("NavigateDown", throwIfNotFound: true);
         m_Menu_Select = m_Menu.FindAction("Select", throwIfNotFound: true);
         m_Menu_Interact = m_Menu.FindAction("Interact", throwIfNotFound: true);
+        m_Menu_Back = m_Menu.FindAction("Back", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -909,6 +952,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Menu_NavigateDown;
     private readonly InputAction m_Menu_Select;
     private readonly InputAction m_Menu_Interact;
+    private readonly InputAction m_Menu_Back;
     public struct MenuActions
     {
         private @PlayerControls m_Wrapper;
@@ -919,6 +963,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @NavigateDown => m_Wrapper.m_Menu_NavigateDown;
         public InputAction @Select => m_Wrapper.m_Menu_Select;
         public InputAction @Interact => m_Wrapper.m_Menu_Interact;
+        public InputAction @Back => m_Wrapper.m_Menu_Back;
         public InputActionMap Get() { return m_Wrapper.m_Menu; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -946,6 +991,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @Back.started += instance.OnBack;
+            @Back.performed += instance.OnBack;
+            @Back.canceled += instance.OnBack;
         }
 
         private void UnregisterCallbacks(IMenuActions instance)
@@ -968,6 +1016,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @Back.started -= instance.OnBack;
+            @Back.performed -= instance.OnBack;
+            @Back.canceled -= instance.OnBack;
         }
 
         public void RemoveCallbacks(IMenuActions instance)
@@ -1003,5 +1054,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnNavigateDown(InputAction.CallbackContext context);
         void OnSelect(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnBack(InputAction.CallbackContext context);
     }
 }

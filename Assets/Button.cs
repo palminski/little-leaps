@@ -17,6 +17,8 @@ public class Button : MonoBehaviour
     private Collider2D boxCollider;
     private GameObject playerAttack;
 
+    [SerializeField] private string stringForFunction;
+
     [SerializeField] private TriggerEvent eventToTrigger;
     [SerializeField] private WorldDialogue worldDialogue;
 
@@ -72,7 +74,8 @@ public class Button : MonoBehaviour
             }
             int multiplier = 1;
             int totalPointsAdded = 0;
-            int totalTimeAdded = 0;
+            int totalTimeAdded = 30;
+            GameController.Instance.AddToTimer(30);
             foreach (string key in idsToRemove)
             {
                 totalPointsAdded += (5000 * multiplier);
@@ -82,15 +85,15 @@ public class Button : MonoBehaviour
                 GameController.Instance.AddToScore(5000 * multiplier);
                 GameController.Instance.RemoveFollowingObject(key);
                 multiplier++;
-
-                
             }
+            GameController.Instance.StopTimer();
             Destroy(gameObject);
             GameController.Instance.TagObjectStringAsCollected(id);
             if (worldDialogue)
             {
                 worldDialogue.textElement.text = "";
                 string newText = $@"> SUCCESS! TIMER EXTENDED
+> TIMER PAUSED UNTIL ROOM IS EXITED
 > CHIPS DEPOSITED: {multiplier - 1}
 > POINTS ADDED: {totalPointsAdded}
 > TIME ADDED TO RESET TIME: {totalTimeAdded}";
@@ -99,11 +102,17 @@ public class Button : MonoBehaviour
                 worldDialogue.textToType = newText;
             }
 
+            if (stringForFunction.Length > 0)
+            {
+                SaveDataManager.AddPermanentCollectedString(stringForFunction);
+            }
+
             if (eventToTrigger != null)
             {
                 eventToTrigger.Raise();
             }
         }
+
         if (action == ButtonAction.ActivateEvent)
         {
             Destroy(gameObject);
