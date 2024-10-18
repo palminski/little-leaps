@@ -36,4 +36,12 @@ public static class SaveDataManager
 
         return loadedData;
     }
+
+    public static void AddPermanentCollectedString(String stringToAdd)
+    {
+        SaveData gameData = LoadGameData();
+        if (gameData.permanentCollectedObjects.Contains(stringToAdd)) return;
+        gameData.permanentCollectedObjects.Add(stringToAdd);
+        SaveGameData(gameData);
+    }
 }

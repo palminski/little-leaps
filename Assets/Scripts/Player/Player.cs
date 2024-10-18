@@ -372,10 +372,10 @@ public class Player : MonoBehaviour
         Vector3 newScale = new(transform.position.x < startPosition.x ? -1 : 1, 1, 1);
         transform.position = startPosition;
         transform.localScale = newScale;
-        if (respawnObject)
-        {
-            Instantiate(respawnObject, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
-        }
+        // if (respawnObject)
+        // {
+        //     Instantiate(respawnObject, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
+        // }
         gameObject.SetActive(true);
         StopDash();
     }
@@ -577,12 +577,29 @@ public class Player : MonoBehaviour
     void OnAttack()
     {
         Vector2 leftJoystickPosition = playerInput.actions["LeftJoystickTilt"].ReadValue<Vector2>();
-
+        float moveInputDirection = playerInput.actions["Move"].ReadValue<float>();
+        
+        if (fastFallButton.IsPressed())
+        {
+            Dash(-90f);
+            return;
+        }
+        
         float angle = 0;
+
+        //I am aware this could be simplified
         if (leftJoystickPosition != Vector2.zero)
         {
             angle = Mathf.Atan2(leftJoystickPosition.y, leftJoystickPosition.x) * Mathf.Rad2Deg;
             angle = Mathf.Round(angle / 90) * 90;
+        }
+        else if (moveInputDirection == -1)
+        {
+            angle = 180;
+        }
+        else if (moveInputDirection == 1)
+        {
+            angle = 0;
         }
         else if (transform.localScale.x == -1)
         {
