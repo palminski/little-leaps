@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
     private bool jumpReleased;
     private float gravityModifier = 1;
     private int coyoteTime = 0;
+    private bool canWallJump = false;
     private float minJumpVelocity;
 
     [Header("Wall Jump")]
@@ -156,14 +157,17 @@ public class Player : MonoBehaviour
         {
             hSpeed = Mathf.Max(hSpeed, 0);
             hExtraSpeed = 0;
-
         }
         if (movementCollisionHandler.collisionInfo.right)
         {
             hSpeed = Mathf.Min(hSpeed, 0);
             hExtraSpeed = 0;
         }
-
+        //allow wall jumping if on wall in air
+        if(!isGrounded && movementCollisionHandler.OnWallAtDist(0.01f) || movementCollisionHandler.OnWallAtDistInDirection(distanceWallsDetectable, (int)Mathf.Sign(transform.localScale.x)))
+        {
+            canWallJump = true;
+        }
         //Update the x component of velocity by hSpeed and any additional extra force
         velocity.x = (isDashing && velocity.y < 0) ? hExtraSpeed : hSpeed + hExtraSpeed;
         // velocity.x = hSpeed + hExtraSpeed;
@@ -196,7 +200,7 @@ public class Player : MonoBehaviour
         if (isGrounded)
         {
             coyoteTime = coyoteTimeMax;
-            
+            canWallJump = false;
             if (!isDashing) RefreshDashMoves();
         }
         //Check if player needs to be pushed out of a wall
@@ -225,7 +229,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                if ((wallJumpTime > 0 || movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) && ((xInput == 0) || (xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump))))
+                if (canWallJump && (wallJumpTime > 0 || movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) && ((xInput == 0) || (xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump))))
                 {
                     clingTime = 0;
                     movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump, 0, 0));
@@ -233,7 +237,7 @@ public class Player : MonoBehaviour
                     hExtraSpeed = directionToJump * wallJumpXPower;
                     hSpeed = directionToJump * moveSpeed;
                 }
-                else if (wallJumpTime > 0 || movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
+                else if (canWallJump && (wallJumpTime > 0 || movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)))
                 {
                     StartCoroutine(WaitAndTryWallJump(wallJumpForgiveness, directionToJump));
                 }

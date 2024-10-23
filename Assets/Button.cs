@@ -102,7 +102,7 @@ public class Button : MonoBehaviour
                 worldDialogue.textToType = newText;
             }
 
-            if (stringForFunction.Length > 0)
+            if (stringForFunction != null && stringForFunction.Length > 0)
             {
                 SaveDataManager.AddPermanentCollectedString(stringForFunction);
             }

@@ -38,6 +38,10 @@ public class Coin : MonoBehaviour
 
     void Update()
     {
+        if (speed != 0 && (!player || !player.activeSelf))
+        {
+            ColelctItem();
+        }
         if (player && player.activeSelf && Vector2.Distance(transform.position, player.transform.position) <= magnetRadius) shouldMoveTowardsPlayer = true;
         if (player && shouldMoveTowardsPlayer)
         {
@@ -55,6 +59,12 @@ public class Coin : MonoBehaviour
     {
         if (hitCollider.gameObject == player)
         {
+            ColelctItem();
+        }
+    }
+
+    void ColelctItem()
+    {
             GameController.Instance.AddToScore(pointValue);
             GameController.Instance.ShowPointCounter(pointValue, player.transform.position + new Vector3(0,1,0), false);
             GameController.Instance.ChangeCharge(chargeValue);
@@ -66,13 +76,13 @@ public class Coin : MonoBehaviour
             GameController.Instance.PullFromPool(collectionParticle,transform.position);
             GameController.Instance.TagObjectStringAsCollected(coinId);
             Destroy(gameObject);
-        }
     }
 
     private bool ShouldMoveTowardsPlayer() {
         if (player && player.activeSelf && Vector2.Distance(transform.position, player.transform.position) <= magnetRadius) return true;
         return false;
     }
+    
 
     void OnDrawGizmos()
     {
