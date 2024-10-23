@@ -131,8 +131,10 @@ public class WorldDialogue : MonoBehaviour
     {
         while (currentCharacterIndex > 0)
         {
-            currentCharacterIndex --;
-            textElement.text = textToType.Substring(0,currentCharacterIndex);
+            if(player && player.activeSelf || currentCharacterIndex < textToType.Length-1) {
+                currentCharacterIndex --;
+                textElement.text = textToType.Substring(0,currentCharacterIndex);
+            }
             yield return new WaitForSeconds(timeBetweenCharacters);
         }
     }

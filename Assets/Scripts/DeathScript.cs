@@ -28,8 +28,7 @@ public class DeathScript : MonoBehaviour
         Color newColor = playerDeathImage.color;
         newColor.a -= fadeSpeed * Time.deltaTime;
         if (newColor.a <= 0) {
-             GameController.Instance.ChangeScene("Main Menu");
-             GameController.Instance.ResetGameState();
+             GameController.Instance.ChangeScene("Game Over Menu");
              Destroy(gameObject);
         }
         playerDeathImage.color = newColor;

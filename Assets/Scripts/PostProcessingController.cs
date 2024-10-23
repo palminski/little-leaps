@@ -19,16 +19,28 @@ public class PostProcessingController : MonoBehaviour
     private FilmGrain filmGrain;
     [SerializeField] float filmGrainReturnSpeed = 1f;
 
+    private float startingGrainIntensity;
+
+    GameController gameController;
+
     private bool shouldPulse;
     // Start is called before the first frame update
     void Start()
     {
+        gameController = GameController.Instance;
         volume = GetComponent<Volume>();
         volume.profile.TryGet(out chromaticAberration);
         volume.profile.TryGet(out vignette);
         volume.profile.TryGet(out filmGrain);
      
         shouldPulse = false;
+
+        if (filmGrain)
+        {
+            startingGrainIntensity = filmGrain.intensity.value;
+        }
+
+        
         
      
         UpdateColor();
@@ -54,6 +66,21 @@ public class PostProcessingController : MonoBehaviour
         {
             filmGrain.response.value += filmGrainReturnSpeed * Time.deltaTime;
             if (filmGrain.response.value > 1) filmGrain.response.value = 1;
+        }
+
+        if (gameController.BonusTimer < 60 && gameController.BonusTimer > 0 && filmGrain)
+        {
+            filmGrain.intensity.value = Mathf.Lerp(1, startingGrainIntensity, gameController.BonusTimer / 60f);
+            if (gameController.BonusTimer < 30  && chromaticAberration)
+            {
+                chromaticAberration.intensity.value = Mathf.Lerp(1, maxAbberation, gameController.BonusTimer / 30f);
+                
+                chromaticAberration.active = true;
+            }
+        }
+        else if (filmGrain != null && filmGrain.intensity.value != startingGrainIntensity)
+        {
+            filmGrain.intensity.value = startingGrainIntensity;
         }
     }
     private void HandleRoomStateChange()

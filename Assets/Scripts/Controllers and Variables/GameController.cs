@@ -80,11 +80,15 @@ public class GameController : MonoBehaviour
         get { return charge; }
     }
 
-
-
     public int ChargeMax
     {
         get { return 100; }
+    }
+
+    private string checkpoint;
+    public string Checkpoint
+    {
+        get { return checkpoint; }
     }
 
 
@@ -160,8 +164,7 @@ public class GameController : MonoBehaviour
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
                 if (!player)
                 {
-                    ResetGameState();
-                    ChangeScene("Main Menu");
+                    ChangeScene("Game Over Menu");
                     return;
                 }
                 GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
@@ -173,8 +176,7 @@ public class GameController : MonoBehaviour
             }
             else
             {
-                ResetGameState();
-                ChangeScene("Main Menu");
+                ChangeScene("Game Over Menu");
             }
         }
     }
@@ -250,6 +252,11 @@ public class GameController : MonoBehaviour
             }
         }
         followingObjects.Clear();
+    }
+
+    public void SetCheckPoint(string scene)
+    {
+        checkpoint = scene;
     }
 
     private void UpdateHighScores() {
