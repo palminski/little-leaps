@@ -621,6 +621,10 @@ public class Player : MonoBehaviour
     {
         GameController.Instance.ToggleRoomState();
     }
+    void OnOpenMenu()
+    {
+        GameController.Instance.OpenPauseMenu();
+    }
 
     IEnumerator WaitAndSetVelocity()
     {

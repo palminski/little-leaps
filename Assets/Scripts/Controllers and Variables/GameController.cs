@@ -105,6 +105,8 @@ public class GameController : MonoBehaviour
         get { return followingObjects; }
     }
 
+    public GameObject pauseMenuPrefab;
+
     // private List<FollowingObject> followingObjects = new List<FollowingObject>();
     // public List<FollowingObject> FollowingObjects
     // {
@@ -138,15 +140,7 @@ public class GameController : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            UpdateHighScores();
-            Application.Quit();
-#endif
-        }
+        
 
         if (bonusTimer > 0 )
         {
@@ -393,6 +387,17 @@ public class GameController : MonoBehaviour
         }
         OnUpdateHUD?.Invoke();
         return charge;
+    }
+
+    public void OpenPauseMenu()
+    {
+        PauseMenu currentMenu = FindObjectOfType<PauseMenu>();
+        if (currentMenu)
+        {
+            Destroy(currentMenu.gameObject);
+            return;
+        }
+        Instantiate(pauseMenuPrefab, transform.position, Quaternion.identity);
     }
 
     public void TagObjectStringAsCollected(string objectKey)

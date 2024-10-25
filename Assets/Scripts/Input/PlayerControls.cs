@@ -89,6 +89,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""d57f2a52-b28e-4b7b-98c5-cb8577645e02"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -325,6 +334,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""72bbbfb7-6a67-4e4d-9aa5-c48afc915db8"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""b57e5e3a-5aa9-4338-bdc5-bb5017aec2a5"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
@@ -421,6 +441,39 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""LeftJoystickTilt"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4630259e-7e45-47ba-a663-e84bd5488184"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""618747f2-1a81-44f4-8200-eb69338ea505"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""49b1c6af-69f9-4040-a23f-a65e178b1879"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -616,6 +669,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""890a8e8a-4bf8-427f-b2ef-b448713e9b1f"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""91a6e15e-a2e3-4081-aa42-1c8f81e5e3ad"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
@@ -767,6 +831,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Back"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""72ea5f04-cb13-4279-9a87-7509ea72f250"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -782,6 +857,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Movement_RightJoystickTilt = m_Movement.FindAction("RightJoystickTilt", throwIfNotFound: true);
         m_Movement_LeftJoystickTilt = m_Movement.FindAction("LeftJoystickTilt", throwIfNotFound: true);
         m_Movement_Attack = m_Movement.FindAction("Attack", throwIfNotFound: true);
+        m_Movement_OpenMenu = m_Movement.FindAction("OpenMenu", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_NavigateUp = m_Menu.FindAction("NavigateUp", throwIfNotFound: true);
@@ -859,6 +935,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Movement_RightJoystickTilt;
     private readonly InputAction m_Movement_LeftJoystickTilt;
     private readonly InputAction m_Movement_Attack;
+    private readonly InputAction m_Movement_OpenMenu;
     public struct MovementActions
     {
         private @PlayerControls m_Wrapper;
@@ -870,6 +947,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @RightJoystickTilt => m_Wrapper.m_Movement_RightJoystickTilt;
         public InputAction @LeftJoystickTilt => m_Wrapper.m_Movement_LeftJoystickTilt;
         public InputAction @Attack => m_Wrapper.m_Movement_Attack;
+        public InputAction @OpenMenu => m_Wrapper.m_Movement_OpenMenu;
         public InputActionMap Get() { return m_Wrapper.m_Movement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -900,6 +978,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Attack.started += instance.OnAttack;
             @Attack.performed += instance.OnAttack;
             @Attack.canceled += instance.OnAttack;
+            @OpenMenu.started += instance.OnOpenMenu;
+            @OpenMenu.performed += instance.OnOpenMenu;
+            @OpenMenu.canceled += instance.OnOpenMenu;
         }
 
         private void UnregisterCallbacks(IMovementActions instance)
@@ -925,6 +1006,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Attack.started -= instance.OnAttack;
             @Attack.performed -= instance.OnAttack;
             @Attack.canceled -= instance.OnAttack;
+            @OpenMenu.started -= instance.OnOpenMenu;
+            @OpenMenu.performed -= instance.OnOpenMenu;
+            @OpenMenu.canceled -= instance.OnOpenMenu;
         }
 
         public void RemoveCallbacks(IMovementActions instance)
@@ -1045,6 +1129,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnRightJoystickTilt(InputAction.CallbackContext context);
         void OnLeftJoystickTilt(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
+        void OnOpenMenu(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {
