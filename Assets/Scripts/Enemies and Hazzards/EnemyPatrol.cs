@@ -96,7 +96,7 @@ private Enemy enemy;
         rayStartPosition.x += direction * collider2d.bounds.extents.x;
         rayStartPosition.y -= collider2d.bounds.extents.y;
 
-        RaycastHit2D hit = Physics2D.Raycast(rayStartPosition, Vector2.down, 0.5f, movementCollisionHandler.collidableLayers);
+        RaycastHit2D hit = Physics2D.Raycast(rayStartPosition, Vector2.down, (canHop ? hopDetectionHeight : 0.5f), movementCollisionHandler.collidableLayers);
         return hit.collider == null;
     }
 
@@ -126,6 +126,10 @@ private Enemy enemy;
     {
         yield return new WaitForFixedUpdate();
 
-        if (movementCollisionHandler.InGround()) enemy.KillEnemy();
+        if (movementCollisionHandler.InGround()) 
+        {
+            enemy.KillEnemy();
+            StopAllCoroutines();
+        }
     }
 }

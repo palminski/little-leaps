@@ -27,7 +27,7 @@ public class Portal : MonoBehaviour
             player.GetComponent<Player>().startPosition = spawnPoint.position;
             
             var camera = Camera.main.GetComponent<CameraControls>();
-            if (camera && camera.canMove && !camera.onlyUp) camera.SnapToPosition(spawnPoint);
+            if (camera && camera.canMove && !camera.onlyUp && !camera.yAxisOnly) camera.SnapToPosition(spawnPoint);
             player.transform.localScale = new(Mathf.Sign(spawnPoint.localPosition.x),1,1);
         }
     }

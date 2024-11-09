@@ -133,7 +133,7 @@ RectTransform:
   m_GameObject: {fileID: 2713884525238545409}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.015, y: 1.03, z: 1}
+  m_LocalScale: {x: 1.005, y: 1.008, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7942510047113880842}
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 28.79721, y: 249.39307, z: 29.356201, w: 504.3883}
+  m_margin: {x: 26.687897, y: 258.88513, z: 29.356201, w: 513.8805}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -422,8 +422,6 @@ MonoBehaviour:
       m_Calls: []
   m_text: '> TEST
 
-    > TEST
-
     > TEST'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bd81d74cff118d24b95dbeabda704f15, type: 2}
@@ -487,7 +485,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 360.69327, y: 607.14935, z: 355.2876, w: 242.73547}
+  m_margin: {x: 349.09183, y: 652.5003, z: 355.2876, w: 252.22757}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -699,24 +697,7 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     requiredKey: 
-    text: Reset
-    sideText: Set timer to 0 to end run and return to main menu
-  - action:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7961934683323849919}
-          m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-          m_MethodName: ExitGame
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    requiredKey: 
-    text: Quit
-    sideText: Exit game and return to desktop
+    text: Return To Root
+    sideText: Set timer to 0 to initialte system reset. This will reload ${HALLUCINATION}
+      to the root menu.
   descriptionText: {fileID: 2361379331880237520}

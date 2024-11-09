@@ -10,6 +10,8 @@ public class TimerController : MonoBehaviour
 
     [SerializeField] private TriggerEvent activateOnEvent;
     // Start is called before the first frame update
+    [SerializeField] private TriggerEvent levelCompleteEvent;
+    [SerializeField] private string[] requiredChips;
 
     private void OnEnable()
     {
@@ -43,9 +45,25 @@ public class TimerController : MonoBehaviour
     }
 
     void OnEventRaised() {
-        if (GameController.Instance.CollectedObjects.Contains(timerName)) return;
-        GameController.Instance.CollectedObjects.Add(timerName);
+        if(requiredChips != null)
+        {
+            bool canOpen = true;
+            foreach(string requiredChip in requiredChips)
+            {
+                if (!GameController.Instance.CollectedObjects.Contains(requiredChip))
+                {
+                    canOpen = false;
+                }
+            }
+            if(!canOpen) return;
+        }
+        
+        
+        if (levelCompleteEvent) levelCompleteEvent.Raise();
         GameController.Instance.StopTimer();
+        
+        if (GameController.Instance.CollectedObjects.Contains(timerName)) return;
+        GameController.Instance.CollectedObjects.Add(timerName);        
     }
     // Update is called once per frame
     void Update()

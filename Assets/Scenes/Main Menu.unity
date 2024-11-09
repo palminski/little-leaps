@@ -485,7 +485,43 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     requiredKey: 
-    text: Sector_0
+    text: Sector 0_0
+    sideText: 
+  - action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 307165574}
+          m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+          m_MethodName: StartLevel
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 0_1 Start
+            m_BoolArgument: 0
+          m_CallState: 2
+    requiredKey: 2_1
+    text: Sector 0_1
+    sideText: 
+  - action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 307165574}
+          m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+          m_MethodName: StartLevel
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 0_2 Start
+            m_BoolArgument: 0
+          m_CallState: 2
+    requiredKey: 1_1
+    text: Sector 0_2
     sideText: 
   - action:
       m_PersistentCalls:
@@ -502,26 +538,26 @@ MonoBehaviour:
             m_StringArgument: sector_1_start
             m_BoolArgument: 0
           m_CallState: 2
-    requiredKey: Sector 1
-    text: Sector_1
+    requiredKey: 1_0_0
+    text: Sector 1_0
     sideText: 
   - action:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 307165574}
           m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-          m_MethodName: Shift
-          m_Mode: 1
+          m_MethodName: StartLevel
+          m_Mode: 5
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 
+            m_StringArgument: sector_1_1_start
             m_BoolArgument: 0
           m_CallState: 2
-    requiredKey: Sector 2
-    text: Sector_2
+    requiredKey: 1_1_0
+    text: Sector 1_1
     sideText: 
   startingText: {fileID: 1156152321}
 --- !u!4 &307165575

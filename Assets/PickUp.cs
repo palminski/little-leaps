@@ -32,20 +32,31 @@ public class PickUp : MonoBehaviour
     {
         if (hitCollider.gameObject == player)
         {
-            GameObject obj = Instantiate(followItem, transform.position, Quaternion.identity);
+            GameObject followObject = Instantiate(followItem, transform.position, Quaternion.identity);
 
-            SpriteRenderer thisSR = GetComponent<SpriteRenderer>();
-            SpriteRenderer newSR =obj.GetComponent<SpriteRenderer>();
+            // SpriteRenderer thisSR = GetComponent<SpriteRenderer>();
+            // SpriteRenderer newSR =followObject.GetComponent<SpriteRenderer>();
 
-            newSR.sprite = thisSR.sprite;
-            newSR.color = thisSR.color;
-            newSR.flipX = thisSR.flipX;
-            newSR.flipY = thisSR.flipY;
-            newSR.sortingLayerID = thisSR.sortingLayerID;
-            newSR.sortingOrder = thisSR.sortingOrder;
+            GameObject newObj = Instantiate(gameObject);
+            
+            PickUp newPickup = newObj.GetComponent<PickUp>();
+            Rigidbody2D newRigidBody = newObj.GetComponent<Rigidbody2D>();
+            Collider2D newCollider = newObj.GetComponent<Collider2D>();
+            
+            if(newPickup) newPickup.enabled = false;
+            if(newRigidBody) newRigidBody.bodyType = RigidbodyType2D.Static;
+            if(newCollider) newCollider.enabled = false;
 
-            obj.transform.SetParent(GameController.Instance.transform);
-            GameController.Instance.AddFollowingObjects(id, pickupName, obj);
+            newObj.transform.SetParent(followObject.transform);
+            // newSR.sprite = thisSR.sprite;
+            // newSR.color = thisSR.color;
+            // newSR.flipX = thisSR.flipX;
+            // newSR.flipY = thisSR.flipY;
+            // newSR.sortingLayerID = thisSR.sortingLayerID;
+            // newSR.sortingOrder = thisSR.sortingOrder;
+
+            followObject.transform.SetParent(GameController.Instance.transform);
+            GameController.Instance.AddFollowingObjects(id, pickupName, followObject);
             DeActivate();
 
         }
@@ -53,7 +64,7 @@ public class PickUp : MonoBehaviour
 
     private void DeActivate()
     {
-        Component[] components = GetComponents<Component>();
+        Component[] components = GetComponentsInChildren<Component>();
         foreach (Component component in components)
         {
             if (component != this)
@@ -72,7 +83,7 @@ public class PickUp : MonoBehaviour
 
     private void ReActivate()
     {
-        Component[] components = GetComponents<Component>();
+        Component[] components = GetComponentsInChildren<Component>();
         foreach (Component component in components)
         {
             if (component != this)

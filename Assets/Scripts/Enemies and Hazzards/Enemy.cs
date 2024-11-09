@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour
     private GameObject player;
     private GameObject playerAttack;
 
-    
+    private bool canDamagePlayer = false;
     private string enemyId;
 
 
@@ -52,6 +52,7 @@ public class Enemy : MonoBehaviour
 
     private void OnEnable()
     {
+        canDamagePlayer = true;
         if (canSwapColors)
         {
             GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
@@ -60,6 +61,7 @@ public class Enemy : MonoBehaviour
     }
     private void OnDisable()
     {
+        canDamagePlayer = false;
         if (canSwapColors)
         {
             GameController.Instance.OnRoomStateChanged -= HandleRoomStateChange;
@@ -69,7 +71,7 @@ public class Enemy : MonoBehaviour
     void OnTriggerEnter2D(Collider2D hitCollider)
     {
         // - Check if enemy can hurt player
-        if (hitCollider.gameObject == player)
+        if (canDamagePlayer && hitCollider.gameObject == player)
         {
             Player hitPlayer = player.GetComponent<Player>();
             Collider2D collider = GetComponent<Collider2D>();
@@ -81,7 +83,7 @@ public class Enemy : MonoBehaviour
                 return;
             }
 
-            if (vulnerableFromSide && playerBottom <= enemyTop && hitPlayer.IsDashing())
+            if (vulnerableFromSide && playerBottom <= enemyTop && hitPlayer.IsDashingSideways())
             {
                 return;
             }
@@ -128,10 +130,10 @@ public class Enemy : MonoBehaviour
                 DamageEnemy();
             }
 
-            if (vulnerableFromSide && playerBottom <= enemyTop && hitPlayer.IsDashing())
+            if (vulnerableFromSide && playerBottom <= enemyTop && hitPlayer.IsDashingSideways())
             {
-                hitPlayer.ResetCoyoteTime();
-
+                // hitPlayer.ResetCoyoteTime();
+                hitPlayer.RefreshDashMoves();
                 DamageEnemy();
             }
         }
@@ -163,7 +165,17 @@ public class Enemy : MonoBehaviour
             Instantiate(objectToSpawn, transform.position, Quaternion.identity);
         }
         GameController.Instance.TagObjectStringAsCollected(enemyId);
-        Destroy(gameObject);
+        if (canRespwan)
+        {
+
+            GameController.Instance.AddInactiveEnemy(gameObject);
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        GameController.Instance.InvokeEnemyKilled();
 
         int pointsToAdd = pointValue;
         if (bonusPoints)
@@ -172,6 +184,7 @@ public class Enemy : MonoBehaviour
         } 
         GameController.Instance.AddToScore(pointsToAdd);
         if (pointValue > 0) GameController.Instance.ShowPointCounter(pointsToAdd, transform.position);
+        pointValue = 0;
     }
 
 

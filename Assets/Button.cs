@@ -14,6 +14,9 @@ public class Button : MonoBehaviour
     [SerializeField] private ButtonAction action = ButtonAction.None;
 
     [SerializeField] private bool requiresFirmPress = false;
+
+    [SerializeField] private bool oneTimeUse = true;
+
     private Collider2D boxCollider;
     private GameObject playerAttack;
 
@@ -67,36 +70,33 @@ public class Button : MonoBehaviour
             Dictionary<string, FollowingObject> followingObjects = GameController.Instance.FollowingObjects;
             foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
             {
-                if (entry.Value.Name == "chip")
-                {
-                    idsToRemove.Add(entry.Key);
-                }
+                GameController.Instance.TagObjectStringAsCollected(entry.Value.Name);
+                
+                idsToRemove.Add(entry.Key);
+                
             }
             int multiplier = 1;
             int totalPointsAdded = 0;
-            int totalTimeAdded = 30;
-            GameController.Instance.AddToTimer(30);
+            
+            
             foreach (string key in idsToRemove)
             {
                 totalPointsAdded += (5000 * multiplier);
-                totalTimeAdded += 30;
+                
                 GameController.Instance.TagObjectStringAsCollected(key);
-                GameController.Instance.AddToTimer(30);
+                
                 GameController.Instance.AddToScore(5000 * multiplier);
                 GameController.Instance.RemoveFollowingObject(key);
                 multiplier++;
             }
-            GameController.Instance.StopTimer();
+            
             Destroy(gameObject);
-            GameController.Instance.TagObjectStringAsCollected(id);
+            if (oneTimeUse) GameController.Instance.TagObjectStringAsCollected(id);
             if (worldDialogue)
             {
                 worldDialogue.textElement.text = "";
-                string newText = $@"> SUCCESS! TIMER EXTENDED
-> TIMER PAUSED UNTIL ROOM IS EXITED
-> CHIPS DEPOSITED: {multiplier - 1}
-> POINTS ADDED: {totalPointsAdded}
-> TIME ADDED TO RESET TIME: {totalTimeAdded}";
+                string newText = $@"> CHIPS DEPOSITED: {multiplier - 1}
+> POINTS ADDED: {totalPointsAdded}";
 
                 worldDialogue.startingText = newText;
                 worldDialogue.textToType = newText;

@@ -36,9 +36,7 @@ public class bullet : MonoBehaviour
         }
         if (hitCollider.gameObject.CompareTag("Player"))
         {
-            Player player = hitCollider.gameObject.GetComponent<Player>();
-            int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
-            player.Damage(1, directionToShove);
+            
             ps.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             ps.transform.SetParent(null);
             gameObject.SetActive(false);

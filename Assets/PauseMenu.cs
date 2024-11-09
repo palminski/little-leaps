@@ -37,6 +37,11 @@ public class PauseMenu : MonoBehaviour
         if (playerInput) playerInput.enabled = true;
     }
 
+    void OnOpenMenu()
+    {
+        Continue();
+    }
+
 
     public void ReturnToMainMenu()
     {

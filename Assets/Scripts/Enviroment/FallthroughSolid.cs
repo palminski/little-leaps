@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class FallthroughSolid : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class FallthroughSolid : MonoBehaviour
     private PlayerControls playerControls;
 
     private  Collider2D playerCollider;
+    private  PlayerInput playerInput;
     private Collider2D platformCollider;
 
     private int passableIndex;
@@ -19,6 +21,7 @@ public class FallthroughSolid : MonoBehaviour
     // Start is called before the first frame update
     void Start() {
         playerCollider = GameObject.FindGameObjectWithTag("Player").GetComponent<Collider2D>();
+        playerInput = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInput>();
         platformCollider = GetComponent<Collider2D>();
     }
     void Awake()
@@ -40,7 +43,7 @@ public class FallthroughSolid : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerControls.Movement.FastFall.IsPressed()) {
+        if (playerControls.Movement.FastFall.IsPressed() && playerInput && playerInput.enabled) {
             gameObject.layer = passableIndex;
         }
         else if (IsPlayerAbove()) {
