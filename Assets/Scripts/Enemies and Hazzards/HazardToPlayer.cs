@@ -17,6 +17,23 @@ public class HazardToPlayer : MonoBehaviour
     {
         if (collision.gameObject == player)
         {
+            print("here");
+            Player hitPlayer = player.GetComponent<Player>();
+
+            if (!hitPlayer.IsInvincible())
+            {
+                int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
+                hitPlayer.Damage(1, directionToShove);
+                // hitPlayer.Shove(directionToShove);
+            }
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject == player)
+        {
+            print("here");
             Player hitPlayer = player.GetComponent<Player>();
 
             if (!hitPlayer.IsInvincible())

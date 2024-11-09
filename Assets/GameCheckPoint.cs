@@ -14,6 +14,7 @@ public class GameCheckPoint : MonoBehaviour
     {
         if (!TriggerEvent)
         {
+            SaveDataManager.AddPermanentCollectedString(room);
             GameController.Instance.SetCheckPoint(room);
         }
     }
@@ -34,6 +35,7 @@ public class GameCheckPoint : MonoBehaviour
     }
 
     private void OnEventRaised() {
+        SaveDataManager.AddPermanentCollectedString(room);
         GameController.Instance.SetCheckPoint(room);
     }
 }

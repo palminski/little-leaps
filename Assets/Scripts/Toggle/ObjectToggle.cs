@@ -16,6 +16,8 @@ public class ObjectToggle : MonoBehaviour
     [SerializeField]
     private bool shouldRemoveCollision = true;
 
+    public bool shouldWaitBeforeAddingCollision = false;
+
     private SpriteRenderer spriteRenderer;
     private Sprite activeSprite;
     private Color activeColor;
@@ -64,6 +66,11 @@ public class ObjectToggle : MonoBehaviour
         if (spriteRenderer) spriteRenderer.color = activeColor;
         if (spriteRenderer) spriteRenderer.sprite = activeSprite;
         if (animator) animator.SetTrigger("Activate");
+        if (shouldWaitBeforeAddingCollision)
+        {
+            StartCoroutine(WaitThenAddCollision());
+            return;
+        }
         if (boxCollider) boxCollider.enabled = true;
     }
 
@@ -88,5 +95,11 @@ public class ObjectToggle : MonoBehaviour
     {
         yield return new WaitForSeconds(0.05f);
         if (boxCollider) boxCollider.enabled = false;
+    }
+
+    private IEnumerator WaitThenAddCollision()
+    {
+        yield return new WaitForSeconds(0.05f);
+        if (boxCollider) boxCollider.enabled = true;
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
@@ -11,6 +12,10 @@ public class CameraControls : MonoBehaviour
 
     [SerializeField]
     public bool canMove = true;
+
+    [SerializeField]
+    public bool yAxisOnly = false;
+
     private Transform target;
     [SerializeField] private Vector3 offset;
 
@@ -54,7 +59,12 @@ public class CameraControls : MonoBehaviour
         colorForRS1 = GameController.ColorForGreen;
         cam = GetComponent<Camera>();
         target = GameObject.FindGameObjectWithTag("Player").transform;
-        if (canMove && !onlyUp) transform.position = target.position + offset;
+        
+        Vector3 startPosition = transform.position;
+        if (canMove && !onlyUp) startPosition.y = target.position.y;
+        if (canMove && !onlyUp && !yAxisOnly) startPosition.x = target.position.x;
+        transform.position = canMove ? startPosition + offset : startPosition;
+
         highestPoint = transform.position.y;
         if (!tilemap) tilemap = GameObject.Find("environment").GetComponent<Tilemap>();
 
@@ -83,7 +93,7 @@ public class CameraControls : MonoBehaviour
         Vector3 yVector = new(0, transform.position.y, 0);
         Vector3 targetYVector = new(0, targetPosition.y, 0);
 
-        float xTarget = Vector3.SmoothDamp(xVector, targetXVector, ref velocity, easeTimeX).x;
+        float xTarget = yAxisOnly ? transform.position.x : Vector3.SmoothDamp(xVector, targetXVector, ref velocity, easeTimeX).x;
         float yTarget = Vector3.SmoothDamp(yVector, targetYVector, ref velocity, easeTimeY).y;
 
         if (tilemap)

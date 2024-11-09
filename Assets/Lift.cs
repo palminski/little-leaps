@@ -19,6 +19,9 @@ public class Lift : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Material startingMaterial;
     private Transform playerTransform;
+    private Player playerScript;
+
+    public bool isMoving = false;
 
     [SerializeField] private WaypointMovement waypointMovement;
 
@@ -31,6 +34,7 @@ public class Lift : MonoBehaviour
         if (GameController.Instance.CollectedObjects.Contains(id)) isActive = true;
         animator = GetComponent<Animator>();
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        playerScript = playerTransform.GetComponent<Player>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         startingMaterial = spriteRenderer.material;
 
@@ -61,30 +65,7 @@ public class Lift : MonoBehaviour
         }
     }
 
-    private bool CanInteractWith()
-    {
-        if (!playerTransform || !interactionPoint || !isActive) return false;
-        if (Vector2.Distance(interactionPoint.position, playerTransform.position) <= interactionDistance) return true;
-        return false;
-    }
-
-    void OnInteract()
-    {
-        if (CanInteractWith())
-        {
-
-            if (waypointMovement)
-            {
-
-                Player playerScript = playerTransform.GetComponent<Player>();
-                // LevelConnection.ActiveConnection = levelConnection;
-                if (playerScript) playerScript.SetInputEnabled(false);
-                spriteRenderer.sortingOrder = 60;
-                animator.SetTrigger("Close Lift");
-                StartCoroutine(WaitAndChangeScene());
-            }
-        }
-    }
+    
 
     void OnEventRaised()
     {
@@ -103,10 +84,22 @@ public class Lift : MonoBehaviour
         
     }
 
+    void OnTriggerStay2D(Collider2D hitCollider)
+    {
+        if (!isMoving && isActive && hitCollider.gameObject == playerTransform.gameObject && playerScript.IsGrounded()) {
+                if (playerScript) playerScript.SetInputEnabled(false);
+                spriteRenderer.sortingOrder = 60;
+                animator.SetTrigger("Close Lift");
+                // GameController.Instance.ChangeScene(targetSceneName);
+                isMoving = true;
+                StartCoroutine(WaitAndChangeScene());
+        }
+    }
+
     private IEnumerator WaitAndChangeScene()
     {
         yield return new WaitForSeconds(1.4f);
-        Player playerScript = playerTransform.GetComponent<Player>();
+    
         if (playerScript) playerScript.RemovePlayer();
         waypointMovement.TriggerShouldMove();
         yield return new WaitForSeconds(0.5f);

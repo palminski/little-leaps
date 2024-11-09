@@ -222,7 +222,7 @@ public class Player : MonoBehaviour
             {
                 if (coyoteTime <= 0) movementCollisionHandler.Move(new Vector3(0, -1, 0));
                 clingTime = 0;
-                velocity.y = jumpPower;
+                if(gameObject.activeSelf)StartCoroutine(WaitAndJump());
                 GameController.Instance.EndPointCombo();
                 StopDash();
                 RefreshDashMoves();
@@ -277,7 +277,11 @@ public class Player : MonoBehaviour
         }
 
     }
-
+    private IEnumerator WaitAndJump()
+    {
+        yield return new WaitForFixedUpdate();
+        velocity.y = jumpPower;
+    }
     // --------------------------
     // Update Called Every Frame
     // --------------------------
@@ -357,7 +361,7 @@ public class Player : MonoBehaviour
 
         GameController.Instance.StartCoroutine(GameController.Instance.WaitAndReactivatePlayer(this, 1f));
         gameObject.SetActive(false);
-
+        
         if (damageObject)
         {
             Instantiate(damageObject, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
@@ -429,7 +433,7 @@ public class Player : MonoBehaviour
         playerAfterImage.Stop();
     }
 
-    private void RefreshDashMoves()
+    public void RefreshDashMoves()
     {
         canDash = true;
         canDoubleJump = true;
@@ -554,6 +558,10 @@ public class Player : MonoBehaviour
     {
         return velocity.y < -gravity * gravityModifier;
     }
+    public bool IsGrounded()
+    {
+        return movementCollisionHandler.OnGround();
+    }
     public bool IsInAir()
     {
         return !movementCollisionHandler.OnGround();
@@ -561,6 +569,10 @@ public class Player : MonoBehaviour
     public bool IsDashing()
     {
         return isDashing;
+    }
+    public bool IsDashingSideways()
+    {
+        return hExtraSpeed != 0 && isDashing;
     }
     public Vector3 GetLastPosition()
     {
@@ -620,6 +632,10 @@ public class Player : MonoBehaviour
     void OnToggleRoom()
     {
         GameController.Instance.ToggleRoomState();
+    }
+    void OnOpenMenu()
+    {
+        GameController.Instance.OpenPauseMenu();
     }
 
     IEnumerator WaitAndSetVelocity()

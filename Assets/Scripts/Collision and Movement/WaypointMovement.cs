@@ -37,6 +37,7 @@ public class WaypointMovement : MonoBehaviour
     private TriggerEvent OpenEvent;
 
     private bool shouldMove = false;
+    private bool shouldMoveAgain = false;
 
     private PlatformController platformController;
     private FallthroughSolid fallthroughSolid;
@@ -223,8 +224,8 @@ public class WaypointMovement : MonoBehaviour
     private Vector3 MovementOpenOnTrigger()
     {
 
-        fromWaypointIndex = shouldMove ? 0 : 1;
-        int toWaypointIndex = shouldMove ? 1 : 0;
+        fromWaypointIndex = shouldMoveAgain ? 1 :(shouldMove ? 0 : 1);
+        int toWaypointIndex = shouldMoveAgain ? 2 :(shouldMove ? 1 : 0);
         float distBetweenWaypoints = Vector3.Distance(globalWaypoints[fromWaypointIndex], globalWaypoints[toWaypointIndex]);
         percentBetweenWaypoints += speed / distBetweenWaypoints;
         percentBetweenWaypoints = Mathf.Clamp01(percentBetweenWaypoints);
@@ -300,8 +301,10 @@ public class WaypointMovement : MonoBehaviour
 
     public void TriggerShouldMove()
     {
-        if (shouldMove) return;
+        
         percentBetweenWaypoints = 1 - percentBetweenWaypoints;
+        
         shouldMove = true;
+        shouldMoveAgain = true;
     }
 }

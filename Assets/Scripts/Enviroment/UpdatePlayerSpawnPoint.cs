@@ -17,7 +17,7 @@ public class UpdatePlayerSpawnPoint : MonoBehaviour
     // void OnTriggerStay2D(Collider2D collision)
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject == player.gameObject)
+        if (player && collision.gameObject == player.gameObject)
         {
             player.SetPlayerSpawnPointToTransform(newSpawnPoint);
         }

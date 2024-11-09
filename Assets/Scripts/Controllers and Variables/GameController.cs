@@ -91,8 +91,6 @@ public class GameController : MonoBehaviour
         get { return checkpoint; }
     }
 
-
-
     private HashSet<string> collectedObjects = new HashSet<string>();
     public HashSet<string> CollectedObjects
     {
@@ -104,6 +102,10 @@ public class GameController : MonoBehaviour
     {
         get { return followingObjects; }
     }
+
+    public GameObject pauseMenuPrefab;
+
+    private List<GameObject> disabledEnemies = new List<GameObject>();
 
     // private List<FollowingObject> followingObjects = new List<FollowingObject>();
     // public List<FollowingObject> FollowingObjects
@@ -138,15 +140,7 @@ public class GameController : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            UpdateHighScores();
-            Application.Quit();
-#endif
-        }
+        
 
         if (bonusTimer > 0 )
         {
@@ -184,7 +178,7 @@ public class GameController : MonoBehaviour
     {
         levelChangerAnimator.Play("Fade_In", 0, 0f);
         objectPool = new Dictionary<string, Queue<GameObject>>();
-
+        disabledEnemies.Clear();
         int i = 1;
         foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
         {
@@ -212,6 +206,7 @@ public class GameController : MonoBehaviour
     public event Action OnPlayerDashed;
     public event Action OnUpdateHUD;
     public event Action OnPlayerDamaged;
+    public event Action OnEnemyKilled;
 
     public RoomColor ToggleRoomState()
     {
@@ -225,13 +220,18 @@ public class GameController : MonoBehaviour
         OnPlayerDashed?.Invoke();
     }
 
+    public void InvokeEnemyKilled()
+    {
+        OnEnemyKilled?.Invoke();
+    }
+
 
     // ------------------------------
     // Update Variables in Controller
     // ------------------------------
     public void ResetGameState()
     {
-        bonusTimer = 0;
+        bonusTimer = 300;
         timerMoving = false;
 
         health = 5;
@@ -285,7 +285,7 @@ public class GameController : MonoBehaviour
         OnUpdateHUD?.Invoke();
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        Player playerScript = player.GetComponent<Player>();
+        Player playerScript = player ? player.GetComponent<Player>() : null;
         if (health <= 0)
         {
             //Reset Game State
@@ -326,7 +326,7 @@ public class GameController : MonoBehaviour
                 StartCoroutine(WaitAndChangeScene(waitTimeAfterDamage));
 
             }
-            else
+            else if(playerScript)
             {
                 playerScript.HideAndStartRespawn();
             }
@@ -366,6 +366,7 @@ public class GameController : MonoBehaviour
         if (player)
         {
             player.Respawn();
+            GameController.Instance.ReactivateEnemies();
         }
 
     }
@@ -393,6 +394,17 @@ public class GameController : MonoBehaviour
         }
         OnUpdateHUD?.Invoke();
         return charge;
+    }
+
+    public void OpenPauseMenu()
+    {
+        PauseMenu currentMenu = FindObjectOfType<PauseMenu>();
+        if (currentMenu)
+        {
+            Destroy(currentMenu.gameObject);
+            return;
+        }
+        Instantiate(pauseMenuPrefab, transform.position, Quaternion.identity);
     }
 
     public void TagObjectStringAsCollected(string objectKey)
@@ -430,6 +442,19 @@ public class GameController : MonoBehaviour
         followingObjects.Remove(objectKey);
     }
 
+    public void AddInactiveEnemy(GameObject gameObject)
+    {
+        disabledEnemies.Add(gameObject);
+    }
+    public void ReactivateEnemies()
+    {
+        
+        foreach (GameObject enemy in disabledEnemies)
+        {
+            enemy.SetActive(true);
+        }
+        disabledEnemies.Clear();
+    }
 
     // ---------------------------------
     // Functions other objects can Call

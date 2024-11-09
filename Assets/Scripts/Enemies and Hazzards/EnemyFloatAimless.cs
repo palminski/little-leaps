@@ -72,6 +72,10 @@ public class EnemyFloatAimless : MonoBehaviour
     {
         yield return new WaitForFixedUpdate();
 
-        if (movementCollisionHandler.InGround()) enemy.KillEnemy();
+        if (movementCollisionHandler.InGround()) 
+        {
+            enemy.KillEnemy();
+            StopAllCoroutines();
+        }
     }
 }

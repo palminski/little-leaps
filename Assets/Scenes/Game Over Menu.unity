@@ -310,24 +310,6 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 307165577}
           m_TargetAssemblyTypeName: GameOverMenu, Assembly-CSharp
-          m_MethodName: Continue
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    requiredKey: 
-    text: Continue
-    sideText: 
-  - action:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 307165577}
-          m_TargetAssemblyTypeName: GameOverMenu, Assembly-CSharp
           m_MethodName: ReturnToMainMenu
           m_Mode: 1
           m_Arguments:
@@ -339,7 +321,7 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     requiredKey: 
-    text: Return To Root
+    text: Return To Root Menu
     sideText: 
   startingText: {fileID: 1156152325}
 --- !u!1 &482022965
@@ -410,8 +392,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
-  m_fontSizeBase: 72
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -446,7 +428,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -694.3869, y: -55.49648, z: -126.38986, w: -40.590332}
+  m_margin: {x: -519.09686, y: -55.49648, z: -126.38986, w: -40.590332}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -653,12 +635,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '> SYSTEM RESET TIME OUT
+  m_text: '// SYSTEM RESET TIME OUT
 
-    > SYSTEM RESET TIME OUT
+    // SYSTEM RESET TIME OUT
 
-    > SYSTEM REBOOT
-    IN PROGRESS'
+    // SYSTEM
+    REBOOT IN PROGRESS'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bd81d74cff118d24b95dbeabda704f15, type: 2}
   m_sharedMaterial: {fileID: 5700425945615571039, guid: bd81d74cff118d24b95dbeabda704f15, type: 2}
@@ -685,8 +667,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 78.65
-  m_fontSizeBase: 78.65
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -721,7 +703,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 369.6421, y: 183.96005, z: 0.046020508, w: 1.7990723}
+  m_margin: {x: 603.3622, y: 351.06992, z: 0.046020508, w: 1.7990723}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -867,19 +849,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0
+      value: 0.007692308
       objectReference: {fileID: 0}
     - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 1
+      value: 0.98461545
       objectReference: {fileID: 0}
     - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 1
+      value: 0.91897434
       objectReference: {fileID: 0}
     - target: {fileID: 5658948705658991358, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_Name
