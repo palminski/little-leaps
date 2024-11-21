@@ -34,11 +34,12 @@ public class Gate : MonoBehaviour
     void Start()
     {
         gateId = $"{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
-        
+
         boxCollider = GetComponent<Collider2D>();
         animator = GetComponent<Animator>();
 
-        if (GameController.Instance.CollectedObjects.Contains(gateId)) {
+        if (GameController.Instance.CollectedObjects.Contains(gateId))
+        {
             Destroy(gameObject);
             // Open();
         }
@@ -63,11 +64,17 @@ public class Gate : MonoBehaviour
 
     void CheckIfNoEnemies()
     {
-        
+        StartCoroutine(waitAndCheckIfEnemiesKilled());
+
+    }
+
+    private IEnumerator waitAndCheckIfEnemiesKilled()
+    {
+        yield return new WaitForEndOfFrame();
         Enemy[] allEnemies = FindObjectsOfType<Enemy>();
         int enemyCount = allEnemies.Length;
-        
-        if (enemyCount <= 1)
+
+        if (enemyCount <= 0)
         {
             Open();
             GameController.Instance.TagObjectStringAsCollected(gateId);

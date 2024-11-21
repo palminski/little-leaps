@@ -36,6 +36,8 @@ public class Enemy : MonoBehaviour
     private bool canDamagePlayer = false;
     private string enemyId;
 
+    private Vector3 lastPosition;
+
 
     // Start is called before the first frame update
     void Start()
@@ -68,6 +70,11 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    void LateUpdate()
+    {
+        lastPosition = transform.position;
+    }
+
     void OnTriggerEnter2D(Collider2D hitCollider)
     {
         // - Check if enemy can hurt player
@@ -77,7 +84,7 @@ public class Enemy : MonoBehaviour
             Collider2D collider = GetComponent<Collider2D>();
 
             float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y - (hitCollider.bounds.size.y / 2);
-            float enemyTop = transform.position.y + collider.offset.y + collider.bounds.size.y / 2;
+            float enemyTop = lastPosition.y + collider.offset.y + collider.bounds.size.y / 2;
             if (vulnerableFromTop && playerBottom > enemyTop )
             {
                 return;
@@ -90,7 +97,7 @@ public class Enemy : MonoBehaviour
 
             if (!hitPlayer.IsInvincible())
             {
-                int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
+                int directionToShove = (hitPlayer.GetLastPosition().x > lastPosition.x) ? 1 : -1;
                 hitPlayer.Damage(1, directionToShove);
                 hitPlayer.Shove(directionToShove);
             }
@@ -105,7 +112,7 @@ public class Enemy : MonoBehaviour
             collider = GetComponent<Collider2D>();
 
             float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y - (hitCollider.bounds.size.y / 2);
-            float enemyTop = transform.position.y + collider.offset.y + collider.bounds.size.y / 2;
+            float enemyTop = lastPosition.y + collider.offset.y + collider.bounds.size.y / 2;
 
 
             if (vulnerableFromTop && playerBottom > enemyTop && hitPlayer.IsDashing())

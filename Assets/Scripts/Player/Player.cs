@@ -201,6 +201,7 @@ public class Player : MonoBehaviour
         {
             coyoteTime = coyoteTimeMax;
             canWallJump = false;
+            if(Mathf.Abs(velocity.x) <= moveSpeed) isDashing = false;
             if (!isDashing) RefreshDashMoves();
         }
         //Check if player needs to be pushed out of a wall
