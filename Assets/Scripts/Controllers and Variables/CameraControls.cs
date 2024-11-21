@@ -15,6 +15,8 @@ public class CameraControls : MonoBehaviour
 
     [SerializeField]
     public bool yAxisOnly = false;
+    [SerializeField]
+    public bool xAxisOnly = false;
 
     private Transform target;
     [SerializeField] private Vector3 offset;
@@ -61,7 +63,7 @@ public class CameraControls : MonoBehaviour
         target = GameObject.FindGameObjectWithTag("Player").transform;
         
         Vector3 startPosition = transform.position;
-        if (canMove && !onlyUp) startPosition.y = target.position.y;
+        if (canMove && !onlyUp && !xAxisOnly) startPosition.y = target.position.y;
         if (canMove && !onlyUp && !yAxisOnly) startPosition.x = target.position.x;
         transform.position = canMove ? startPosition + offset : startPosition;
 
@@ -94,7 +96,7 @@ public class CameraControls : MonoBehaviour
         Vector3 targetYVector = new(0, targetPosition.y, 0);
 
         float xTarget = yAxisOnly ? transform.position.x : Vector3.SmoothDamp(xVector, targetXVector, ref velocity, easeTimeX).x;
-        float yTarget = Vector3.SmoothDamp(yVector, targetYVector, ref velocity, easeTimeY).y;
+        float yTarget = xAxisOnly ? transform.position.y : Vector3.SmoothDamp(yVector, targetYVector, ref velocity, easeTimeY).y;
 
         if (tilemap)
         {
