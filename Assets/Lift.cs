@@ -11,7 +11,7 @@ public class Lift : MonoBehaviour
     [SerializeField] private bool isActive = false;
     [SerializeField] private string requiredKey;
     [SerializeField] private DialogueEvent ActivateEvent;
-    [SerializeField] private float interactionDistance = 1f;
+
     [SerializeField] private Transform interactionPoint;
     [SerializeField] private string targetSceneName;
     [SerializeField] private Material outlineMaterial;

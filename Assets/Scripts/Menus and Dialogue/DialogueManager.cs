@@ -80,7 +80,6 @@ public class DialogueManager : MonoBehaviour
 
     private void UpdateOptionIndex(int ammount)
     {
-        print("navigate");
         int maxIndex = currentDialogue.dialogueSentences[currentIndex].dialogueOptions.Count - 1;
         optionsElement.text = "";
         if (dialogueOptionIndex + ammount > maxIndex)

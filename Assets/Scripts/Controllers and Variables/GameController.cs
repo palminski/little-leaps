@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 // using UnityEditor.Build.Content;
 using UnityEngine;
 using Unity.VisualScripting.Dependencies.NCalc;
+using Unity.VisualScripting;
 
 public class FollowingObject
 {
@@ -21,6 +22,7 @@ public class FollowingObject
 
 public class GameController : MonoBehaviour
 {
+    
     public GameObject deathObject;
     public GlobalVariables globalVariables;
     public static Color ColorForPurple => Instance.globalVariables.colorForPurple;
@@ -173,6 +175,51 @@ public class GameController : MonoBehaviour
                 ChangeScene("Game Over Menu");
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            if (int.TryParse(currentSceneName, out int currentSceneNumber))
+            {
+                int nextSceneNumber = currentSceneNumber+1;
+                string nextSceneName = nextSceneNumber.ToString();
+
+                if (Application.CanStreamedLevelBeLoaded(nextSceneName))
+                {
+                    SceneManager.LoadScene(nextSceneName);
+                }
+                else
+                {
+                    ChangeScene("0");
+                }
+            }
+            else
+            {
+                ChangeScene("0");
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            if (int.TryParse(currentSceneName, out int currentSceneNumber))
+            {
+                int nextSceneNumber = currentSceneNumber - 1;
+                string nextSceneName = nextSceneNumber.ToString();
+
+                if (Application.CanStreamedLevelBeLoaded(nextSceneName))
+                {
+                    SceneManager.LoadScene(nextSceneName);
+                }
+                else
+                {
+                    ChangeScene("61");
+                }
+            }
+            else
+            {
+                ChangeScene("61");
+            }
+        }
     }
     private void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
@@ -292,16 +339,15 @@ public class GameController : MonoBehaviour
             if (deathObject)
             {
                 player.SetActive(true);
-                print("1");
+                
                 // GameObject player = GameObject.FindGameObjectWithTag("Player");
                 GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
                 _deathObject.transform.SetParent(null);
-                // print(player);
-                print("2");
+                
 
                 _deathObject.GetComponentInChildren<DeathScript>().SetPlayer(player);
                 player.SetActive(false);
-                print("3");
+                
 
             }
             else

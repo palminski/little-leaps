@@ -13,7 +13,7 @@ public class StartingText : MonoBehaviour
 
     private string startingText;
     public bool isFinishedTyping = false;
-    private int currentIndex;
+    
     // Start is called before the first frame update
     void Awake()
     {
@@ -37,7 +37,7 @@ startingText += $@"
 READY TO BEGIN
 AWAITING USER INPUT...";
         
-        currentIndex = 0;
+        
         StartCoroutine(TypeSentence(startingText));
 
     }

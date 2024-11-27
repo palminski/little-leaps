@@ -14,7 +14,7 @@ public class GameOverText : MonoBehaviour
 
     private string startingText;
     public bool isFinishedTyping = false;
-    private int currentIndex;
+    
     // Start is called before the first frame update
     void Awake()
     {
@@ -30,7 +30,7 @@ public class GameOverText : MonoBehaviour
 
 
              GameController.Instance.ResetGameState();
-             currentIndex = 0;
+             
         StartCoroutine(TypeSentence(startingText));
 
     }

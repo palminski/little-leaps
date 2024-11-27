@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class Shoot : MonoBehaviour
 {
+    public enum ActiveColor
+    {
+        Both,
+        Purple,
+        Green,
+    }
+    [SerializeField] private ActiveColor activeOn = ActiveColor.Both;
+
     private SpriteRenderer spriteRenderer;
     [SerializeField]
     private float blinkInterval = 0.0001f;
@@ -24,6 +32,12 @@ public class Shoot : MonoBehaviour
 
     private GameObject currentBullet;
 
+    [SerializeField] bool canMultishoot = false;
+
+
+    [SerializeField]
+    private Vector2 direction = new(1f, 0f);
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -35,52 +49,86 @@ public class Shoot : MonoBehaviour
     void Update()
     {
 
-        if (!spriteRenderer.isVisible || BulletStillExists()) {
-            nextShotTime = Time.time + shotInterval;
-            spriteRenderer.color = startingColor;
-        }
+        // if (!spriteRenderer.isVisible || BulletStillExists())
+        // {
+        //     // nextShotTime = Time.time + shotInterval;
+        //     spriteRenderer.color = startingColor;
+        // }
 
-        if (Time.time > (nextShotTime - Mathf.Abs(blinkStart)))
+        if (nextShotTime >= (shotInterval - Mathf.Abs(blinkStart)) && CanShoot())
         {
             Blink();
         }
+        else
+        {
+            spriteRenderer.color = startingColor;
+        }
 
-        if (Time.time > nextShotTime)
+        if (nextShotTime >= shotInterval)
         {
 
-            currentBullet = GameController.Instance.PullFromPool(bullet, transform.position);
-            
-            currentBullet.GetComponent<bullet>().TargetPoint(transform.position + new Vector3(transform.lossyScale.x, 0f, 0));
-            spriteRenderer.color = startingColor;
-
-            Collider2D bulletCollider = currentBullet.GetComponent<Collider2D>();
-            Collider2D enemyCollider = GetComponent<Collider2D>();
-
-            Physics2D.IgnoreCollision(bulletCollider, enemyCollider);
-
-            foreach (Transform child in transform)
+            if (CanShoot())
             {
-                if (child.TryGetComponent<Collider2D>(out var collider))
+                currentBullet = GameController.Instance.PullFromPool(bullet, transform.position);
+
+                currentBullet.GetComponent<bullet>().TargetPoint(transform.position + new Vector3(transform.lossyScale.x * direction.x, direction.y, 0));
+                spriteRenderer.color = startingColor;
+
+                Collider2D bulletCollider = currentBullet.GetComponent<Collider2D>();
+                Collider2D enemyCollider = GetComponent<Collider2D>();
+                if (enemyCollider)
                 {
-                    Physics2D.IgnoreCollision(bulletCollider, collider);
+                    Physics2D.IgnoreCollision(bulletCollider, enemyCollider);
+                }
+
+                foreach (Transform child in transform)
+                {
+                    if (child.TryGetComponent<Collider2D>(out var collider))
+                    {
+                        Physics2D.IgnoreCollision(bulletCollider, collider);
+                    }
                 }
             }
 
-            nextShotTime = Time.time + shotInterval;
+
+            nextShotTime = 0;
+
         }
+        nextShotTime += Time.deltaTime;
 
     }
 
-    private bool BulletStillExists() {
+    private bool BulletStillExists()
+    {
         return currentBullet != null && currentBullet.activeSelf;
     }
 
     private void Blink()
     {
-        if (Time.time > nextBlinkTime)
+        if (nextBlinkTime >= blinkInterval)
         {
             spriteRenderer.color = (spriteRenderer.color == startingColor) ? blinkColor : startingColor;
-            nextBlinkTime = Time.time + blinkInterval;
+            nextBlinkTime = 0;
         }
+        nextBlinkTime += Time.deltaTime;
+    }
+
+    private bool CanShoot()
+    {
+        if (!canMultishoot && BulletStillExists())
+        {
+            return false;
+        }
+
+        return (
+                activeOn == ActiveColor.Both ||
+                (activeOn == ActiveColor.Purple && GameController.Instance.RoomState == RoomColor.Purple) ||
+                (activeOn == ActiveColor.Green && GameController.Instance.RoomState == RoomColor.Green)
+            );
+    }
+
+    void OnDrawGizmos()
+    {
+        Debug.DrawRay(transform.position, direction.normalized, Color.cyan);
     }
 }
