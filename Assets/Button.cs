@@ -13,11 +13,11 @@ public class Button : MonoBehaviour
     }
     [SerializeField] private ButtonAction action = ButtonAction.None;
 
-    [SerializeField] private bool requiresFirmPress = false;
 
     [SerializeField] private bool oneTimeUse = true;
 
     private Collider2D boxCollider;
+    private SpriteRenderer spriteRenderer;
     private GameObject playerAttack;
 
     [SerializeField] private string stringForFunction;
@@ -27,10 +27,13 @@ public class Button : MonoBehaviour
 
     private string id;
 
+    [SerializeField] float timeToRefresh = 1f;
+
     // Start is called before the first frame update
     void Start()
     {
         boxCollider = GetComponent<Collider2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         playerAttack = GameObject.FindGameObjectWithTag("PlayerAttack");
         id = $"BUTTON-{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
         if (GameController.Instance.CollectedObjects.Contains(id))
@@ -65,31 +68,31 @@ public class Button : MonoBehaviour
 
         if (action == ButtonAction.ExchangeChipsForPoints)
         {
-            
+
             List<string> idsToRemove = new List<string>();
             Dictionary<string, FollowingObject> followingObjects = GameController.Instance.FollowingObjects;
             foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
             {
                 GameController.Instance.TagObjectStringAsCollected(entry.Value.Name);
-                
+
                 idsToRemove.Add(entry.Key);
-                
+
             }
             int multiplier = 1;
             int totalPointsAdded = 0;
-            
-            
+
+
             foreach (string key in idsToRemove)
             {
                 totalPointsAdded += (5000 * multiplier);
-                
+
                 GameController.Instance.TagObjectStringAsCollected(key);
-                
+
                 GameController.Instance.AddToScore(5000 * multiplier);
                 GameController.Instance.RemoveFollowingObject(key);
                 multiplier++;
             }
-            
+
             Destroy(gameObject);
             if (oneTimeUse) GameController.Instance.TagObjectStringAsCollected(id);
             if (worldDialogue)
@@ -115,19 +118,36 @@ public class Button : MonoBehaviour
 
         if (action == ButtonAction.ActivateEvent)
         {
-            Destroy(gameObject);
-            GameController.Instance.TagObjectStringAsCollected(id);
+            if (oneTimeUse) {
+                Destroy(gameObject);
+                GameController.Instance.TagObjectStringAsCollected(id);
+            } else {
+                if (spriteRenderer && boxCollider) {
+                    spriteRenderer.enabled = false;
+                    boxCollider.enabled = false;
+                    StartCoroutine(WaitAndReEnableButton());
+                }
+
+            }
             if (eventToTrigger != null)
             {
                 eventToTrigger.Raise();
             }
-        }
 
+        }
 
     }
     // Update is called once per frame
     void Update()
     {
+
+    }
+
+    private IEnumerator WaitAndReEnableButton()
+    {
+        yield return new WaitForSeconds(timeToRefresh);
+        spriteRenderer.enabled = true;
+        boxCollider.enabled = true;
 
     }
 }

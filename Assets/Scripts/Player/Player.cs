@@ -201,8 +201,8 @@ public class Player : MonoBehaviour
         {
             coyoteTime = coyoteTimeMax;
             canWallJump = false;
-            if(Mathf.Abs(velocity.x) <= moveSpeed) isDashing = false;
-            if (!isDashing) RefreshDashMoves();
+            canDoubleJump = true;
+            if(Mathf.Abs(velocity.x) <= moveSpeed) RefreshDashMoves();
         }
         //Check if player needs to be pushed out of a wall
         if (movementCollisionHandler.InGround())
@@ -244,7 +244,7 @@ public class Player : MonoBehaviour
                 }
                 else if (canDoubleJump)
                 {
-                    Dash(90);
+                    DoubleJump();
                 }
             }
         }
@@ -378,6 +378,7 @@ public class Player : MonoBehaviour
         hSpeed = 0;
         velocity.y = 0;
         hExtraSpeed = 0;
+        jumpPressed = false;
         Vector3 newScale = new(transform.position.x < startPosition.x ? -1 : 1, 1, 1);
         transform.position = startPosition;
         transform.localScale = newScale;
@@ -448,15 +449,19 @@ public class Player : MonoBehaviour
     private IEnumerator HandleDashState(float durationOfDash)
     {
         isDashing = true;
-
         playerAfterImage.Play();
         yield return new WaitForSeconds(durationOfDash);
         isDashing = false;
         playerAfterImage.Stop();
-
         if (hExtraSpeed != 0) hSpeed = Mathf.Sign(hExtraSpeed) * moveSpeed;
         hExtraSpeed = 0;
-        // if (xInput != 0) hSpeed = Mathf.Sign(xInput) * moveSpeed;
+    }
+
+    private IEnumerator HandleAfterImage(float durationOfDash)
+    {
+        playerAfterImage.Play();
+        yield return new WaitForSeconds(durationOfDash);
+        playerAfterImage.Stop();
     }
 
     private IEnumerator WaitAndTryWallJump(float timeToWait, float direction)
@@ -485,7 +490,7 @@ public class Player : MonoBehaviour
         if (canDoubleJump)
         {
             movementCollisionHandler.Move(new Vector3(0, yAdjustment, 0));
-            Dash(90);
+            DoubleJump();
         }
     }
 
@@ -500,31 +505,7 @@ public class Player : MonoBehaviour
 
     private void Dash(float angle)
     {
-        GameController.Instance.InvokePlayerDashed();
-        // Fast Fall
-        if (Mathf.Approximately(angle, -90f) && IsInAir())
-        {
-            StopAllCoroutines();
-            StartCoroutine(HandleDashState(fastFallhDuration));
-            velocity.x = 0;
-            hExtraSpeed = 0;
-            hSpeed = 0;
-            velocity.y = -downDashPower;
-            return;
-        }
-        // Double Jump
-        if (canDoubleJump && Mathf.Approximately(angle, 90f))
-        {
-            StopAllCoroutines();
-            StartCoroutine(HandleDashState(dashDuration));
-            canDoubleJump = false;
-            movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
-            velocity.x = Mathf.Abs(velocity.x) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
-            hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
-            hExtraSpeed = 0;
-            velocity.y = verticalDashPower;
-            return;
-        }
+        GameController.Instance.InvokePlayerDashed();   
         // Dash Sideways
         if (canDash && Mathf.Approximately(angle, 0f) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f, 1))
         {
@@ -546,6 +527,32 @@ public class Player : MonoBehaviour
             hSpeed = -1 * moveSpeed;
             return;
         }
+    }
+
+    private void NewDash()
+    {
+            
+    }
+    private void DoubleJump()
+    {
+            StopAllCoroutines();
+            StartCoroutine(HandleAfterImage(dashDuration));
+            canDoubleJump = false;
+            movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
+            velocity.x = Mathf.Abs(velocity.x) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+            hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+            hExtraSpeed = 0;
+            velocity.y = verticalDashPower;
+    }
+    private void Stomp()
+    {
+            StopAllCoroutines();
+            StartCoroutine(HandleDashState(fastFallhDuration));
+            velocity.x = 0;
+            hExtraSpeed = 0;
+            hSpeed = 0;
+            velocity.y = -downDashPower;
+            return;
     }
 
     // --------------------------------------
@@ -579,6 +586,10 @@ public class Player : MonoBehaviour
     {
         return lastPosition;
     }
+    public bool PressedJump()
+    {
+        return jumpPressed;
+    }
 
     // --------------------------------
     // Methods used for handling input
@@ -598,19 +609,13 @@ public class Player : MonoBehaviour
         
         if (fastFallButton.IsPressed())
         {
-            Dash(-90f);
+            Stomp();
             return;
         }
         
         float angle = 0;
 
-        //I am aware this could be simplified
-        if (leftJoystickPosition != Vector2.zero)
-        {
-            angle = Mathf.Atan2(leftJoystickPosition.y, leftJoystickPosition.x) * Mathf.Rad2Deg;
-            angle = Mathf.Round(angle / 90) * 90;
-        }
-        else if (moveInputDirection == -1)
+        if (moveInputDirection == -1)
         {
             angle = 180;
         }

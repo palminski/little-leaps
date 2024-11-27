@@ -21,7 +21,7 @@ public class DialogueActions : MonoBehaviour
 
     void OnEventRaised()
     {
-        print("EVENT RECIEVED");
+        
         GameController.Instance.AddToScore(100);
     }
 }

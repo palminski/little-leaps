@@ -5,7 +5,6 @@ using UnityEngine;
 public class TimerController : MonoBehaviour
 {
     [SerializeField] private bool shouldStartTimer;
-    [SerializeField] private float bonusTimerValue = 0;
     [SerializeField] private string timerName = "";
 
     [SerializeField] private TriggerEvent activateOnEvent;
