@@ -37,6 +37,7 @@ public class WaypointMovement : MonoBehaviour
     private TriggerEvent OpenEvent;
 
     private bool shouldMove = false;
+    public bool shouldMoveOnStart = false;
     private bool shouldMoveAgain = false;
 
     private PlatformController platformController;
@@ -56,7 +57,7 @@ public class WaypointMovement : MonoBehaviour
         doorId = $"{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
         if (behavior == MovementBehavior.OpenOnTrigger)
         {
-            if (GameController.Instance.CollectedObjects.Contains(doorId))
+            if (GameController.Instance.CollectedObjects.Contains(doorId) || shouldMoveOnStart)
             {
                 shouldMove = true;
             }
@@ -74,6 +75,7 @@ public class WaypointMovement : MonoBehaviour
             platformController = GetComponent<PlatformController>();
             fallthroughSolid = GetComponent<FallthroughSolid>();
         }
+        
     }
 
     private void OnEnable()

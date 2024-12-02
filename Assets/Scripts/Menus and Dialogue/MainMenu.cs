@@ -68,6 +68,9 @@ public class MainMenu : MonoBehaviour
     public void Debug()
     {
         print("Debug");
+        SaveDataManager.DeleteGameData();
+        GameController.Instance.ChangeScene("Main Menu");
+
     }
 
     public void Shift()

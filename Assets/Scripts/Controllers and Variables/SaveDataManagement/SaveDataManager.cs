@@ -37,6 +37,13 @@ public static class SaveDataManager
         return loadedData;
     }
 
+    public static void DeleteGameData() {
+        SaveData loadedData;
+        loadedData = new SaveData();
+        Debug.Log("File Not Found or Data Unable to load. Recreating new save data");
+        SaveGameData(loadedData);
+    }
+
     public static void AddPermanentCollectedString(String stringToAdd)
     {
         SaveData gameData = LoadGameData();

@@ -635,6 +635,14 @@ public class Player : MonoBehaviour
         float moveValue = value.Get<float>();
         xInput = moveValue;
     }
+
+    void OnStomp()
+    {
+        if (!IsGrounded())
+        {
+            Stomp();
+        }
+    }
     void OnToggleRoom()
     {
         GameController.Instance.ToggleRoomState();

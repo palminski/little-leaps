@@ -195,7 +195,7 @@ public class GameController : MonoBehaviour
             }
             else
             {
-                ChangeScene("0");
+                return;
             }
         }
         if (Input.GetKeyDown(KeyCode.O))
@@ -212,12 +212,12 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {
-                    ChangeScene("61");
+                    ChangeScene("100");
                 }
             }
             else
             {
-                ChangeScene("61");
+                return;
             }
         }
     }

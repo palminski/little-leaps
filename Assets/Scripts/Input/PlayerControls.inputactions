@@ -76,6 +76,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Stomp",
+                    "type": "Button",
+                    "id": "21f12e00-d7f0-4298-b601-8f4173ff5db8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -268,6 +277,17 @@
                 },
                 {
                     "name": "",
+                    "id": "660149d7-903c-42ff-91e9-9490510a1ba8",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FastFall",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "e26f7a69-8baa-445a-bedf-48afa8a983ab",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -302,7 +322,7 @@
                 {
                     "name": "",
                     "id": "dd461546-6ebd-4f45-bc35-a531802e8306",
-                    "path": "<Keyboard>/m",
+                    "path": "<Keyboard>/n",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -346,7 +366,7 @@
                 {
                     "name": "",
                     "id": "3458958d-46cd-4eff-9cfd-8633e876bd8e",
-                    "path": "<Keyboard>/n",
+                    "path": "<Keyboard>/m",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -450,6 +470,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "OpenMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3a607bbc-11d5-432b-8bec-52d3ce0ff519",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Stomp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "25cd9ee2-ece2-4403-93b7-6c0dcf3960e7",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Stomp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5c572408-6125-4384-841c-c1e5d8980bad",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Stomp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

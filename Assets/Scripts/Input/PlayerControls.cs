@@ -98,6 +98,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Stomp"",
+                    ""type"": ""Button"",
+                    ""id"": ""21f12e00-d7f0-4298-b601-8f4173ff5db8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -290,6 +299,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""660149d7-903c-42ff-91e9-9490510a1ba8"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FastFall"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""e26f7a69-8baa-445a-bedf-48afa8a983ab"",
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
@@ -324,7 +344,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""dd461546-6ebd-4f45-bc35-a531802e8306"",
-                    ""path"": ""<Keyboard>/m"",
+                    ""path"": ""<Keyboard>/n"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -368,7 +388,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3458958d-46cd-4eff-9cfd-8633e876bd8e"",
-                    ""path"": ""<Keyboard>/n"",
+                    ""path"": ""<Keyboard>/m"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -472,6 +492,39 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""OpenMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3a607bbc-11d5-432b-8bec-52d3ce0ff519"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Stomp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""25cd9ee2-ece2-4403-93b7-6c0dcf3960e7"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Stomp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5c572408-6125-4384-841c-c1e5d8980bad"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Stomp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -889,6 +942,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Movement_LeftJoystickTilt = m_Movement.FindAction("LeftJoystickTilt", throwIfNotFound: true);
         m_Movement_Attack = m_Movement.FindAction("Attack", throwIfNotFound: true);
         m_Movement_OpenMenu = m_Movement.FindAction("OpenMenu", throwIfNotFound: true);
+        m_Movement_Stomp = m_Movement.FindAction("Stomp", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_NavigateUp = m_Menu.FindAction("NavigateUp", throwIfNotFound: true);
@@ -968,6 +1022,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Movement_LeftJoystickTilt;
     private readonly InputAction m_Movement_Attack;
     private readonly InputAction m_Movement_OpenMenu;
+    private readonly InputAction m_Movement_Stomp;
     public struct MovementActions
     {
         private @PlayerControls m_Wrapper;
@@ -980,6 +1035,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @LeftJoystickTilt => m_Wrapper.m_Movement_LeftJoystickTilt;
         public InputAction @Attack => m_Wrapper.m_Movement_Attack;
         public InputAction @OpenMenu => m_Wrapper.m_Movement_OpenMenu;
+        public InputAction @Stomp => m_Wrapper.m_Movement_Stomp;
         public InputActionMap Get() { return m_Wrapper.m_Movement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1013,6 +1069,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @OpenMenu.started += instance.OnOpenMenu;
             @OpenMenu.performed += instance.OnOpenMenu;
             @OpenMenu.canceled += instance.OnOpenMenu;
+            @Stomp.started += instance.OnStomp;
+            @Stomp.performed += instance.OnStomp;
+            @Stomp.canceled += instance.OnStomp;
         }
 
         private void UnregisterCallbacks(IMovementActions instance)
@@ -1041,6 +1100,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @OpenMenu.started -= instance.OnOpenMenu;
             @OpenMenu.performed -= instance.OnOpenMenu;
             @OpenMenu.canceled -= instance.OnOpenMenu;
+            @Stomp.started -= instance.OnStomp;
+            @Stomp.performed -= instance.OnStomp;
+            @Stomp.canceled -= instance.OnStomp;
         }
 
         public void RemoveCallbacks(IMovementActions instance)
@@ -1170,6 +1232,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnLeftJoystickTilt(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnOpenMenu(InputAction.CallbackContext context);
+        void OnStomp(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

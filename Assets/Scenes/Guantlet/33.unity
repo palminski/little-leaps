@@ -2848,7 +2848,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: cbb7152c2267035428e062cb7f63169c, type: 2}
     - target: {fileID: 3034499397445293133, guid: 31ae5ed017c2ae74b957fdf8073913e2, type: 3}
       propertyPath: targetSceneName
-      value: Main Room
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 4445534308094709918, guid: 31ae5ed017c2ae74b957fdf8073913e2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9601,6 +9601,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81bad5bc08dbace439c08b0bce3d47f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collidableLayers:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!483693784 &1947153857
 TilemapRenderer:
   m_ObjectHideFlags: 0

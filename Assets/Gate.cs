@@ -82,6 +82,7 @@ public class Gate : MonoBehaviour
         boxCollider.enabled = false;
         if (behavior == GateBehavior.CloseOnTimer)
         {
+            StopAllCoroutines();
             StartCoroutine(WaitAndClose());
         }
         

@@ -3253,7 +3253,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c16590f88260c4049a1a03e65ec50cab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  behavior: 0
+  behavior: 2
+  TriggerEvent: {fileID: 0}
+  CloseEvent: {fileID: 0}
+  timeToRefresh: 1
+  doorBar: {fileID: 0}
 --- !u!212 &997947979
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -12941,7 +12945,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c16590f88260c4049a1a03e65ec50cab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  behavior: 0
+  behavior: 2
+  TriggerEvent: {fileID: 0}
+  CloseEvent: {fileID: 0}
+  timeToRefresh: 1
+  doorBar: {fileID: 0}
 --- !u!212 &1701418224
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13370,7 +13378,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c16590f88260c4049a1a03e65ec50cab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  behavior: 0
+  behavior: 2
+  TriggerEvent: {fileID: 0}
+  CloseEvent: {fileID: 0}
+  timeToRefresh: 1
+  doorBar: {fileID: 0}
 --- !u!212 &1908634489
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13549,6 +13561,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81bad5bc08dbace439c08b0bce3d47f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collidableLayers:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!483693784 &1947153857
 TilemapRenderer:
   m_ObjectHideFlags: 0
