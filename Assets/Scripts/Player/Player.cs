@@ -43,6 +43,7 @@ public class Player : MonoBehaviour
     private bool jumpPressed;
     private bool jumpReleased;
     private float gravityModifier = 1;
+    
     private int coyoteTime = 0;
     private bool canWallJump = false;
     private float minJumpVelocity;
@@ -56,6 +57,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float wallClingGravityModifier = 0.4f;
     [SerializeField] private float wallJumpForgiveness = 0.02f;
     [SerializeField] private float clingTimeMax = 5;
+    [SerializeField] private float maxClingSpeed = 0.1f;
     [SerializeField] private int maxWallJumpTime = 5;
     private float clingTime = 5;
     private int wallJumpTime = 0;
@@ -190,6 +192,7 @@ public class Player : MonoBehaviour
         if (clingTime > 0 && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable) && !isDashing)
         {
             gravityModifier = wallClingGravityModifier;
+            velocity.y = Mathf.Max(-maxClingSpeed, velocity.y);
         }
 
         if (!isDashing || velocity.y > 0) velocity.y -= gravity * gravityModifier;
