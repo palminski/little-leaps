@@ -45,7 +45,13 @@ public class PreasureToggle : MonoBehaviour
     {
         if (collision.gameObject == playerObject && !isActive)
         {
-                    StartCoroutine(ExtendAndRetractSpikes(timeToRetract));
+            var colliderDistance = boxCollider.Distance(collision);
+            print(colliderDistance.distance);
+            if(Mathf.Abs(colliderDistance.distance) < 0.025f)
+            {
+                return;
+            }
+            StartCoroutine(ExtendAndRetractSpikes(timeToRetract));
 
         }
     }

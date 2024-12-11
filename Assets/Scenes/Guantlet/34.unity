@@ -173,7 +173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4146903723018097320, guid: fcb1315ed861dc048a5475d88b7d8f64, type: 3}
       propertyPath: m_Size.x
-      value: 13.95
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 4146903723018097320, guid: fcb1315ed861dc048a5475d88b7d8f64, type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.x
@@ -3108,6 +3108,7 @@ MonoBehaviour:
   easeAmount: 0
   speed: 0.65
   OpenEvent: {fileID: 0}
+  shouldMoveOnStart: 0
   activeOnRoomColor: 0
 --- !u!61 &1381829130
 BoxCollider2D:
@@ -12732,7 +12733,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4146903723018097320, guid: dac66eefef12f944fb174b6d47e4d3e7, type: 3}
       propertyPath: m_Size.x
-      value: 2.95
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4146903723018097320, guid: dac66eefef12f944fb174b6d47e4d3e7, type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.x
@@ -12903,7 +12904,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4146903723018097320, guid: dac66eefef12f944fb174b6d47e4d3e7, type: 3}
       propertyPath: m_Size.x
-      value: 8.95
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4146903723018097320, guid: dac66eefef12f944fb174b6d47e4d3e7, type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.x
@@ -12972,7 +12973,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4146903723018097320, guid: fcb1315ed861dc048a5475d88b7d8f64, type: 3}
       propertyPath: m_Size.x
-      value: 10.95
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4146903723018097320, guid: fcb1315ed861dc048a5475d88b7d8f64, type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.x
@@ -13102,6 +13103,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81bad5bc08dbace439c08b0bce3d47f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collidableLayers:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!483693784 &1947153857
 TilemapRenderer:
   m_ObjectHideFlags: 0
@@ -13552,6 +13556,7 @@ MonoBehaviour:
   easeAmount: 0
   speed: 0.65
   OpenEvent: {fileID: 0}
+  shouldMoveOnStart: 0
   activeOnRoomColor: 0
 --- !u!61 &1972744182
 BoxCollider2D:

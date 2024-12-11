@@ -7,10 +7,12 @@ public class HazardToPlayer : MonoBehaviour
     private GameObject player;
 
     private bool canDamagePlayer = true;
+    private Collider2D boxCollider;
     [SerializeField] public LayerMask collidableLayers;
     // Start is called before the first frame update
     void Start()
     {
+        boxCollider = GetComponent<Collider2D>();
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
@@ -21,7 +23,13 @@ public class HazardToPlayer : MonoBehaviour
         if (collision.gameObject == player && canDamagePlayer)
         {
            
+            var colliderDistance = boxCollider.Distance(collision);
+            print(colliderDistance.distance);
             Player hitPlayer = player.GetComponent<Player>();
+            if(Mathf.Abs(colliderDistance.distance) < 0.025f)
+            {
+                return;
+            }
 
             if (!hitPlayer.IsInvincible())
             {
@@ -36,8 +44,13 @@ public class HazardToPlayer : MonoBehaviour
     {
         if (collision.gameObject == player && canDamagePlayer)
         {
-            
+            var colliderDistance = boxCollider.Distance(collision);
+            print(colliderDistance.distance);
             Player hitPlayer = player.GetComponent<Player>();
+            if(Mathf.Abs(colliderDistance.distance) < 0.025f)
+            {
+                return;
+            }
 
             if (!hitPlayer.IsInvincible())
             {

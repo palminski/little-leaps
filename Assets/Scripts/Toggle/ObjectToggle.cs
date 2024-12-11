@@ -27,6 +27,7 @@ public class ObjectToggle : MonoBehaviour
     private Collider2D boxCollider;
     private Animator animator;
 
+
     private void OnEnable()
     {
         GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
@@ -77,7 +78,7 @@ public class ObjectToggle : MonoBehaviour
     private void Deactivate()
     {
         if (shouldRemoveCollision) StartCoroutine(WaitThenRemoveCollision());
-        if (animator)
+        if (animator && AnimatorHasParameter("Deactivate", AnimatorControllerParameterType.Trigger))
         {
             animator.SetTrigger("Deactivate");
             return;
@@ -89,6 +90,7 @@ public class ObjectToggle : MonoBehaviour
         }
 
         if (spriteRenderer) spriteRenderer.color = deactiveColor;
+        if (spriteRenderer) print("here");
     }
 
     private IEnumerator WaitThenRemoveCollision()
@@ -101,5 +103,14 @@ public class ObjectToggle : MonoBehaviour
     {
         yield return new WaitForSeconds(0.05f);
         if (boxCollider) boxCollider.enabled = true;
+    }
+
+    private bool AnimatorHasParameter(string parameter, AnimatorControllerParameterType parameterType)
+    {
+        foreach (AnimatorControllerParameter param in animator.parameters)
+        {
+            if (param.name == parameter && param.type == parameterType) return true;
+        }
+        return false;
     }
 }

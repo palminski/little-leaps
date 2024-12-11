@@ -15,6 +15,9 @@ public class SpringBoard : MonoBehaviour
     [SerializeField] public LayerMask collidableLayers;
     [SerializeField] public float bounceMultiplier = 1.5f;
     [SerializeField] public ActiveColor activeColor = ActiveColor.Both;
+
+    private Animator animator;
+    public Animator veinsAnimator;
     
     // Start is called before the first frame update
     private void OnEnable() {
@@ -27,6 +30,7 @@ public class SpringBoard : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         boxCollider = GetComponent<Collider2D>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -38,7 +42,8 @@ public class SpringBoard : MonoBehaviour
     void SpringPlayer()
     {
         if (!CanBounce()) return;
-
+        if (animator) animator.SetTrigger("Launch");
+        if (veinsAnimator) veinsAnimator.SetTrigger("Launch");
         Vector2 boxCenter = boxCollider.bounds.center;
         Vector2 boxSize = boxCollider.bounds.size;
         boxSize -= Vector2.one * 0.045f;
