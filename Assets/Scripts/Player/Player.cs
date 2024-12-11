@@ -40,6 +40,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpBuffer = 0.2f;
     [SerializeField] private float gravity = 0.05f;
     [SerializeField] private float terminalYVelocity = 1;
+    private float doubleJumpTurnAroundFrames;
+    [SerializeField] private float maxDoubleJumpTurnAroundFrames = 5f;
     private bool jumpPressed;
     private bool jumpReleased;
     private float gravityModifier = 1;
@@ -137,6 +139,11 @@ private bool hasClung;
         if (xInput != 0 && clingTime == 0)
         {
             hSpeed += Mathf.Sign(xInput) * acceleration;
+            if (doubleJumpTurnAroundFrames > 0) 
+            {
+                velocity.x = Mathf.Abs(velocity.x) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+                hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+            }
         }
         else
         {
@@ -153,6 +160,11 @@ private bool hasClung;
         hExtraSpeed = Mathf.MoveTowards(hExtraSpeed, 0, airFriction);
         //limit the hSpeed by out movement speed in both directions
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
+        
+        if(doubleJumpTurnAroundFrames > 0) {
+            doubleJumpTurnAroundFrames--;
+        }
+        
 
         //if we are hitting a wall we set the hspeed to 0 so we can accelerate away from it quickly
         if (movementCollisionHandler.collisionInfo.left)
@@ -579,6 +591,7 @@ private bool hasClung;
             hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
             hExtraSpeed = 0;
             velocity.y = verticalDashPower;
+            doubleJumpTurnAroundFrames = maxDoubleJumpTurnAroundFrames;
     }
     private void Stomp()
     {
