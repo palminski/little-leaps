@@ -10100,6 +10100,7 @@ MonoBehaviour:
   jumpBuffer: 0.5
   gravity: 0.06
   terminalYVelocity: 0.8
+  maxDoubleJumpTurnAroundFrames: 5
   wallJumpPower: 0.75
   wallJumpOffset: 0.5
   wallJumpXPower: 0.37
@@ -10107,7 +10108,7 @@ MonoBehaviour:
   distanceClingStarts: 0.05
   wallClingGravityModifier: 0
   wallJumpForgiveness: 0.05
-  clingTimeMax: 7
+  clingTimeMax: 5
   maxClingSpeed: 0.08
   maxWallJumpTime: 7
   dashDuration: 0.14

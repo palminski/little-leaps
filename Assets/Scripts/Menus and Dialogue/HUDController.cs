@@ -47,7 +47,7 @@ private void OnEnable() {
     
         if (scoreText) scoreText.text = GameController.Instance.Score.ToString();
         if (healthText) {
-            string healthString = "";
+            string healthString = "EGO: ";
             for (int i = 0; i < GameController.Instance.MaxHealth; i++)
             {
                 if(i < GameController.Instance.Health)

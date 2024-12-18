@@ -131,11 +131,15 @@ public class GameController : MonoBehaviour
             if (player != null) {
                 StartTimer(timerStartValue);
             }
+
+            // TEMP DISABLE TIMER
+            timerMoving = false;
         }
         else
         {
             if (player != null && !Instance.TimerMoving) {
-                Instance.StartTimer(timerStartValue);
+                // TEMP DISABLE TIMER
+                // Instance.StartTimer(timerStartValue);
             }
             Destroy(gameObject);
         }
@@ -326,7 +330,7 @@ public class GameController : MonoBehaviour
     {
         if (health <= 0) return 0;
         if (healthChange < 0) OnPlayerDamaged?.Invoke();
-        // health += healthChange;
+        health += healthChange;
         ChangeCharge(0);
         health = Mathf.Clamp(health, 0, maxHealth);
         OnUpdateHUD?.Invoke();
@@ -382,12 +386,12 @@ public class GameController : MonoBehaviour
 
     public void StartTimer(float timerValue)
     {
-        timerMoving = true;
+        // timerMoving = true;
         bonusTimer = timerValue;
     }
     public void ResumeTimer()
     {
-        timerMoving = true;
+        // timerMoving = true;
     }
     public void AddToTimer(int timeToAdd)
     {

@@ -197,7 +197,7 @@ private bool hasClung;
 
         gravityModifier = 1;
         if (fastFallButton.IsPressed()) gravityModifier = fastFallModifier;
-        if (xInput != 0 && velocity.y < 0 && movementCollisionHandler.OnWallAtDistInDirection(distanceClingStarts, (int)Mathf.Sign(xInput)) && (hasClung == false || clingTime > 0))
+        if (xInput != 0 && velocity.y < 0 && movementCollisionHandler.FullyOnWallAtDistInDirection(distanceClingStarts, (int)Mathf.Sign(xInput)) && (hasClung == false || clingTime > 0))
         {
             clingTime = clingTimeMax;
             hasClung = true;

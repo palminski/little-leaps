@@ -481,11 +481,11 @@ MonoBehaviour:
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: sector_0_start
+            m_StringArgument: lv_1_start
             m_BoolArgument: 0
           m_CallState: 2
     requiredKey: 
-    text: Sector 0_0
+    text: Level 1
     sideText: 
   - action:
       m_PersistentCalls:
@@ -499,11 +499,11 @@ MonoBehaviour:
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 0_1 Start
+            m_StringArgument: lv_2_start
             m_BoolArgument: 0
           m_CallState: 2
-    requiredKey: 0_1
-    text: Sector 0_1
+    requiredKey: lv_1_complete
+    text: Level 2
     sideText: 
   - action:
       m_PersistentCalls:
@@ -517,11 +517,11 @@ MonoBehaviour:
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 0_2 Start
+            m_StringArgument: lv_3_start
             m_BoolArgument: 0
           m_CallState: 2
-    requiredKey: 0_2
-    text: Sector 0_2
+    requiredKey: lv_2_complete
+    text: Level 3
     sideText: 
   - action:
       m_PersistentCalls:
@@ -535,11 +535,11 @@ MonoBehaviour:
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: sector_1_start
+            m_StringArgument: lv_4_start
             m_BoolArgument: 0
           m_CallState: 2
-    requiredKey: 1_0
-    text: Sector 1_0
+    requiredKey: lv_3_complete
+    text: Level 4
     sideText: 
   - action:
       m_PersistentCalls:
@@ -553,11 +553,11 @@ MonoBehaviour:
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: sector_1_1_start
+            m_StringArgument: lv_5_start
             m_BoolArgument: 0
           m_CallState: 2
-    requiredKey: 1_1
-    text: Sector 1_1
+    requiredKey: lv_4_complete
+    text: Level 5
     sideText: 
   - action:
       m_PersistentCalls:
@@ -571,11 +571,11 @@ MonoBehaviour:
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 1_2_start
+            m_StringArgument: lv_6_start
             m_BoolArgument: 0
           m_CallState: 2
-    requiredKey: 1_2
-    text: Sector 1_2
+    requiredKey: lv_5_complete
+    text: Level 6
     sideText: 
   - action:
       m_PersistentCalls:
@@ -589,11 +589,47 @@ MonoBehaviour:
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: gauntlet_start
+            m_StringArgument: lv_7_start
             m_BoolArgument: 0
           m_CallState: 2
-    requiredKey: 
-    text: Testing Gauntlet
+    requiredKey: lv_6_complete
+    text: Level 7
+    sideText: 
+  - action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 307165574}
+          m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+          m_MethodName: StartLevel
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: lv_8_start
+            m_BoolArgument: 0
+          m_CallState: 2
+    requiredKey: lv_7_complete
+    text: Level 8
+    sideText: 
+  - action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 307165574}
+          m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+          m_MethodName: StartLevel
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: lv_9_start
+            m_BoolArgument: 0
+          m_CallState: 2
+    requiredKey: lv_8_complete
+    text: Level 9
     sideText: 
   startingText: {fileID: 1156152321}
 --- !u!4 &307165575

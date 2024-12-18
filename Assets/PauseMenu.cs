@@ -45,7 +45,8 @@ public class PauseMenu : MonoBehaviour
 
     public void ReturnToMainMenu()
     {
-        GameController.Instance.AddToTimer(-1000000000);
+        // GameController.Instance.AddToTimer(-1000000000);
+        GameController.Instance.ChangeHealth(-776);
         Destroy(gameObject);
     }
 

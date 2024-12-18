@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameCheckPoint : MonoBehaviour
 {
-    public string room;
+    public string key;
     
 
 
@@ -14,8 +14,8 @@ public class GameCheckPoint : MonoBehaviour
     {
         if (!TriggerEvent)
         {
-            SaveDataManager.AddPermanentCollectedString(room);
-            GameController.Instance.SetCheckPoint(room);
+            SaveDataManager.AddPermanentCollectedString(key);
+            GameController.Instance.SetCheckPoint(key);
         }
     }
 
@@ -35,7 +35,7 @@ public class GameCheckPoint : MonoBehaviour
     }
 
     private void OnEventRaised() {
-        SaveDataManager.AddPermanentCollectedString(room);
-        GameController.Instance.SetCheckPoint(room);
+        SaveDataManager.AddPermanentCollectedString(key);
+        GameController.Instance.SetCheckPoint(key);
     }
 }

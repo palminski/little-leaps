@@ -68,20 +68,20 @@ public class PostProcessingController : MonoBehaviour
             if (filmGrain.response.value > 1) filmGrain.response.value = 1;
         }
 
-        if (gameController.BonusTimer < 30 && gameController.BonusTimer > 0 && filmGrain)
-        {
-            filmGrain.intensity.value = Mathf.Lerp(0.7f, startingGrainIntensity, gameController.BonusTimer / 30f);
-            if (gameController.BonusTimer < 15  && chromaticAberration)
-            {
-                chromaticAberration.intensity.value = Mathf.Lerp(0.7f, maxAbberation, gameController.BonusTimer / 15f);
+        // if (gameController.BonusTimer < 30 && gameController.BonusTimer > 0 && filmGrain)
+        // {
+        //     filmGrain.intensity.value = Mathf.Lerp(0.7f, startingGrainIntensity, gameController.BonusTimer / 30f);
+        //     if (gameController.BonusTimer < 15  && chromaticAberration)
+        //     {
+        //         chromaticAberration.intensity.value = Mathf.Lerp(0.7f, maxAbberation, gameController.BonusTimer / 15f);
                 
-                chromaticAberration.active = true;
-            }
-        }
-        else if (filmGrain != null && filmGrain.intensity.value != startingGrainIntensity)
-        {
-            filmGrain.intensity.value = startingGrainIntensity;
-        }
+        //         chromaticAberration.active = true;
+        //     }
+        // }
+        // else if (filmGrain != null && filmGrain.intensity.value != startingGrainIntensity)
+        // {
+        //     filmGrain.intensity.value = startingGrainIntensity;
+        // }
     }
     private void HandleRoomStateChange()
     {

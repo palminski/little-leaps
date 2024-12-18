@@ -168,6 +168,21 @@ public class MovementCollisionHandler : RaycastController
         return false;
     }
 
+    public bool FullyOnWallAtDistInDirection(float distance, int direction)
+    {
+        Vector2 rayOrigins = direction > 0 ? raycastOrigins.bottomRight : raycastOrigins.bottomLeft;
+        //Detects if there is a wall to the left or the right at the specified distance away or closer
+        for (int i = 0; i < xRayCount; i++)
+        {
+            RaycastHit2D collision = Physics2D.Raycast(rayOrigins + i * horizontalRaySpacing * Vector2.up, Vector2.right * direction, distance, collidableLayers);
+            if (!collision.collider)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public bool OnGroundAtDist(float distance) {
         updateRaycastOrigins();
         for (int i = 0; i < yRayCount; i++) {
