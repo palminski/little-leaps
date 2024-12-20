@@ -125,10 +125,10 @@ private bool hasClung;
     // -------------------
     private void FixedUpdate()
     {
-
+        // print(wallJumpTime);
         lastPosition = transform.position;
         bool isGrounded = movementCollisionHandler.OnGround();
-        if (coyoteTime <= 0 && velocity.x != 0 && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
+        if (coyoteTime <= 0 && movementCollisionHandler.OnWallAtDistInDirection(distanceWallsDetectable, (int) Mathf.Sign(transform.localScale.x)))
         {
             wallJumpTime = maxWallJumpTime;
         }
@@ -250,9 +250,11 @@ private bool hasClung;
             //in air
             else
             {
+                //Start Wall Jump
                 if (
                     canWallJump 
-                    && (wallJumpTime > 0 || movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) 
+                    && wallJumpTime > 0
+                    && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)
                     && xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump)
                     // && ((xInput == 0) || (xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump))) // old version
                     )
@@ -262,10 +264,15 @@ private bool hasClung;
                     hasClung = false;
                     movementCollisionHandler.Move(new Vector3(wallJumpOffset * -directionToJump, 0, 0));
                     velocity.y = wallJumpPower;
+                    StartCoroutine(HandleAfterImage(dashDuration));
                     //Wait until after collisions resolve to make xaxis moves
                     if(gameObject.activeSelf)StartCoroutine(WaitAndWallJump(directionToJump));
                 }
-                else if (canWallJump && (wallJumpTime > 0 || movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)))
+                else if (
+                    canWallJump 
+                    && wallJumpTime > 0
+                    && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)
+                    )
                 {
                     //walljump
                     
@@ -506,36 +513,57 @@ private bool hasClung;
 
     private IEnumerator WaitAndTryWallJump(float timeToWait, float direction)
     {
-        float startingY = transform.position.y;
+        print("startedDelayedJump");
+        bool startedDoubleJump = false;
+        if (canDoubleJump)
+        {
+            hasClung = false;
+            clingTime = 0;
+            StopDash();
+            startedDoubleJump = true;
+            DoubleJumpWithoutStoppingCoroutines();
+        }
+
+
+
+        
         float elapsedTime = 0f;
         while (elapsedTime < timeToWait)
         {
+            print(elapsedTime);
             elapsedTime += Time.deltaTime;
-            if ((xInput != 0 && Mathf.Sign(xInput) == direction) )
+            if (xInput != 0 && Mathf.Sign(xInput) == direction)
             {
                 clingTime = 0;
                 hasClung = false;
-                float yAdjustmentPreDoubleJump = startingY - transform.position.y;
-                movementCollisionHandler.Move(new Vector3(wallJumpOffset * direction, yAdjustmentPreDoubleJump, 0));
+                // float yAdjustmentPreDoubleJump = startingY - transform.position.y;
+                // movementCollisionHandler.Move(new Vector3(wallJumpOffset * direction, yAdjustmentPreDoubleJump, 0));
                 velocity.y = wallJumpPower;
                 hExtraSpeed = direction * wallJumpXPower;
                 hSpeed = direction * moveSpeed;
+                print("Wall Jumped!");
+
+                if(startedDoubleJump)
+                {
+                    canDoubleJump = true;
+                }
                 yield break;
             }
             yield return null;
         }
 
         yield return new WaitForSeconds(timeToWait);
-        clingTime = 0;
-        hasClung = false;
-        float yAdjustment = startingY - transform.position.y;
+        print("time Passed");
+        // clingTime = 0;
+        // hasClung = false;
+        // float yAdjustment = startingY - transform.position.y;
 
 
-        if (canDoubleJump)
-        {
-            movementCollisionHandler.Move(new Vector3(0, yAdjustment, 0));
-            DoubleJump();
-        }
+        // if (canDoubleJump)
+        // {
+        //     movementCollisionHandler.Move(new Vector3(0, yAdjustment, 0));
+        //     DoubleJump();
+        // }
     }
 
 
@@ -593,6 +621,17 @@ private bool hasClung;
             velocity.y = verticalDashPower;
             doubleJumpTurnAroundFrames = maxDoubleJumpTurnAroundFrames;
     }
+    private void DoubleJumpWithoutStoppingCoroutines()
+    {
+            StartCoroutine(HandleAfterImage(dashDuration));
+            canDoubleJump = false;
+            movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
+            velocity.x = Mathf.Abs(velocity.x) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+            hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+            hExtraSpeed = 0;
+            velocity.y = verticalDashPower;
+            doubleJumpTurnAroundFrames = maxDoubleJumpTurnAroundFrames;
+    }
     private void Stomp()
     {
             StopAllCoroutines();
@@ -626,6 +665,10 @@ private bool hasClung;
     public bool IsDashing()
     {
         return isDashing;
+    }
+    public bool IsMoving()
+    {
+        return velocity.x != 0;
     }
     public bool IsDashingSideways()
     {

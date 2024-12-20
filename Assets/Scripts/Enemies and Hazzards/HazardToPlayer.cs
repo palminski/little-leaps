@@ -24,7 +24,7 @@ public class HazardToPlayer : MonoBehaviour
         {
            
             var colliderDistance = boxCollider.Distance(collision);
-            print(colliderDistance.distance);
+            
             Player hitPlayer = player.GetComponent<Player>();
             if(Mathf.Abs(colliderDistance.distance) < 0.04f)
             {
@@ -45,9 +45,9 @@ public class HazardToPlayer : MonoBehaviour
         if (collision.gameObject == player && canDamagePlayer)
         {
             var colliderDistance = boxCollider.Distance(collision);
-            print(colliderDistance.distance);
+            
             Player hitPlayer = player.GetComponent<Player>();
-            if(Mathf.Abs(colliderDistance.distance) < 0.025f)
+            if(Mathf.Abs(colliderDistance.distance) < 0.04f)
             {
                 return;
             }
