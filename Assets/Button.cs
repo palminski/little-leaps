@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class Button : MonoBehaviour
 {
@@ -10,9 +12,11 @@ public class Button : MonoBehaviour
         None,
         ActivateEvent,
         ExchangeChipsForPoints,
+        CompleteLevel,
     }
     [SerializeField] private ButtonAction action = ButtonAction.None;
 
+    [SerializeField] private bool requiresFirmPress = false;
 
     [SerializeField] private bool oneTimeUse = true;
 
@@ -55,7 +59,7 @@ public class Button : MonoBehaviour
             float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y - (hitCollider.bounds.size.y / 2);
             float buttonTop = transform.position.y + boxCollider.offset.y + boxCollider.bounds.size.y / 2;
 
-            if (playerBottom > buttonTop && hitPlayer.IsDashing())
+            if (playerBottom > buttonTop && (!requiresFirmPress || hitPlayer.IsDashing()))
             {
                 PerformButtonAction();
             }
@@ -118,11 +122,15 @@ public class Button : MonoBehaviour
 
         if (action == ButtonAction.ActivateEvent)
         {
-            if (oneTimeUse) {
+            if (oneTimeUse)
+            {
                 Destroy(gameObject);
                 GameController.Instance.TagObjectStringAsCollected(id);
-            } else {
-                if (spriteRenderer && boxCollider) {
+            }
+            else
+            {
+                if (spriteRenderer && boxCollider)
+                {
                     spriteRenderer.enabled = false;
                     boxCollider.enabled = false;
                     StartCoroutine(WaitAndReEnableButton());
@@ -134,6 +142,86 @@ public class Button : MonoBehaviour
                 eventToTrigger.Raise();
             }
 
+        }
+
+        if (action == ButtonAction.CompleteLevel)
+        {
+            if (eventToTrigger != null)
+            {
+                eventToTrigger.Raise();
+            }
+            float remainingTime = GameController.Instance.BonusTimer;
+            int pointsBeforeBonus = GameController.Instance.Score;
+            
+
+            int points = GameController.Instance.Score;
+            
+            int levelScore = points - GameController.Instance.StartingScore;
+            float levelTime = GameController.Instance.StartingTimer - remainingTime;
+            
+            GameController.Instance.StopTimer();
+
+            Destroy(gameObject);
+            GameController.Instance.TagObjectStringAsCollected(id);
+            SaveDataManager.AddPermanentCollectedString(stringForFunction);
+
+
+            SaveData saveData = SaveDataManager.LoadGameData();
+            BestScore existingScore = saveData.bestScores.FirstOrDefault(score => score.level == stringForFunction);
+            string highScoreText = "CONGRATULATIONS! NEW HIGH SCORE FOR THIS SECTOR";
+            if (existingScore != null)
+            {
+                if(levelScore > existingScore.score)
+                {
+                existingScore.score = levelScore;
+                SaveDataManager.SaveGameData(saveData);    
+                }
+                else 
+                {
+                    highScoreText = "Highest Score For Sector: "+existingScore.score;
+                }
+            }
+            else
+            {
+                saveData.bestScores.Add(new BestScore(stringForFunction, levelScore));
+                SaveDataManager.SaveGameData(saveData);    
+            }
+
+            BestTime existingTime = saveData.bestTimes.FirstOrDefault(time => time.level == stringForFunction);
+            string bestTimeText = "CONGRATULATIONS! NEW BEST TIME FOR THIS SECTOR";
+            if (existingTime != null)
+            {
+                if(levelTime < existingTime.time)
+                {
+                existingTime.time = levelTime;
+                SaveDataManager.SaveGameData(saveData);    
+                }
+                else 
+                {
+                    bestTimeText = "Best Time For Sector: " + ConvertFloatToTime(existingTime.time);
+                }
+            }
+            else
+            {
+                saveData.bestTimes.Add(new BestTime(stringForFunction, levelTime));
+                SaveDataManager.SaveGameData(saveData);    
+            }
+
+            if (worldDialogue)
+            {
+                float multiplier = GlobalConstants.prestigeMultiplier[GameController.Instance.SessionPrestige];
+                worldDialogue.textElement.text = "";
+                string newText = $@"> {GameController.Instance.Checkpoint} COMPLETE
+> Cognition Data Collected: {pointsBeforeBonus}
+> Total Data Collected: {points}
+> {highScoreText}
+> {bestTimeText}";
+
+                worldDialogue.startingText = newText;
+                worldDialogue.textToType = newText;
+            }
+
+            GameController.Instance.SetCheckPoint("Main Menu");
         }
 
     }
@@ -149,5 +237,15 @@ public class Button : MonoBehaviour
         spriteRenderer.enabled = true;
         boxCollider.enabled = true;
 
+    }
+
+    private string ConvertFloatToTime(float currentTimer)
+    {
+        if (currentTimer <= 0) return "CRITICAL";
+        int totalSeconds = (int) currentTimer;
+        float minutes = Mathf.Floor(totalSeconds/60);
+        int seconds = totalSeconds % 60;
+        int hundredths = (int)(Mathf.Abs(totalSeconds - currentTimer) * 100);
+        return minutes + ":" + seconds.ToString("D2") + ":" + hundredths.ToString("D2");
     }
 }

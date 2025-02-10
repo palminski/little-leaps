@@ -21,11 +21,15 @@ public class GameOverText : MonoBehaviour
 
         textElement = GetComponent<TMP_Text>();
         SaveData gameData = SaveDataManager.LoadGameData();
-        gameData.highScores.Sort((a,b) => b.CompareTo(a));
+        gameData.highScores.Sort((a,b) => b.score.CompareTo(a.score));
         // startingText = textElement.text;
-        startingText = $@"> SYSTEM RESET TIME OUT
-> SCORE: {GameController.Instance.Score}
-> SYSTEM REBOOT IN PROGRESS
+        startingText = $@"Critical Exception:
+RABIT EGO DEATH
+
+SCORE: {GameController.Instance.Score}
+
+Available options:
+
 ";
 
 

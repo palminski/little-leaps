@@ -4893,7 +4893,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.1}
+  m_Offset: {x: 0.0013528466, y: -0.15546721}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -4904,7 +4904,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.59052104, y: 0.80877054}
+  m_Size: {x: 0.74474704, y: 0.91970503}
   m_EdgeRadius: 0
 --- !u!50 &7623433174864460848
 Rigidbody2D:
@@ -9946,7 +9946,7 @@ Transform:
   m_GameObject: {fileID: 8177042357306595083}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.001, y: -0.014, z: 0}
+  m_LocalPosition: {x: 0.001, y: 0.387, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9976,7 +9976,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10002,7 +10002,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.8, y: 0.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -10040,18 +10040,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.2884714}
+  m_Offset: {x: 0, y: -0.35221717}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 1.25, y: 1.25}
+    newSize: {x: 0.8, y: 0.8}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.2192812, y: 0.41718134}
+  m_Size: {x: 0.25872803, y: 0.5446728}
   m_EdgeRadius: 0
 --- !u!114 &5125804943423321196
 MonoBehaviour:
@@ -10074,6 +10074,8 @@ MonoBehaviour:
   collidableLayers:
     serializedVersion: 2
     m_Bits: 1088
+  collisionBufferX: 0.045
+  collisionBufferY: 0
   shouldDrawRays: 0
 --- !u!114 &8764759206690607133
 MonoBehaviour:
@@ -10101,14 +10103,15 @@ MonoBehaviour:
   gravity: 0.06
   terminalYVelocity: 0.8
   maxDoubleJumpTurnAroundFrames: 5
+  stompTimerMax: 5
   wallJumpPower: 0.75
   wallJumpOffset: 0.5
   wallJumpXPower: 0.37
   distanceWallsDetectable: 0.325
   distanceClingStarts: 0.05
   wallClingGravityModifier: 0
-  wallJumpForgiveness: 0.05
-  clingTimeMax: 5
+  wallJumpForgiveness: 0.075
+  clingTimeMax: 6
   maxClingSpeed: 0.08
   maxWallJumpTime: 7
   dashDuration: 0.14

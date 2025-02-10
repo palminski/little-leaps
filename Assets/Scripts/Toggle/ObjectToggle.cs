@@ -66,7 +66,10 @@ public class ObjectToggle : MonoBehaviour
     {
         if (spriteRenderer) spriteRenderer.color = activeColor;
         if (spriteRenderer) spriteRenderer.sprite = activeSprite;
-        if (animator) animator.SetTrigger("Activate");
+        if (animator && AnimatorHasParameter("Activate", AnimatorControllerParameterType.Trigger))
+        {
+            animator.SetTrigger("Activate");
+        }
         if (shouldWaitBeforeAddingCollision)
         {
             StartCoroutine(WaitThenAddCollision());
@@ -90,18 +93,17 @@ public class ObjectToggle : MonoBehaviour
         }
 
         if (spriteRenderer) spriteRenderer.color = deactiveColor;
-        if (spriteRenderer) print("here");
     }
 
     private IEnumerator WaitThenRemoveCollision()
     {
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.07f);
         if (boxCollider) boxCollider.enabled = false;
     }
 
     private IEnumerator WaitThenAddCollision()
     {
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.07f);
         if (boxCollider) boxCollider.enabled = true;
     }
 

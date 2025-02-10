@@ -40,7 +40,7 @@ public class PlayerAttackTrigger : MonoBehaviour
         // if (joystickVector != Vector2.zero)
         // {
         //     float angle = Mathf.Atan2(joystickVector.y, joystickVector.x) * Mathf.Rad2Deg;
-        //     print("JOYSTICK ANGLE "+ angle);
+        //    
         // }
     }
 

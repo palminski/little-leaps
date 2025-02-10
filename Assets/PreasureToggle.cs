@@ -46,7 +46,6 @@ public class PreasureToggle : MonoBehaviour
         if (collision.gameObject == playerObject && !isActive)
         {
             var colliderDistance = boxCollider.Distance(collision);
-            print(colliderDistance.distance);
             if(Mathf.Abs(colliderDistance.distance) < 0.025f)
             {
                 return;

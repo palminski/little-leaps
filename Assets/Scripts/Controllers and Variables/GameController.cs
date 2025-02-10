@@ -10,10 +10,10 @@ using Unity.VisualScripting;
 
 public class FollowingObject
 {
-    public string Name {get; private set;}
-    public GameObject Object {get; private set;}
+    public string Name { get; private set; }
+    public GameObject Object { get; private set; }
 
-    public FollowingObject( string name, GameObject obj)
+    public FollowingObject(string name, GameObject obj)
     {
         Name = name;
         Object = obj;
@@ -22,7 +22,7 @@ public class FollowingObject
 
 public class GameController : MonoBehaviour
 {
-    
+
     public GameObject deathObject;
     public GlobalVariables globalVariables;
     public static Color ColorForPurple => Instance.globalVariables.colorForPurple;
@@ -39,6 +39,7 @@ public class GameController : MonoBehaviour
         get { return score; }
     }
 
+    // [SerializeField] private bool ShouldStartTimer;
     private bool timerMoving;
     public bool TimerMoving
     {
@@ -51,11 +52,22 @@ public class GameController : MonoBehaviour
     }
 
 
-    [SerializeField] private int  timerStartValue = 300;
     private int timer;
     public int Timer
     {
         get { return timer; }
+    }
+
+    private int startingScore = 0;
+    public int StartingScore
+    {
+        get { return startingScore; }
+    }
+
+    private float startingTimer = 0;
+    public float StartingTimer
+    {
+        get { return startingTimer; }
     }
 
     private RoomColor roomState = RoomColor.Purple;
@@ -84,10 +96,10 @@ public class GameController : MonoBehaviour
 
     public int ChargeMax
     {
-        get { return 100; }
+        get { return 1000; }
     }
 
-    private string checkpoint;
+    [SerializeField] private string checkpoint;
     public string Checkpoint
     {
         get { return checkpoint; }
@@ -99,6 +111,30 @@ public class GameController : MonoBehaviour
         get { return collectedObjects; }
     }
 
+    private HashSet<string> sessionCollectedObject = new HashSet<string>();
+    public HashSet<string> SessionCollectedObjects
+    {
+        get { return sessionCollectedObject; }
+    }
+
+    private int sessionPrestige = 0;
+    public int SessionPrestige
+    {
+        get { return sessionPrestige; }
+    }
+
+    private float sessionHealing = 0.05f;
+    public float SessionHealing
+    {
+        get { return sessionHealing; }
+    }
+
+    private float sessionMultiplier = 1;
+    public float SessionMultiplier
+    {
+        get { return sessionMultiplier; }
+    }
+
     private Dictionary<string, FollowingObject> followingObjects = new Dictionary<string, FollowingObject>();
     public Dictionary<string, FollowingObject> FollowingObjects
     {
@@ -106,6 +142,8 @@ public class GameController : MonoBehaviour
     }
 
     public GameObject pauseMenuPrefab;
+
+    // private int prestige = 0;
 
     private List<GameObject> disabledEnemies = new List<GameObject>();
 
@@ -120,72 +158,66 @@ public class GameController : MonoBehaviour
     // ---------------------------------------------------------------------------------- 
     void Awake()
     {
+        
+
+        Cursor.visible = false;
         GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+        
+
         if (Instance == null)
         {
+            SaveData saveData = SaveDataManager.LoadGameData();
+            int savedPrestige = saveData.prestige;
+            int savedMaxLives = saveData.maxLives;
+            float savedHealing = saveData.healing;
             Instance = this;
             DontDestroyOnLoad(gameObject);
             collectedObjects = SaveDataManager.LoadGameData().collectedObjects ?? new HashSet<string>();
             SceneManager.sceneLoaded += OnSceneLoad;
-
-            if (player != null) {
-                StartTimer(timerStartValue);
-            }
-
-            // TEMP DISABLE TIMER
-            timerMoving = false;
+            sessionPrestige = savedPrestige;
+            maxHealth = savedMaxLives;
+            sessionHealing = savedHealing;
+            sessionMultiplier = GlobalConstants.getMultiplier(saveData);
         }
         else
         {
-            if (player != null && !Instance.TimerMoving) {
-                // TEMP DISABLE TIMER
-                // Instance.StartTimer(timerStartValue);
-            }
+            // if (ShouldStartTimer && !Instance.TimerMoving) {
+            //     Instance.ResetTimer();
+            //     Instance.StartTimer();
+            // }
+            
+            
             Destroy(gameObject);
         }
     }
     void Update()
     {
+
+
         
-
-        if (bonusTimer > 0 )
+        if (timerMoving)
         {
-            if (timerMoving)
+            bonusTimer -= Time.deltaTime;
+            if (bonusTimer <= -29)
             {
-                bonusTimer -= Time.deltaTime;
-            }
-        }
-        else if(timerMoving)
-        {
-            bonusTimer = 0;
-            timerMoving = false;
-            if (deathObject)
-            {
-                GameObject player = GameObject.FindGameObjectWithTag("Player");
-                if (!player)
+                //Reset Game State
+                if (deathObject)
                 {
-                    ChangeScene("Game Over Menu");
-                    return;
+                    EndGame();
                 }
-                GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
-                _deathObject.transform.SetParent(null);
-                // print(player);
-                _deathObject.GetComponentInChildren<DeathScript>().SetPlayer(player);
-                player.SetActive(false);
-
-            }
-            else
-            {
-                ChangeScene("Game Over Menu");
+                bonusTimer = 0;
+                timerMoving = false;
             }
         }
+
 
         if (Input.GetKeyDown(KeyCode.P))
         {
             string currentSceneName = SceneManager.GetActiveScene().name;
             if (int.TryParse(currentSceneName, out int currentSceneNumber))
             {
-                int nextSceneNumber = currentSceneNumber+1;
+                int nextSceneNumber = currentSceneNumber + 1;
                 string nextSceneName = nextSceneNumber.ToString();
 
                 if (Application.CanStreamedLevelBeLoaded(nextSceneName))
@@ -256,6 +288,8 @@ public class GameController : MonoBehaviour
     public event Action OnRoomStateChanged;
     public event Action OnPlayerDashed;
     public event Action OnUpdateHUD;
+    public event Action OnUpdateDashIcon;
+    public event Action OnUpdateJumpIcon;
     public event Action OnPlayerDamaged;
     public event Action OnEnemyKilled;
 
@@ -276,19 +310,40 @@ public class GameController : MonoBehaviour
         OnEnemyKilled?.Invoke();
     }
 
+    public void InvokeUpdateDashIcon()
+    {
+        OnUpdateDashIcon?.Invoke();
+    }
+
+    public void InvokeUpdateJumpIcon()
+    {
+        OnUpdateJumpIcon?.Invoke();
+    }
+
 
     // ------------------------------
     // Update Variables in Controller
     // ------------------------------
     public void ResetGameState()
     {
-        bonusTimer = 300;
+        SaveData saveData = SaveDataManager.LoadGameData();
+        int savedPrestige = saveData.prestige;
+        int savedMaxLives = saveData.maxLives;
+        float savedHealing = saveData.healing;
+        sessionPrestige = savedPrestige;
+        sessionHealing = savedHealing;
+        sessionMultiplier = GlobalConstants.getMultiplier(saveData);
+        // print(SessionPrestige);
+        maxHealth = savedMaxLives;
+
+        bonusTimer = 0;
         timerMoving = false;
 
-        health = 5;
-        UpdateHighScores();
+        health = maxHealth;
         score = 0;
+
         collectedObjects.Clear();
+        sessionCollectedObject.Clear();
 
         SaveData gameData = SaveDataManager.LoadGameData();
         gameData.score = score;
@@ -310,11 +365,23 @@ public class GameController : MonoBehaviour
         checkpoint = scene;
     }
 
-    private void UpdateHighScores() {
+    public void SetStartingScore(int score)
+    {
+        startingScore = score;
+    }
+
+    public void SetStartingTimer(float time)
+    {
+        startingTimer = time;
+    }
+
+    public void UpdateHighScores(string name = "???")
+    {
         SaveData gameData = SaveDataManager.LoadGameData();
-        gameData.highScores.Add(score);
-        gameData.highScores.Sort((a,b) => b.CompareTo(a));
-        while (gameData.highScores.Count > 10) {
+        gameData.highScores.Add(new(name, score));
+        gameData.highScores.Sort((a, b) => b.score.CompareTo(a.score));
+        while (gameData.highScores.Count > 10)
+        {
             gameData.highScores.RemoveAt(gameData.highScores.Count - 1);
         }
         SaveDataManager.SaveGameData(gameData);
@@ -322,37 +389,42 @@ public class GameController : MonoBehaviour
 
     public int AddToScore(int pointsToAdd)
     {
-        score += pointsToAdd;
+        score += (int)(pointsToAdd * sessionMultiplier);
         OnUpdateHUD?.Invoke();
         return score;
+    }
+    public int IncreasePrestige(int prestigeToAdd)
+    {
+        sessionPrestige += prestigeToAdd;
+        return sessionPrestige;
     }
     public int ChangeHealth(int healthChange, bool shouldResetRoom = false)
     {
         if (health <= 0) return 0;
         if (healthChange < 0) OnPlayerDamaged?.Invoke();
-        health += healthChange;
+        
+        //edge case for only 1 max health
+        bool willHealAtOneHealth = false;
+        if (maxHealth == 1 && charge >= ChargeMax)
+        {
+            willHealAtOneHealth = true;
+            charge = 0;
+        }
+        if (!willHealAtOneHealth) health += healthChange;
+
         ChangeCharge(0);
         health = Mathf.Clamp(health, 0, maxHealth);
         OnUpdateHUD?.Invoke();
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         Player playerScript = player ? player.GetComponent<Player>() : null;
+
         if (health <= 0)
         {
             //Reset Game State
             if (deathObject)
             {
-                player.SetActive(true);
-                
-                // GameObject player = GameObject.FindGameObjectWithTag("Player");
-                GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
-                _deathObject.transform.SetParent(null);
-                
-
-                _deathObject.GetComponentInChildren<DeathScript>().SetPlayer(player);
-                player.SetActive(false);
-                
-
+                EndGame();
             }
             else
             {
@@ -376,7 +448,7 @@ public class GameController : MonoBehaviour
                 StartCoroutine(WaitAndChangeScene(waitTimeAfterDamage));
 
             }
-            else if(playerScript)
+            else if (playerScript)
             {
                 playerScript.HideAndStartRespawn();
             }
@@ -384,29 +456,60 @@ public class GameController : MonoBehaviour
         return health;
     }
 
-    public void StartTimer(float timerValue)
+    public void StartTimer(float timeToStartAt = 0)
     {
-        // timerMoving = true;
-        bonusTimer = timerValue;
+        if (timeToStartAt == 0) return;
+        timerMoving = true;
+        bonusTimer = timeToStartAt;
     }
+
+    public void SetTimer(float timeToStartAt = 0)
+    {
+        bonusTimer = timeToStartAt;
+    }
+
+
     public void ResumeTimer()
     {
-        // timerMoving = true;
+        timerMoving = true;
     }
     public void AddToTimer(int timeToAdd)
     {
         bonusTimer += timeToAdd;
-        if (bonusTimer > 3599) 
+        if (bonusTimer > 3599)
         {
             bonusTimer = 3599;
         }
     }
     public void StopTimer()
     {
-        int pointsToAdd = 100 * (int) bonusTimer;
-        print(bonusTimer + " - " + pointsToAdd);
+        // int pointsToAdd = 100 * (int)bonusTimer;
+        // AddToScore(pointsToAdd);
+        bonusTimer = 0;
+        timerMoving = false;
+    }
+
+    public void ResetTimer()
+    {
+        int pointsToAdd = 100 * (int)bonusTimer;
         AddToScore(pointsToAdd);
         timerMoving = false;
+        bonusTimer = 0;
+    }
+
+    private void EndGame()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+        player.SetActive(true);
+
+        // GameObject player = GameObject.FindGameObjectWithTag("Player");
+        GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
+        _deathObject.transform.SetParent(null);
+
+
+        _deathObject.GetComponentInChildren<DeathScript>().SetPlayer(player);
+        player.SetActive(false);
     }
 
     public IEnumerator WaitAndReactivatePlayer(Player player, float timeToWait)
@@ -429,7 +532,8 @@ public class GameController : MonoBehaviour
 
     public int ChangeCharge(int chargeChange)
     {
-        charge += chargeChange;
+        print(sessionHealing);
+        charge += (int)(chargeChange * sessionHealing);
         if (charge >= ChargeMax)
         {
             if (health < maxHealth)
@@ -442,6 +546,7 @@ public class GameController : MonoBehaviour
                 charge = ChargeMax;
             }
         }
+        
         OnUpdateHUD?.Invoke();
         return charge;
     }
@@ -462,10 +567,15 @@ public class GameController : MonoBehaviour
         collectedObjects.Add(objectKey);
     }
 
+    public void TagObjectStringAsCollectedForSession(string objectKey)
+    {
+        sessionCollectedObject.Add(objectKey);
+    }
+
     public void AddFollowingObjects(string key, string name, GameObject gameObject)
     {
         if (followingObjects.ContainsKey(key)) return;
-        FollowingObject followingObject = new FollowingObject(name,gameObject);
+        FollowingObject followingObject = new FollowingObject(name, gameObject);
         followingObjects.Add(key, followingObject);
         int i = 1;
         foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
@@ -498,7 +608,7 @@ public class GameController : MonoBehaviour
     }
     public void ReactivateEnemies()
     {
-        
+
         foreach (GameObject enemy in disabledEnemies)
         {
             enemy.SetActive(true);
@@ -574,7 +684,7 @@ public class GameController : MonoBehaviour
     {
         if (!pointCounter) return;
         pointCounter.transform.position = position;
-        pointCounter.AddPointsToTotal(pointsToAdd, isCombo);
+        pointCounter.AddPointsToTotal((int)(pointsToAdd * sessionMultiplier), isCombo);
     }
 
     public void EndPointCombo()

@@ -82,7 +82,7 @@ SpriteRenderer:
   m_Color: {r: 1, g: 0, b: 0.9031024, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 0
+  m_DrawMode: 2
   m_Size: {x: 3, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
@@ -123,12 +123,12 @@ BoxCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.40634432}
   m_SpriteTilingProperty:
-    border: {x: 1, y: 0.9722222, z: 1, w: 0}
+    border: {x: 1.125, y: 0.96875, z: 1.125, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 3, y: 1}
     newSize: {x: 3, y: 1}
     adaptiveTilingThreshold: 0.5
-    drawMode: 0
+    drawMode: 2
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
@@ -154,6 +154,8 @@ MonoBehaviour:
   waitTime: 0
   easeAmount: 0.2
   speed: 0.05
+  OpenEvent: {fileID: 0}
+  shouldMoveOnStart: 0
   activeOnRoomColor: 0
 --- !u!114 &8663821076930191613
 MonoBehaviour:
@@ -207,3 +209,4 @@ MonoBehaviour:
   deactiveAlpha: 0.1
   deactiveSprite: {fileID: 0}
   shouldRemoveCollision: 1
+  shouldWaitBeforeAddingCollision: 0

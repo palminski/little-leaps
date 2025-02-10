@@ -32,17 +32,22 @@ public class bullet : MonoBehaviour
     {
         if (hitCollider.gameObject.CompareTag("PlayerAttack"))
         {
+
             return;
         }
         if (hitCollider.gameObject.CompareTag("Player"))
         {
+
             
             ps.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+            Player hitPlayer = hitCollider.GetComponent<Player>();
+            hitPlayer.Damage(1);
             ps.transform.SetParent(null);
             gameObject.SetActive(false);
         }
         else if (hitCollider.gameObject.layer == LayerMask.NameToLayer("Solid"))
         {
+
             ps.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             ps.transform.SetParent(null);
             gameObject.SetActive(false);
@@ -51,4 +56,5 @@ public class bullet : MonoBehaviour
         
 
     }
+
 }

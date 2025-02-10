@@ -14,10 +14,12 @@ public class DeathScript : MonoBehaviour
         playerDeathImage = GetComponent<Image>();
         Camera.main.GetComponent<CameraControls>().canMove = false;
 
-        if (GameController.Instance.RoomState == RoomColor.Purple) {
+        if (GameController.Instance.RoomState == RoomColor.Purple)
+        {
             playerDeathImage.color = GameController.ColorForPurple;
         }
-        else {   
+        else
+        {
             playerDeathImage.color = GameController.ColorForGreen;
         }
     }
@@ -27,18 +29,33 @@ public class DeathScript : MonoBehaviour
     {
         Color newColor = playerDeathImage.color;
         newColor.a -= fadeSpeed * Time.deltaTime;
-        if (newColor.a <= 0) {
-             GameController.Instance.ChangeScene("Game Over Menu");
-             Destroy(gameObject);
+
+
+
+        if (newColor.a <= 0)
+        {
+            SaveData gameData = SaveDataManager.LoadGameData();
+            gameData.highScores.Sort((a, b) => b.score.CompareTo(a.score));
+            float lowestHighestScore = gameData.highScores.Count > 0 ? gameData.highScores[gameData.highScores.Count - 1].score : 0;
+
+            if (GameController.Instance.Score > lowestHighestScore)
+            {
+                GameController.Instance.ChangeScene("New High Score Menu");
+            }
+            else
+            {
+                GameController.Instance.ChangeScene("Game Over Menu");
+            }
+            Destroy(gameObject);
         }
         playerDeathImage.color = newColor;
     }
 
     public void SetPlayer(GameObject player)
     {
-        
+
         transform.localScale = player.transform.localScale;
         transform.localScale = player.transform.localScale;
-        
+
     }
 }

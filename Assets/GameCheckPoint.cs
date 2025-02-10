@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameCheckPoint : MonoBehaviour
 {
@@ -12,10 +13,10 @@ public class GameCheckPoint : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!TriggerEvent)
+        if (!TriggerEvent && key.Length > 0)
         {
             SaveDataManager.AddPermanentCollectedString(key);
-            GameController.Instance.SetCheckPoint(key);
+            // GameController.Instance.SetCheckPoint(key);
         }
     }
 
@@ -35,7 +36,10 @@ public class GameCheckPoint : MonoBehaviour
     }
 
     private void OnEventRaised() {
-        SaveDataManager.AddPermanentCollectedString(key);
-        GameController.Instance.SetCheckPoint(key);
+        if (key.Length > 0)
+        {
+            SaveDataManager.AddPermanentCollectedString(key);
+        }
+        // GameController.Instance.SetCheckPoint(SceneManager.GetActiveScene().name);
     }
 }

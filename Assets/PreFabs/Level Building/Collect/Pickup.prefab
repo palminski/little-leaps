@@ -93,9 +93,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7690226943282113065}
-  - component: {fileID: 3138759886727389556}
   - component: {fileID: 7283757511562044543}
   - component: {fileID: 3531737283211416254}
+  - component: {fileID: 5499665100911159632}
   m_Layer: 0
   m_Name: Pickup
   m_TagString: Untagged
@@ -120,20 +120,6 @@ Transform:
   - {fileID: 2211747509244158537}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3138759886727389556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6505369307954092987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56501747a7802854780d381825d7fe21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupName: A
-  followItem: {fileID: 3066932901191364747, guid: d6e2de4a4127713489b6ace52b3e4cf9, type: 3}
 --- !u!50 &7283757511562044543
 Rigidbody2D:
   serializedVersion: 4
@@ -206,6 +192,29 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &5499665100911159632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6505369307954092987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2478f2974aacf554295f492a60ba8866, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  pointValue: 2500
+  chargeValue: 0
+  magnetRadius: 0
+  maxSpeed: 0
+  collectionParticle: {fileID: 7157367465512552725, guid: 2f0fd622c1d54d840b261124fb9b8cfd, type: 3}
+  coinParticleSystem: {fileID: 0}
+  coinId: 
+  shouldMoveTowardsPlayer: 0
+  speed: 0
+  collectedString: 
 --- !u!1 &8211025820195035411
 GameObject:
   m_ObjectHideFlags: 0

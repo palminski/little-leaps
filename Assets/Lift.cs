@@ -50,39 +50,39 @@ public class Lift : MonoBehaviour
         veins.color = newColor;
     }
 
-    private void OnEnable()
-    {
-        if (ActivateEvent)
-        {
-            ActivateEvent.OnEventRaised.AddListener(OnEventRaised);
-        }
-    }
-    private void OnDisable()
-    {
-        if (ActivateEvent)
-        {
-            ActivateEvent.OnEventRaised.RemoveListener(OnEventRaised);
-        }
-    }
+    // private void OnEnable()
+    // {
+    //     if (ActivateEvent)
+    //     {
+    //         ActivateEvent.OnEventRaised.AddListener(OnEventRaised);
+    //     }
+    // }
+    // private void OnDisable()
+    // {
+    //     if (ActivateEvent)
+    //     {
+    //         ActivateEvent.OnEventRaised.RemoveListener(OnEventRaised);
+    //     }
+    // }
 
     
 
-    void OnEventRaised()
-    {
-        Dictionary<string, FollowingObject> followingObjects = GameController.Instance.FollowingObjects;
-        foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
-        {
-            if (entry.Value.Name == requiredKey)
-            {
-                isActive = true;
-                GameController.Instance.TagObjectStringAsCollected(entry.Key);
-                GameController.Instance.TagObjectStringAsCollected(id);
-                GameController.Instance.RemoveFollowingObject(entry.Key);
-                break;
-            }
-        }
+    // void OnEventRaised()
+    // {
+    //     Dictionary<string, FollowingObject> followingObjects = GameController.Instance.FollowingObjects;
+    //     foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
+    //     {
+    //         if (entry.Value.Name == requiredKey)
+    //         {
+    //             isActive = true;
+    //             GameController.Instance.TagObjectStringAsCollected(entry.Key);
+    //             GameController.Instance.TagObjectStringAsCollected(id);
+    //             GameController.Instance.RemoveFollowingObject(entry.Key);
+    //             break;
+    //         }
+    //     }
         
-    }
+    // }
 
     void OnTriggerStay2D(Collider2D hitCollider)
     {
@@ -92,6 +92,12 @@ public class Lift : MonoBehaviour
                 animator.SetTrigger("Close Lift");
                 // GameController.Instance.ChangeScene(targetSceneName);
                 isMoving = true;
+
+                if (SceneManager.GetActiveScene().name == GlobalConstants.lastScene)
+                {
+                    GameController.Instance.IncreasePrestige(1);
+                }
+
                 StartCoroutine(WaitAndChangeScene());
         }
     }
@@ -103,6 +109,8 @@ public class Lift : MonoBehaviour
         if (playerScript) playerScript.RemovePlayer();
         waypointMovement.TriggerShouldMove();
         yield return new WaitForSeconds(0.5f);
+        LevelConnection.ActiveConnection = null;
+        GameController.Instance.CollectedObjects.Clear();
         GameController.Instance.ChangeScene(targetSceneName);
     }
 }

@@ -25,6 +25,8 @@ public class Gate : MonoBehaviour
 
     public DoorBar doorBar;
 
+    public Enemy[] enemiesToCheck;
+
     private void OnEnable()
     {
         if (behavior == GateBehavior.OpenWhenNoEnemies)
@@ -85,7 +87,7 @@ public class Gate : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(WaitAndClose());
         }
-        
+
     }
 
     public void Close()
@@ -103,14 +105,33 @@ public class Gate : MonoBehaviour
     private IEnumerator waitAndCheckIfEnemiesKilled()
     {
         yield return new WaitForEndOfFrame();
-        Enemy[] allEnemies = FindObjectsOfType<Enemy>();
-        int enemyCount = allEnemies.Length;
 
-        if (enemyCount <= 0)
+        if (enemiesToCheck != null && enemiesToCheck.Length > 0)
         {
-            Open();
-            GameController.Instance.TagObjectStringAsCollected(gateId);
+            bool shouldOpen = true;
+            foreach (Enemy enemy in enemiesToCheck)
+            {
+                if (!shouldOpen) continue;
+                if (enemy != null) shouldOpen = false;
+            }
+            if (shouldOpen)
+            {
+                Open();
+                GameController.Instance.TagObjectStringAsCollected(gateId);
+            }
         }
+        else
+        {
+            Enemy[] allEnemies = FindObjectsOfType<Enemy>();
+            int enemyCount = allEnemies.Length;
+            if (enemyCount <= 0)
+            {
+                Open();
+                GameController.Instance.TagObjectStringAsCollected(gateId);
+            }
+        }
+
+
     }
 
     private IEnumerator WaitAndClose()

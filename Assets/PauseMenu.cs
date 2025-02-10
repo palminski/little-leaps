@@ -11,7 +11,7 @@ using System.Linq;
 
 public class PauseMenu : MonoBehaviour
 {
-     public TMP_Text currentText;
+    public TMP_Text currentText;
     private PlayerInput playerInput;
     private int selectedIndex;
     public MenuOption[] currentOptions;
@@ -21,6 +21,12 @@ public class PauseMenu : MonoBehaviour
 
     void Start()
     {
+        Camera camera = Camera.main;
+        if (camera != null)
+        {
+            transform.position = new(camera.transform.position.x, camera.transform.position.y, 0);
+        }
+
         playerInput = GetComponent<PlayerInput>();
         selectedIndex = 0;
         currentOptions = menuOptions;
@@ -46,8 +52,27 @@ public class PauseMenu : MonoBehaviour
     public void ReturnToMainMenu()
     {
         // GameController.Instance.AddToTimer(-1000000000);
-        GameController.Instance.ChangeHealth(-776);
-        Destroy(gameObject);
+        // GameController.Instance.ChangeHealth(-776);
+        GameController.Instance.ChangeHealth(-500);
+        // Destroy(gameObject);
+        // if (playerInput) playerInput.enabled = false;
+        
+        // if (GameController.Instance.TimerMoving)
+        // {
+        //     GameController.Instance.StopTimer();
+        // }
+
+        // SaveData gameData = SaveDataManager.LoadGameData();
+        // gameData.highScores.Sort((a, b) => b.score.CompareTo(a.score));
+        // float lowestHighestScore = gameData.highScores.Count > 0 ? gameData.highScores[gameData.highScores.Count - 1].score : 0;
+        // if (GameController.Instance.Score > lowestHighestScore)
+        // {
+        //     GameController.Instance.ChangeScene("New High Score Menu");
+        // }
+        // else
+        // {
+        //     GameController.Instance.ChangeScene("Game Over Menu");
+        // }
     }
 
     public void Continue()
@@ -57,7 +82,6 @@ public class PauseMenu : MonoBehaviour
 
     public void ExitGame()
     {
-        print("Exit Game");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else

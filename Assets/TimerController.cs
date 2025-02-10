@@ -44,29 +44,32 @@ public class TimerController : MonoBehaviour
     }
 
     void OnEventRaised() {
-        if(requiredChips != null)
-        {
-            bool canOpen = true;
-            foreach(string requiredChip in requiredChips)
-            {
-                if (!GameController.Instance.CollectedObjects.Contains(requiredChip))
-                {
-                    canOpen = false;
-                }
-            }
-            if(!canOpen) return;
-        }
+        // print("TIMERCONTROLLER");
+        // if(requiredChips != null)
+        // {
+        //     bool canOpen = true;
+        //     foreach(string requiredChip in requiredChips)
+        //     {
+        //         if (!GameController.Instance.CollectedObjects.Contains(requiredChip))
+        //         {
+        //             canOpen = false;
+        //         }
+        //     }
+        //     if(!canOpen) return;
+        // }
         
         
-        if (levelCompleteEvent) levelCompleteEvent.Raise();
-        GameController.Instance.StopTimer();
+        // if (levelCompleteEvent) levelCompleteEvent.Raise();
+        // GameController.Instance.StopTimer();
         
-        if (GameController.Instance.CollectedObjects.Contains(timerName)) return;
-        GameController.Instance.CollectedObjects.Add(timerName);        
+        // if (GameController.Instance.CollectedObjects.Contains(timerName)) return;
+        // GameController.Instance.CollectedObjects.Add(timerName);        
     }
     // Update is called once per frame
     void Update()
     {
         
     }
+
+    
 }

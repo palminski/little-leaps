@@ -8,6 +8,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Unity.VisualScripting.Dependencies.NCalc;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class GameOverMenu : MonoBehaviour
 {
@@ -41,13 +42,16 @@ public class GameOverMenu : MonoBehaviour
 
     public void Continue()
     {
-        if (GameController.Instance.Checkpoint !=null && GameController.Instance.Checkpoint != "")
+        if (GameController.Instance.Checkpoint !=null && GameController.Instance.Checkpoint != "" && DoesSceneExists(GameController.Instance.Checkpoint))
         {
+            LevelConnection.ActiveConnection = null;
             GameController.Instance.ChangeScene(GameController.Instance.Checkpoint);
+            GameController.Instance.SetCheckPoint("Main Menu");
         }
         else
         {
-            GameController.Instance.ChangeScene("Main Room");
+            LevelConnection.ActiveConnection = null;
+            GameController.Instance.ChangeScene("lv_1_start");
         }
         
     }
@@ -107,20 +111,36 @@ public class GameOverMenu : MonoBehaviour
             string textLine = "";
             if (currentOptions[selectedIndex] == menuOption)
             {
-                textLine += "> ";
+                textLine += "[";
             }
             else
             {
-                textLine += "  ";
+                textLine += " ";
             }
-            textLine += menuOption.text + "\n";
-
+            textLine += menuOption.text;
+            if (currentOptions[selectedIndex] == menuOption)
+            {
+                textLine += "]";
+            }
+            textLine += "\n";;
             currentText.text += textLine;
         }
         if (startingText.isFinishedTyping) startingText.SetSideText(currentOptions[selectedIndex].sideText);
     }
 
-    
+    private bool DoesSceneExists(string sceneName)
+    {
+        for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+        {
+            string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+            string sceneNameFromPath = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+            if (sceneNameFromPath == sceneName)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     
 }

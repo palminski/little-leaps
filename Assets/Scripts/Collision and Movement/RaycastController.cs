@@ -36,12 +36,15 @@ public class RaycastController : MonoBehaviour
 
  //Calculating Spacing and Locations for Rays to Be Cast
     //====================================================================================================
-
-        public virtual void Start()
+    public virtual void Awake()
     {
         boxCollider = GetComponent<BoxCollider2D>();
-        updateRaySpacing();
     }
+    
+    public virtual void Start()
+    {
+        updateRaySpacing();
+    }   
 
     public void updateRaycastOrigins()
     {
@@ -81,6 +84,9 @@ public class RaycastController : MonoBehaviour
     {
         public Vector2 topLeft, topRight;
         public Vector2 bottomLeft, bottomRight;
+    }
+    void OnDrawGizmos()
+    {
     }
 
 }

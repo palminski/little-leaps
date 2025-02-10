@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private bool canSwapColors = false;
     [SerializeField] private bool vulnerableFromTop;
     [SerializeField] private bool vulnerableFromSide;
-    
+
     [Header("Purple Vulnerabilities")]
     [SerializeField] private bool purpleVulnerableFromTop;
     [SerializeField] private bool purpleVulnerableFromSide;
@@ -29,12 +29,14 @@ public class Enemy : MonoBehaviour
     [SerializeField] private bool greenVulnerableFromTop;
     [SerializeField] private bool greenVulnerableFromSide;
 
-
+    [SerializeField] private float minimumPlayerFallAmmountToCountAsKill = 0.005f;
     private GameObject player;
     private GameObject playerAttack;
 
     private bool canDamagePlayer = false;
     private string enemyId;
+
+    private bool wasKilled = false;
 
     private Vector3 lastPosition;
 
@@ -43,8 +45,9 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         enemyId = $"{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
-        if (GameController.Instance.CollectedObjects.Contains(enemyId)) {
-            if(!canRespwan) Destroy(gameObject);
+        if (GameController.Instance.CollectedObjects.Contains(enemyId))
+        {
+            if (!canRespwan) Destroy(gameObject);
             pointValue = 0;
         }
 
@@ -55,6 +58,7 @@ public class Enemy : MonoBehaviour
     private void OnEnable()
     {
         canDamagePlayer = true;
+        wasKilled = false;
         if (canSwapColors)
         {
             GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
@@ -83,14 +87,16 @@ public class Enemy : MonoBehaviour
             Player hitPlayer = player.GetComponent<Player>();
             Collider2D collider = GetComponent<Collider2D>();
 
-            float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y - (hitCollider.bounds.size.y / 2);
-            float enemyTop = lastPosition.y + collider.offset.y + collider.bounds.size.y / 2;
-            if (vulnerableFromTop && playerBottom > enemyTop )
+            // float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y - (hitCollider.bounds.size.y / 2);
+            bool playerWasGoingDown = hitPlayer.GetLastPosition().y > hitPlayer.transform.position.y + minimumPlayerFallAmmountToCountAsKill;
+
+            // float enemyTop = lastPosition.y + collider.offset.y + collider.bounds.size.y / 2;
+            if (vulnerableFromTop && playerWasGoingDown)
             {
                 return;
             }
 
-            if (vulnerableFromSide && playerBottom <= enemyTop && hitPlayer.IsDashingSideways())
+            if (vulnerableFromSide && hitPlayer.IsDashingSideways())
             {
                 return;
             }
@@ -106,38 +112,62 @@ public class Enemy : MonoBehaviour
         // - Check if player can hurt enemy
         if (hitCollider.gameObject == playerAttack)
         {
-            
+
             Player hitPlayer = player.GetComponent<Player>();
             Collider2D collider;
             collider = GetComponent<Collider2D>();
 
-            float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y - (hitCollider.bounds.size.y / 2);
+            // float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y - (hitCollider.bounds.size.y / 2);
             float enemyTop = lastPosition.y + collider.offset.y + collider.bounds.size.y / 2;
 
+            bool playerWasGoingDown = hitPlayer.GetLastPosition().y > hitPlayer.transform.position.y + minimumPlayerFallAmmountToCountAsKill;
 
-            if (vulnerableFromTop && playerBottom > enemyTop && hitPlayer.IsDashing())
+            if (vulnerableFromTop && playerWasGoingDown && hitPlayer.IsDashing())
             {
-                
+
                 hitPlayer.ResetCoyoteTime();
-                player.transform.position = new Vector3(player.transform.position.x, enemyTop + 0.5f,player.transform.position.z);
+                player.transform.position = new Vector3(player.transform.position.x, enemyTop + 0.5f, player.transform.position.z);
                 hitPlayer.Bounce(bounceMultiplier);
-                
-               
+
+
 
                 DamageEnemy(1, true);
             }
-            else if (vulnerableFromTop && playerBottom > enemyTop)
+            else if (vulnerableFromTop && playerWasGoingDown)
             {
-                
+
                 hitPlayer.ResetCoyoteTime();
-                player.transform.position = new Vector3(player.transform.position.x, enemyTop + 0.5f,player.transform.position.z);
+                player.transform.position = new Vector3(player.transform.position.x, enemyTop + 0.5f, player.transform.position.z);
                 hitPlayer.Bounce(1);
-                
-                
+
+
                 DamageEnemy();
             }
 
-            if (vulnerableFromSide && playerBottom <= enemyTop && hitPlayer.IsDashingSideways())
+            if (vulnerableFromSide && hitPlayer.IsDashingSideways())
+            {
+                // hitPlayer.ResetCoyoteTime();
+                hitPlayer.RefreshDashMoves();
+                DamageEnemy();
+            }
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D hitCollider)
+    {
+        // - Check if player can hurt enemy
+        if (vulnerableFromSide && hitCollider.gameObject == playerAttack)
+        {
+
+            Player hitPlayer = player.GetComponent<Player>();
+            Collider2D collider;
+            collider = GetComponent<Collider2D>();
+
+            // float playerBottom = hitPlayer.GetLastPosition().y + hitCollider.offset.y - (hitCollider.bounds.size.y / 2);
+            float enemyTop = lastPosition.y + collider.offset.y + collider.bounds.size.y / 2;
+
+
+            if (vulnerableFromSide && hitPlayer.IsDashingSideways())
             {
                 // hitPlayer.ResetCoyoteTime();
                 hitPlayer.RefreshDashMoves();
@@ -159,7 +189,9 @@ public class Enemy : MonoBehaviour
 
     public void KillEnemy(bool bonusPoints = false)
     {
-        
+        if (wasKilled) return;
+        wasKilled = true;
+        int bonusPointsToAdd = GameController.Instance.CollectedObjects.Contains(enemyId) ? 0 : 100;
         // GameController.Instance.AddToScore(pointValue);
         if (blood) GameController.Instance.PullFromPool(blood, transform.position);
         GameLight light = GetComponentInChildren<GameLight>();
@@ -168,7 +200,8 @@ public class Enemy : MonoBehaviour
             light.transform.SetParent(null);
             light.Fade();
         }
-        foreach (GameObject objectToSpawn in objectsToSpawnOnDeath) {
+        foreach (GameObject objectToSpawn in objectsToSpawnOnDeath)
+        {
             Instantiate(objectToSpawn, transform.position, Quaternion.identity);
         }
         GameController.Instance.TagObjectStringAsCollected(enemyId);
@@ -187,8 +220,8 @@ public class Enemy : MonoBehaviour
         int pointsToAdd = pointValue;
         if (bonusPoints)
         {
-            pointsToAdd += 100;
-        } 
+            pointsToAdd += bonusPointsToAdd;
+        }
         GameController.Instance.AddToScore(pointsToAdd);
         if (pointValue > 0) GameController.Instance.ShowPointCounter(pointsToAdd, transform.position);
         pointValue = 0;

@@ -30,12 +30,7 @@ public class CameraControls : MonoBehaviour
     [SerializeField] private Tilemap tilemap;
     [SerializeField] private float boarderBuffer = 0.5f;
 
-    [Header("Only Up")]
-    [SerializeField] public bool onlyUp = false;
 
-    [SerializeField] private float distanceAllowedBack = 0.5f;
-
-    private float highestPoint;
 
     private Vector3 velocity = Vector3.zero;
 
@@ -62,13 +57,16 @@ public class CameraControls : MonoBehaviour
         cam = GetComponent<Camera>();
         target = GameObject.FindGameObjectWithTag("Player").transform;
         
-        Vector3 startPosition = transform.position;
-        if (canMove && !onlyUp && !xAxisOnly) startPosition.y = target.position.y;
-        if (canMove && !onlyUp && !yAxisOnly) startPosition.x = target.position.x;
-        transform.position = canMove ? startPosition + offset : startPosition;
+        // Vector3 startPosition = transform.position;
+        // if (canMove && !onlyUp && !xAxisOnly) startPosition.y = target.position.y;
+        // if (canMove && !onlyUp && !yAxisOnly) startPosition.x = target.position.x;
+        // transform.position = canMove ? startPosition + offset : startPosition;
 
-        highestPoint = transform.position.y;
         if (!tilemap) tilemap = GameObject.Find("environment").GetComponent<Tilemap>();
+        if(canMove)
+        {
+            SnapToPosition(target);
+        }
 
         if (GameController.Instance.RoomState == RoomColor.Purple) {
             targetColor = Color.Lerp(colorForRS0, Color.black, finalColorDarkness);
@@ -93,10 +91,10 @@ public class CameraControls : MonoBehaviour
         Vector3 targetXVector = new(targetPosition.x, 0, 0);
 
         Vector3 yVector = new(0, transform.position.y, 0);
-        Vector3 targetYVector = new(0, targetPosition.y, 0);
 
-        float xTarget = yAxisOnly ? transform.position.x : Vector3.SmoothDamp(xVector, targetXVector, ref velocity, easeTimeX).x;
-        float yTarget = xAxisOnly ? transform.position.y : Vector3.SmoothDamp(yVector, targetYVector, ref velocity, easeTimeY).y;
+        float yDifferentce = targetPosition.y - transform.position.y; 
+        // if (Mathf.Abs(yDifferentce) > 5)
+        Vector3 targetYVector = (Mathf.Abs(yDifferentce) > 5) ? new(0, targetPosition.y, 0) : new(0, transform.position.y, 0);
 
         if (tilemap)
         {
@@ -108,14 +106,14 @@ public class CameraControls : MonoBehaviour
             Vector3 minPoint = tilemap.localBounds.min + new Vector3(horizontalExtent, verticalExtent, 0);
             Vector3 maxPoint = tilemap.localBounds.max - new Vector3(horizontalExtent, verticalExtent, 0);
 
-            xTarget = Mathf.Clamp(xTarget, minPoint.x, maxPoint.x);
-            yTarget = Mathf.Clamp(yTarget, minPoint.y, maxPoint.y);
+            targetXVector = new(Mathf.Clamp(targetPosition.x, minPoint.x, maxPoint.x),0,0);
+            targetYVector = new(0,Mathf.Clamp(targetPosition.y, minPoint.y, maxPoint.y),0);
         }
-        if (onlyUp) {
-            highestPoint = Mathf.Max(highestPoint, transform.position.y);
-            transform.position = new(transform.position.x, Mathf.Max(yTarget, highestPoint-distanceAllowedBack) , transform.position.z);
-            return;
-        }
+
+        float xTarget = yAxisOnly ? transform.position.x : Vector3.SmoothDamp(xVector, targetXVector, ref velocity, easeTimeX).x;
+        float yTarget = xAxisOnly ? transform.position.y : Vector3.SmoothDamp(yVector, targetYVector, ref velocity, easeTimeY).y;
+
+
         transform.position = new(xTarget, yTarget, transform.position.z);
     }
     
@@ -126,7 +124,32 @@ public class CameraControls : MonoBehaviour
 
     public void SnapToPosition(Transform target)
     {
-        transform.position = target.position + offset;
+        Vector3 targetPosition = target.position + offset;
+
+        Vector3 xVector = new(transform.position.x, 0, 0);
+        Vector3 targetXVector = new(targetPosition.x, 0, 0);
+
+        Vector3 yVector = new(0, transform.position.y, 0);
+        Vector3 targetYVector = new(0, targetPosition.y, 0);
+
+        if (tilemap)
+        {
+            tilemap.CompressBounds();
+            Camera camera = Camera.main;
+            float verticalExtent = camera.orthographicSize + boarderBuffer * 2;
+            float horizontalExtent = ((camera.orthographicSize + boarderBuffer) * camera.aspect) + boarderBuffer;
+
+            Vector3 minPoint = tilemap.localBounds.min + new Vector3(horizontalExtent, verticalExtent, 0);
+            Vector3 maxPoint = tilemap.localBounds.max - new Vector3(horizontalExtent, verticalExtent, 0);
+
+            targetXVector = new(Mathf.Clamp(targetPosition.x, minPoint.x, maxPoint.x),0,0);
+            targetYVector = new(0,Mathf.Clamp(targetPosition.y, minPoint.y, maxPoint.y),0);
+        }
+
+        float xTarget = yAxisOnly ? transform.position.x : targetXVector.x;
+        float yTarget = xAxisOnly ? transform.position.y : targetYVector.y;
+
+        transform.position = new(xTarget, yTarget, transform.position.z);
     }
 
     private void HandleRoomStateChange()

@@ -45,7 +45,7 @@ public class WorldDialogue : MonoBehaviour
         }
     }
 
-    void Start()
+    void Awake()
     {
         id = $"dialogue-{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
         if (disableOnEvent != null && GameController.Instance.CollectedObjects.Contains(id)) Destroy(gameObject);
@@ -55,7 +55,7 @@ public class WorldDialogue : MonoBehaviour
         startingText = textElement.text;
 
         textToType = shouldShowOnce || (activateOnEvent && !GameController.Instance.CollectedObjects.Contains(id)) ? "" : startingText;
-        
+
         textElement.text = "";
 
         if (thisCollider == null)
@@ -69,13 +69,13 @@ public class WorldDialogue : MonoBehaviour
         if (!interactable) return;
         if (interactable.CanInteractWith())
         {
-            
+
             if (unTypingCoroutine != null)
             {
                 StopCoroutine(unTypingCoroutine);
                 unTypingCoroutine = null;
             }
-            if(typingCoroutine != null) return;
+            if (typingCoroutine != null) return;
             typingCoroutine = StartCoroutine(TypeSentence());
         }
         else
@@ -85,7 +85,7 @@ public class WorldDialogue : MonoBehaviour
                 StopCoroutine(typingCoroutine);
                 typingCoroutine = null;
             }
-            if(unTypingCoroutine != null) return;
+            if (unTypingCoroutine != null) return;
             unTypingCoroutine = StartCoroutine(UnTypeSentence());
         }
     }
@@ -122,7 +122,7 @@ public class WorldDialogue : MonoBehaviour
         for (int i = currentCharacterIndex; i < textToType.Length; i++)
         {
             textElement.text += textToType[i];
-            currentCharacterIndex ++;
+            currentCharacterIndex++;
             yield return new WaitForSeconds(timeBetweenCharacters);
         }
     }
@@ -131,15 +131,16 @@ public class WorldDialogue : MonoBehaviour
     {
         while (currentCharacterIndex > 0)
         {
-            if(player && player.activeSelf || currentCharacterIndex < textToType.Length-1) {
-                currentCharacterIndex --;
-                textElement.text = textToType.Substring(0,currentCharacterIndex);
+            if (player && player.activeSelf || currentCharacterIndex < textToType.Length - 1)
+            {
+                currentCharacterIndex--;
+                textElement.text = textToType.Substring(0, currentCharacterIndex);
             }
             yield return new WaitForSeconds(timeBetweenCharacters);
         }
     }
 
-    void Activate()
+    public void Activate()
     {
         GameController.Instance.CollectedObjects.Add(id);
 
@@ -153,10 +154,21 @@ public class WorldDialogue : MonoBehaviour
         typingCoroutine = StartCoroutine(TypeSentence());
     }
 
+    public void Deactivate()
+    {
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+        unTypingCoroutine = StartCoroutine(UnTypeSentence());
+
+    }
+
     void Disable()
     {
         GameController.Instance.CollectedObjects.Add(id);
         Destroy(gameObject);
     }
-    
+
 }

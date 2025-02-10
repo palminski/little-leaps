@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,103 +6,94 @@ using UnityEngine.SceneManagement;
 
 public class PickUp : MonoBehaviour
 {
-    private string id;
-    [SerializeField] public string pickupName;
-    private GameObject player;
-    [SerializeField] private GameObject followItem;
     // Start is called before the first frame update
+    private GameObject player;
+    [SerializeField]
+    private int pointValue = 100;
 
-    private void OnEnable()
-    {
-        GameController.Instance.OnPlayerDamaged += HandlePlayerDamaged;
-    }
-    private void OnDisable()
-    {
-        GameController.Instance.OnPlayerDamaged -= HandlePlayerDamaged;
-    }
+    [SerializeField]
+    private int chargeValue = 1;
 
+    [SerializeField]
+    private float magnetRadius = 1;
+    [SerializeField]
+    private float maxSpeed = 2;
+
+    [SerializeField]
+    private GameObject collectionParticle;
+
+    public ParticleSystem coinParticleSystem;
+
+    [SerializeField] private string pickUpString;
+
+    [SerializeField] string[] otherPickupsInSet;
+
+    private bool shouldMoveTowardsPlayer;
+    private float speed;
+    // Start is called before the first frame update
     void Start()
     {
-        id = $"{pickupName}{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
-        if (GameController.Instance.CollectedObjects.Contains(id)) Destroy(gameObject);
-        if (GameController.Instance.FollowingObjects.ContainsKey(id)) DeActivate();
+        if (GameController.Instance.CollectedObjects.Contains(pickUpString)) Destroy(gameObject);
         player = GameObject.FindGameObjectWithTag("Player");
+    }
+
+    void Update()
+    {
+        if (speed != 0 && (!player || !player.activeSelf))
+        {
+            ColelctItem();
+        }
+        if (player && player.activeSelf && Vector2.Distance(transform.position, player.transform.position) <= magnetRadius) shouldMoveTowardsPlayer = true;
+        if (player && shouldMoveTowardsPlayer)
+        {
+            Vector2 vectorToPlayer = player.transform.position - transform.position;
+            float distanceToPlayer = vectorToPlayer.magnitude;
+            Vector2 moveDirection = vectorToPlayer.normalized;
+            
+            speed = Mathf.Max(speed,((1-distanceToPlayer/magnetRadius) * maxSpeed));
+            speed += Time.deltaTime * speed;
+            transform.position += (Vector3)(speed * Time.deltaTime * moveDirection);
+        }
     }
 
     void OnTriggerEnter2D(Collider2D hitCollider)
     {
         if (hitCollider.gameObject == player)
         {
-            GameObject followObject = Instantiate(followItem, transform.position, Quaternion.identity);
-
-            // SpriteRenderer thisSR = GetComponent<SpriteRenderer>();
-            // SpriteRenderer newSR =followObject.GetComponent<SpriteRenderer>();
-
-            GameObject newObj = Instantiate(gameObject);
-            
-            PickUp newPickup = newObj.GetComponent<PickUp>();
-            Rigidbody2D newRigidBody = newObj.GetComponent<Rigidbody2D>();
-            Collider2D newCollider = newObj.GetComponent<Collider2D>();
-            
-            if(newPickup) newPickup.enabled = false;
-            if(newRigidBody) newRigidBody.bodyType = RigidbodyType2D.Static;
-            if(newCollider) newCollider.enabled = false;
-
-            newObj.transform.SetParent(followObject.transform);
-            // newSR.sprite = thisSR.sprite;
-            // newSR.color = thisSR.color;
-            // newSR.flipX = thisSR.flipX;
-            // newSR.flipY = thisSR.flipY;
-            // newSR.sortingLayerID = thisSR.sortingLayerID;
-            // newSR.sortingOrder = thisSR.sortingOrder;
-
-            followObject.transform.SetParent(GameController.Instance.transform);
-            GameController.Instance.AddFollowingObjects(id, pickupName, followObject);
-            DeActivate();
-
+            ColelctItem();
         }
     }
 
-    private void DeActivate()
+    void ColelctItem()
     {
-        Component[] components = GetComponentsInChildren<Component>();
-        foreach (Component component in components)
+        int pointsToAward = pointValue;
+        foreach (string pickUp in otherPickupsInSet)
         {
-            if (component != this)
-            {
-                if (component is Behaviour behaviour)
-                {
-                    behaviour.enabled = false;
-                }
-                if (component is SpriteRenderer renderer1)
-                {
-                    renderer1.enabled = false;
-                }
-            }
-        }
-    }
-
-    private void ReActivate()
-    {
-        Component[] components = GetComponentsInChildren<Component>();
-        foreach (Component component in components)
+            if (GameController.Instance.CollectedObjects.Contains(pickUp)) pointsToAward += pointValue;
+        } 
+        GameController.Instance.AddToScore(pointsToAward);
+        if (player) GameController.Instance.ShowPointCounter(pointsToAward, player.transform.position + new Vector3(0,1,0), false);
+        GameController.Instance.ChangeCharge(chargeValue);
+        if (coinParticleSystem)
         {
-            if (component != this)
-            {
-                if (component is Behaviour behaviour)
-                {
-                    behaviour.enabled = true;
-                }
-                if (component is SpriteRenderer renderer1)
-                {
-                    renderer1.enabled = true;
-                }
-            }
-        }
+            coinParticleSystem.transform.SetParent(null);
+            coinParticleSystem.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+        } 
+        GameController.Instance.PullFromPool(collectionParticle,transform.position);
+        GameController.Instance.TagObjectStringAsCollected(pickUpString);
+        GameController.Instance.TagObjectStringAsCollectedForSession(pickUpString);
+        Destroy(gameObject);
     }
 
-    void HandlePlayerDamaged()
+    private bool ShouldMoveTowardsPlayer() {
+        if (player && player.activeSelf && Vector2.Distance(transform.position, player.transform.position) <= magnetRadius) return true;
+        return false;
+    }
+    
+
+    void OnDrawGizmos()
     {
-        if (!GameController.Instance.CollectedObjects.Contains(id)) ReActivate();
+        // Gizmos.color = Color.blue;
+        // Gizmos.DrawWireSphere(transform.position, magnetRadius);
     }
 }

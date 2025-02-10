@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float fastFallModifier = 2;
     [SerializeField] private float groundFriction = 0.1f;
     [SerializeField] private float airFriction = 0.1f;
+    [SerializeField] private float horizontalDashCollisionForgivness = 0.3f;
     private float xInput;
     private float hSpeed;
     private float hExtraSpeed = 0;
@@ -42,13 +43,18 @@ public class Player : MonoBehaviour
     [SerializeField] private float terminalYVelocity = 1;
     private float doubleJumpTurnAroundFrames;
     [SerializeField] private float maxDoubleJumpTurnAroundFrames = 5f;
+    [SerializeField] private float verticalCollisionForgivness = 0.1f;
     private bool jumpPressed;
     private bool jumpReleased;
     private float gravityModifier = 1;
-    
+
     private int coyoteTime = 0;
     private bool canWallJump = false;
+
+    public int stompTimerMax = 5;
+    private int stompTimer = 0;
     private float minJumpVelocity;
+    private bool canCancelJump;
 
     [Header("Wall Jump")]
     [SerializeField] private float wallJumpPower = 0.5f;
@@ -77,6 +83,10 @@ public class Player : MonoBehaviour
     private bool canDoubleJump = true;
     private bool isDashing = false;
 
+    [SerializeField] private int maxDashChangeTime = 5;
+    private int dashChangeTime = 0;
+
+
     [Header("Damage")]
     [SerializeField] private float invincibilityTime = 3;
     [SerializeField] private float invincibilityBlinkInterval = 0.0001f;
@@ -88,7 +98,8 @@ public class Player : MonoBehaviour
     [SerializeField] private ParticleSystem ps;
     [SerializeField] private ParticleSystem playerAfterImage;
 
-private bool hasClung;
+    private bool hasClung;
+
 
 
     private void Awake()
@@ -125,10 +136,13 @@ private bool hasClung;
     // -------------------
     private void FixedUpdate()
     {
-
+        if (stompTimer > 0)
+        {
+            stompTimer--;
+        }
         lastPosition = transform.position;
         bool isGrounded = movementCollisionHandler.OnGround();
-        if (coyoteTime <= 0 && velocity.x != 0 && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump))
+        if (coyoteTime <= 0 && movementCollisionHandler.OnWallAtDistInDirection(distanceWallsDetectable, (int)Mathf.Sign(transform.localScale.x)))
         {
             wallJumpTime = maxWallJumpTime;
         }
@@ -139,10 +153,14 @@ private bool hasClung;
         if (xInput != 0 && clingTime == 0)
         {
             hSpeed += Mathf.Sign(xInput) * acceleration;
-            if (doubleJumpTurnAroundFrames > 0) 
+            if (doubleJumpTurnAroundFrames > 0)
             {
                 velocity.x = Mathf.Abs(velocity.x) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
                 hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+            }
+            if (dashChangeTime > 0 && Mathf.Sign(xInput) != Mathf.Sign(transform.localScale.x))
+            {
+                Dash(Mathf.Sign(xInput) > 0 ? 0 : 180, false);
             }
         }
         else
@@ -160,11 +178,12 @@ private bool hasClung;
         hExtraSpeed = Mathf.MoveTowards(hExtraSpeed, 0, airFriction);
         //limit the hSpeed by out movement speed in both directions
         hSpeed = Mathf.Clamp(hSpeed, -moveSpeed, moveSpeed);
-        
-        if(doubleJumpTurnAroundFrames > 0) {
+
+        if (doubleJumpTurnAroundFrames > 0)
+        {
             doubleJumpTurnAroundFrames--;
         }
-        
+
 
         //if we are hitting a wall we set the hspeed to 0 so we can accelerate away from it quickly
         if (movementCollisionHandler.collisionInfo.left)
@@ -178,7 +197,7 @@ private bool hasClung;
             hExtraSpeed = 0;
         }
         //allow wall jumping if on wall in air
-        if(!isGrounded && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable))
+        if (!isGrounded && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable))
         {
             canWallJump = true;
         }
@@ -217,9 +236,14 @@ private bool hasClung;
         {
             coyoteTime = coyoteTimeMax;
             canWallJump = false;
-            canDoubleJump = true;
+            if (!canDoubleJump)
+            {
+                canDoubleJump = true;
+                GameController.Instance.InvokeUpdateJumpIcon();
+            }
+
             hasClung = false;
-            if(Mathf.Abs(velocity.x) <= moveSpeed) RefreshDashMoves();
+            if (Mathf.Abs(velocity.x) <= moveSpeed) RefreshDashMoves();
         }
         //Check if player needs to be pushed out of a wall
         if (movementCollisionHandler.InGround())
@@ -234,27 +258,50 @@ private bool hasClung;
                 coyoteTime = 0;
             }
         }
+        //-----------------------
         //Jump logic starts here
+        //-----------------------
         if (jumpPressed)
         {
             //on ground
             if (coyoteTime > 0 || movementCollisionHandler.OnGroundAtDist(jumpBuffer))
             {
-                if (coyoteTime <= 0) movementCollisionHandler.Move(new Vector3(0, -1, 0));
-                clingTime = 0;
-                if(gameObject.activeSelf)StartCoroutine(WaitAndJump());
-                GameController.Instance.EndPointCombo();
-                StopDash();
-                RefreshDashMoves();
+                // change this to just a check for a hazard rather than actually moving the player
+                // if (coyoteTime <= 0) movementCollisionHandler.Move(new Vector3(0, -1, 0));
+                if (movementCollisionHandler.OnGround() || !movementCollisionHandler.AreHazardsAfterMove(new Vector3(0, -jumpBuffer, 0)))
+                {
+                    clingTime = 0;
+                    if (gameObject.activeSelf) StartCoroutine(WaitAndJump());
+                    GameController.Instance.EndPointCombo();
+                    StopDash();
+                    RefreshDashMoves();
+                }
+                else if (canDoubleJump)
+                {
+                    hasClung = false;
+                    clingTime = 0;
+                    StopDash();
+                    DoubleJump();
+                }
+                else
+                {
+                    if (coyoteTime <= 0) movementCollisionHandler.Move(new Vector3(0, -1, 0));
+                }
+
             }
             //in air
             else
             {
+                //Start Wall Jump
                 if (
-                    canWallJump 
-                    && (wallJumpTime > 0 || movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)) 
+                    canWallJump
+                    && wallJumpTime > 0
+                    && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)
                     && xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump)
-                    // && ((xInput == 0) || (xInput != 0 && Mathf.Sign(xInput) == Mathf.Sign(directionToJump))) // old version
+                    // && !movementCollisionHandler.AreHazardsAfterMove(new(-distanceWallsDetectable, 0, 0))
+                    // && !movementCollisionHandler.AreHazardsAfterMove(new(distanceWallsDetectable, 0, 0))
+                    && !movementCollisionHandler.OnSpikeWallAtDistInDirection(distanceWallsDetectable, -directionToJump)
+                    
                     )
                 {
                     //walljump
@@ -262,13 +309,20 @@ private bool hasClung;
                     hasClung = false;
                     movementCollisionHandler.Move(new Vector3(wallJumpOffset * -directionToJump, 0, 0));
                     velocity.y = wallJumpPower;
+                    StartCoroutine(HandleAfterImage(dashDuration));
                     //Wait until after collisions resolve to make xaxis moves
-                    if(gameObject.activeSelf)StartCoroutine(WaitAndWallJump(directionToJump));
+                    if (gameObject.activeSelf) StartCoroutine(WaitAndWallJump(directionToJump));
                 }
-                else if (canWallJump && (wallJumpTime > 0 || movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)))
+                else if (
+                    canWallJump
+                    && wallJumpTime > 0
+                    && movementCollisionHandler.OnWallAtDist(distanceWallsDetectable, ref directionToJump)
+                    // && !movementCollisionHandler.AreHazardsAfterMove(new(-distanceWallsDetectable, 0, 0))
+                    // && !movementCollisionHandler.AreHazardsAfterMove(new(distanceWallsDetectable, 0, 0))
+                    && !movementCollisionHandler.OnSpikeWallAtDistInDirection(distanceWallsDetectable, -directionToJump)
+                    )
                 {
                     //walljump
-                    
                     StartCoroutine(WaitAndTryWallJump(wallJumpForgiveness, directionToJump));
                 }
                 else if (canDoubleJump)
@@ -280,7 +334,7 @@ private bool hasClung;
                 }
             }
         }
-        if (jumpReleased)
+        if (jumpReleased && canCancelJump)
         {
             if (velocity.y > minJumpVelocity && !isDashing)
             {
@@ -294,6 +348,7 @@ private bool hasClung;
         if (coyoteTime > 0) coyoteTime--;
         if (clingTime > 0) clingTime--;
         if (wallJumpTime > 0) wallJumpTime--;
+        if (dashChangeTime > 0) dashChangeTime--;
         if (wallJumpTime <= 0)
         {
             directionToJump = 0;
@@ -301,6 +356,15 @@ private bool hasClung;
         jumpPressed = false;
         jumpReleased = false;
 
+        //Make Minor Corrections To Avoid Edges
+        if (!movementCollisionHandler.OnGround() && (Mathf.Abs(hExtraSpeed) > 0.1f || Mathf.Abs(velocity.x) > 0.1f)) 
+        {
+            movementCollisionHandler.CorrectSmallHorizontalEdgeCollisions(velocity * finalMoveSpeedScale, horizontalDashCollisionForgivness);
+        }
+        if (!movementCollisionHandler.OnGround() && Mathf.Abs(velocity.y) > 0f) 
+        {
+            movementCollisionHandler.CorrectSmallAboveEdgeCollisions(velocity * finalMoveSpeedScale, verticalCollisionForgivness);
+        }
         //Pass the velocity to the movement and collision handler
         //=========================================================
         movementCollisionHandler.Move(velocity * finalMoveSpeedScale);
@@ -402,7 +466,7 @@ private bool hasClung;
 
         GameController.Instance.StartCoroutine(GameController.Instance.WaitAndReactivatePlayer(this, 1f));
         gameObject.SetActive(false);
-        
+
         if (damageObject)
         {
             Instantiate(damageObject, transform.position + new Vector3(0, 0.5f, 0), Quaternion.identity);
@@ -459,11 +523,21 @@ private bool hasClung;
     }
     public void Bounce(float bounceMultiplier = 1f)
     {
+        stompTimer = stompTimerMax;
+        // StartCoroutine(WaitAndJump(jumpPower * bounceMultiplier));
+        canCancelJump = false;
         velocity.y = jumpPower * bounceMultiplier;
-        if (gameObject.activeSelf) {
+        if (gameObject.activeSelf)
+        {
             StartCoroutine(StopDashingNextFrame());
         }
-        
+
+    }
+    public void Boost(float boostAmmount)
+    {
+        hSpeed = moveSpeed * Mathf.Sign(boostAmmount);
+        hExtraSpeed = boostAmmount;
+        StartCoroutine(WaitAndHandleAfterImage(dashDuration));
     }
     public void ResetCoyoteTime()
     {
@@ -479,6 +553,8 @@ private bool hasClung;
     {
         canDash = true;
         canDoubleJump = true;
+        GameController.Instance.InvokeUpdateJumpIcon();
+        GameController.Instance.InvokeUpdateDashIcon();
     }
     private IEnumerator WaitCheckAndDamage()
     {
@@ -504,38 +580,65 @@ private bool hasClung;
         playerAfterImage.Stop();
     }
 
+    private IEnumerator WaitAndHandleAfterImage(float durationOfDash)
+    {
+        yield return new WaitForFixedUpdate();
+        playerAfterImage.Play();
+        yield return new WaitForSeconds(durationOfDash);
+        playerAfterImage.Stop();
+    }
+
     private IEnumerator WaitAndTryWallJump(float timeToWait, float direction)
     {
-        float startingY = transform.position.y;
+        bool startedDoubleJump = false;
+        if (canDoubleJump)
+        {
+            hasClung = false;
+            clingTime = 0;
+            StopDash();
+            startedDoubleJump = true;
+            DoubleJumpWithoutStoppingCoroutines();
+        }
+
+
+
+
         float elapsedTime = 0f;
         while (elapsedTime < timeToWait)
         {
             elapsedTime += Time.deltaTime;
-            if ((xInput != 0 && Mathf.Sign(xInput) == direction) )
+            if (xInput != 0 && Mathf.Sign(xInput) == direction)
             {
                 clingTime = 0;
                 hasClung = false;
-                float yAdjustmentPreDoubleJump = startingY - transform.position.y;
-                movementCollisionHandler.Move(new Vector3(wallJumpOffset * direction, yAdjustmentPreDoubleJump, 0));
+                // float yAdjustmentPreDoubleJump = startingY - transform.position.y;
+                // movementCollisionHandler.Move(new Vector3(wallJumpOffset * direction, yAdjustmentPreDoubleJump, 0));
                 velocity.y = wallJumpPower;
                 hExtraSpeed = direction * wallJumpXPower;
                 hSpeed = direction * moveSpeed;
+
+                if (startedDoubleJump)
+                {
+                    canDoubleJump = true;
+                }
                 yield break;
             }
             yield return null;
         }
 
         yield return new WaitForSeconds(timeToWait);
-        clingTime = 0;
-        hasClung = false;
-        float yAdjustment = startingY - transform.position.y;
+        GameController.Instance.InvokeUpdateJumpIcon();
+
+        // clingTime = 0;
+        // hasClung = false;
+        // float yAdjustment = startingY - transform.position.y;
 
 
-        if (canDoubleJump)
-        {
-            movementCollisionHandler.Move(new Vector3(0, yAdjustment, 0));
-            DoubleJump();
-        }
+        // if (canDoubleJump)
+        // {
+        //     movementCollisionHandler.Move(new Vector3(0, yAdjustment, 0));
+        //     DoubleJump();
+        // }
     }
 
 
@@ -547,15 +650,17 @@ private bool hasClung;
         RefreshDashMoves();
     }
 
-    private void Dash(float angle)
+    private void Dash(float angle, bool allowDashChange = true)
     {
-        GameController.Instance.InvokePlayerDashed();   
+        if (allowDashChange) dashChangeTime = maxDashChangeTime;
+        GameController.Instance.InvokePlayerDashed();
         // Dash Sideways
-        if (canDash && Mathf.Approximately(angle, 0f) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f, 1))
+        if (canDash && Mathf.Approximately(angle, 0f) && !movementCollisionHandler.OnWallAtDistInDirection(0.05f, 1))
         {
             StopAllCoroutines();
             StartCoroutine(HandleDashState(dashDuration));
             canDash = false;
+            GameController.Instance.InvokeUpdateDashIcon();
             velocity.y = 0;
             hExtraSpeed = 1 * xDashPower;
             hSpeed = 1 * moveSpeed;
@@ -563,11 +668,12 @@ private bool hasClung;
             clingTime = 0;
             return;
         }
-        if (canDash && (Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f)) && !movementCollisionHandler.OnWallAtDistInDirection(0.001f, -1))
+        if (canDash && (Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f)) && !movementCollisionHandler.OnWallAtDistInDirection(0.05f, -1))
         {
             StopAllCoroutines();
             StartCoroutine(HandleDashState(dashDuration));
             canDash = false;
+            GameController.Instance.InvokeUpdateDashIcon();
             velocity.y = 0;
             hExtraSpeed = -1 * xDashPower;
             hSpeed = -1 * moveSpeed;
@@ -579,29 +685,42 @@ private bool hasClung;
 
     private void NewDash()
     {
-            
+
     }
     private void DoubleJump()
     {
-            StopAllCoroutines();
-            StartCoroutine(HandleAfterImage(dashDuration));
-            canDoubleJump = false;
-            movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
-            velocity.x = Mathf.Abs(velocity.x) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
-            hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
-            hExtraSpeed = 0;
-            velocity.y = verticalDashPower;
-            doubleJumpTurnAroundFrames = maxDoubleJumpTurnAroundFrames;
+        StopAllCoroutines();
+        StartCoroutine(HandleAfterImage(dashDuration));
+        canDoubleJump = false;
+        GameController.Instance.InvokeUpdateJumpIcon();
+        movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
+        velocity.x = Mathf.Abs(velocity.x) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+        hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+        hExtraSpeed = 0;
+        velocity.y = verticalDashPower;
+        doubleJumpTurnAroundFrames = maxDoubleJumpTurnAroundFrames;
+    }
+    private void DoubleJumpWithoutStoppingCoroutines()
+    {
+        StartCoroutine(HandleAfterImage(dashDuration));
+        canDoubleJump = false;
+        movementCollisionHandler.Move(new Vector3(0, 0.01f, 0));
+        velocity.x = Mathf.Abs(velocity.x) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+        hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
+        hExtraSpeed = 0;
+        velocity.y = verticalDashPower;
+        doubleJumpTurnAroundFrames = maxDoubleJumpTurnAroundFrames;
     }
     private void Stomp()
     {
-            StopAllCoroutines();
-            StartCoroutine(HandleDashState(fastFallhDuration));
-            velocity.x = 0;
-            hExtraSpeed = 0;
-            hSpeed = 0;
-            velocity.y = -downDashPower;
-            return;
+        if (stompTimer > 0) return;
+        StopAllCoroutines();
+        StartCoroutine(HandleDashState(fastFallhDuration));
+        velocity.x = 0;
+        hExtraSpeed = 0;
+        hSpeed = 0;
+        velocity.y = -downDashPower;
+        return;
     }
 
     // --------------------------------------
@@ -627,6 +746,10 @@ private bool hasClung;
     {
         return isDashing;
     }
+    public bool IsMoving()
+    {
+        return velocity.x != 0;
+    }
     public bool IsDashingSideways()
     {
         return hExtraSpeed != 0 && isDashing;
@@ -640,11 +763,27 @@ private bool hasClung;
         return jumpPressed;
     }
 
+    public Vector3 GetVelocity()
+    {
+        return velocity;
+    }
+
+    public bool CanDoubleJump()
+    {
+        return canDoubleJump;
+    }
+
+    public bool CanDash()
+    {
+        return canDash;
+    }
+
     // --------------------------------
     // Methods used for handling input
     // --------------------------------
     void OnJumpPress()
     {
+        canCancelJump = true;
         jumpPressed = true;
     }
     void OnJumpRelease()
@@ -655,13 +794,14 @@ private bool hasClung;
     {
         Vector2 leftJoystickPosition = playerInput.actions["LeftJoystickTilt"].ReadValue<Vector2>();
         float moveInputDirection = playerInput.actions["Move"].ReadValue<float>();
-        
-        if (fastFallButton.IsPressed())
+
+        if (fastFallButton.ReadValue<float>() < -0.85f)
         {
+            print(fastFallButton.ReadValue<float>());
             Stomp();
             return;
         }
-        
+
         float angle = 0;
 
         if (moveInputDirection == -1)

@@ -47,9 +47,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""FastFall"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""a0c88545-98ca-4fb9-b6be-7e93c34e4554"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -266,8 +266,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""79b43a16-9330-4ffe-91a0-199e6c43bffb"",
-                    ""path"": ""<Keyboard>/downArrow"",
+                    ""id"": ""d1ff0ea4-36d3-4196-917d-eae95a8ec3f2"",
+                    ""path"": ""<Gamepad>/leftStick/y"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -276,37 +276,70 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""28f9de1f-c494-4ca0-8e60-4a8d9e4a0d83"",
+                    ""name"": ""1D Axis"",
+                    ""id"": ""1509a737-6c7e-425c-9025-3ea28f0f631a"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FastFall"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""574a0667-48c4-49f4-8a35-3eafeaabcc03"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""FastFall"",
                     ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""515d624d-f8d8-4276-a50c-be3acf56e62d"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FastFall"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""472d6fc5-03b9-4ee8-bfa2-09bc1c62ee9c"",
-                    ""path"": ""<Gamepad>/leftStick/down"",
+                    ""name"": ""negative"",
+                    ""id"": ""757713fa-6967-498d-b4ae-ac63309677d9"",
+                    ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""FastFall"",
                     ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""e13c53b2-a864-4075-be53-28e784852b6f"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FastFall"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""660149d7-903c-42ff-91e9-9490510a1ba8"",
+                    ""name"": ""negative"",
+                    ""id"": ""4c6bb6ba-9877-4a07-832a-c5c0ae848997"",
                     ""path"": ""<Gamepad>/dpad/down"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""FastFall"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
@@ -560,6 +593,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""NavigateUp"",
                     ""type"": ""Button"",
                     ""id"": ""01889b28-5e14-447e-95da-572244d70748"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleRoom"",
+                    ""type"": ""Button"",
+                    ""id"": ""801b0f18-de94-447a-bb44-5056f2023aee"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -948,6 +990,72 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""OpenMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f73ba98-60d1-4ac9-a568-5216ae2d900c"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""30ced5d8-91b7-4337-afe7-9fceb832f308"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3a316380-f430-49c3-aee9-e8625f2a886f"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""95fcc709-305d-4000-8c8a-e4e3ea9ca71d"",
+                    ""path"": ""<Keyboard>/n"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""54c1f209-344f-49d9-bf3a-f7d7cdea200f"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c1aed7f3-5d39-4f15-bf12-3597769030cc"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleRoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -968,6 +1076,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_NavigateUp = m_Menu.FindAction("NavigateUp", throwIfNotFound: true);
+        m_Menu_ToggleRoom = m_Menu.FindAction("ToggleRoom", throwIfNotFound: true);
         m_Menu_NavigateLeft = m_Menu.FindAction("NavigateLeft", throwIfNotFound: true);
         m_Menu_NavigateRight = m_Menu.FindAction("NavigateRight", throwIfNotFound: true);
         m_Menu_NavigateDown = m_Menu.FindAction("NavigateDown", throwIfNotFound: true);
@@ -1147,6 +1256,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Menu;
     private List<IMenuActions> m_MenuActionsCallbackInterfaces = new List<IMenuActions>();
     private readonly InputAction m_Menu_NavigateUp;
+    private readonly InputAction m_Menu_ToggleRoom;
     private readonly InputAction m_Menu_NavigateLeft;
     private readonly InputAction m_Menu_NavigateRight;
     private readonly InputAction m_Menu_NavigateDown;
@@ -1159,6 +1269,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         private @PlayerControls m_Wrapper;
         public MenuActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @NavigateUp => m_Wrapper.m_Menu_NavigateUp;
+        public InputAction @ToggleRoom => m_Wrapper.m_Menu_ToggleRoom;
         public InputAction @NavigateLeft => m_Wrapper.m_Menu_NavigateLeft;
         public InputAction @NavigateRight => m_Wrapper.m_Menu_NavigateRight;
         public InputAction @NavigateDown => m_Wrapper.m_Menu_NavigateDown;
@@ -1178,6 +1289,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @NavigateUp.started += instance.OnNavigateUp;
             @NavigateUp.performed += instance.OnNavigateUp;
             @NavigateUp.canceled += instance.OnNavigateUp;
+            @ToggleRoom.started += instance.OnToggleRoom;
+            @ToggleRoom.performed += instance.OnToggleRoom;
+            @ToggleRoom.canceled += instance.OnToggleRoom;
             @NavigateLeft.started += instance.OnNavigateLeft;
             @NavigateLeft.performed += instance.OnNavigateLeft;
             @NavigateLeft.canceled += instance.OnNavigateLeft;
@@ -1206,6 +1320,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @NavigateUp.started -= instance.OnNavigateUp;
             @NavigateUp.performed -= instance.OnNavigateUp;
             @NavigateUp.canceled -= instance.OnNavigateUp;
+            @ToggleRoom.started -= instance.OnToggleRoom;
+            @ToggleRoom.performed -= instance.OnToggleRoom;
+            @ToggleRoom.canceled -= instance.OnToggleRoom;
             @NavigateLeft.started -= instance.OnNavigateLeft;
             @NavigateLeft.performed -= instance.OnNavigateLeft;
             @NavigateLeft.canceled -= instance.OnNavigateLeft;
@@ -1259,6 +1376,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public interface IMenuActions
     {
         void OnNavigateUp(InputAction.CallbackContext context);
+        void OnToggleRoom(InputAction.CallbackContext context);
         void OnNavigateLeft(InputAction.CallbackContext context);
         void OnNavigateRight(InputAction.CallbackContext context);
         void OnNavigateDown(InputAction.CallbackContext context);

@@ -24,6 +24,7 @@ public class PostProcessingController : MonoBehaviour
     GameController gameController;
 
     private bool shouldPulse;
+    private float responseMax;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +35,8 @@ public class PostProcessingController : MonoBehaviour
         volume.profile.TryGet(out filmGrain);
      
         shouldPulse = false;
+
+        responseMax = filmGrain.response.value;
 
         if (filmGrain)
         {
@@ -62,26 +65,27 @@ public class PostProcessingController : MonoBehaviour
     {
         Pulse();
 
-        if (filmGrain.response.value < 1)
+        if (filmGrain.response.value < responseMax)
         {
             filmGrain.response.value += filmGrainReturnSpeed * Time.deltaTime;
-            if (filmGrain.response.value > 1) filmGrain.response.value = 1;
+            if (filmGrain.response.value > responseMax) filmGrain.response.value = responseMax;
         }
 
-        // if (gameController.BonusTimer < 30 && gameController.BonusTimer > 0 && filmGrain)
-        // {
-        //     filmGrain.intensity.value = Mathf.Lerp(0.7f, startingGrainIntensity, gameController.BonusTimer / 30f);
-        //     if (gameController.BonusTimer < 15  && chromaticAberration)
-        //     {
-        //         chromaticAberration.intensity.value = Mathf.Lerp(0.7f, maxAbberation, gameController.BonusTimer / 15f);
+        if (gameController.BonusTimer < 0 && gameController.BonusTimer > -300 && filmGrain)
+        {
+            filmGrain.intensity.value = Mathf.Lerp(startingGrainIntensity, 0.7f, gameController.BonusTimer / -30f);
+            
+            if (gameController.BonusTimer < -10  && gameController.BonusTimer > -300  && chromaticAberration)
+            {
+                chromaticAberration.intensity.value = Mathf.Lerp(0f, maxAbberation, gameController.BonusTimer / -30f);
                 
-        //         chromaticAberration.active = true;
-        //     }
-        // }
-        // else if (filmGrain != null && filmGrain.intensity.value != startingGrainIntensity)
-        // {
-        //     filmGrain.intensity.value = startingGrainIntensity;
-        // }
+                chromaticAberration.active = true;
+            }
+        }
+        else if (filmGrain != null && filmGrain.intensity.value != startingGrainIntensity)
+        {
+            filmGrain.intensity.value = startingGrainIntensity;
+        }
     }
     private void HandleRoomStateChange()
     {

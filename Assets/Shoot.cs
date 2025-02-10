@@ -38,22 +38,18 @@ public class Shoot : MonoBehaviour
     [SerializeField]
     private Vector2 direction = new(1f, 0f);
 
+    [SerializeField] Transform shotStartTransform;
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         startingColor = spriteRenderer.color;
-        nextShotTime = shotInterval;
+        nextShotTime = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        // if (!spriteRenderer.isVisible || BulletStillExists())
-        // {
-        //     // nextShotTime = Time.time + shotInterval;
-        //     spriteRenderer.color = startingColor;
-        // }
 
         if (nextShotTime >= (shotInterval - Mathf.Abs(blinkStart)) && CanShoot())
         {
@@ -69,25 +65,7 @@ public class Shoot : MonoBehaviour
 
             if (CanShoot())
             {
-                currentBullet = GameController.Instance.PullFromPool(bullet, transform.position);
-
-                currentBullet.GetComponent<bullet>().TargetPoint(transform.position + new Vector3(transform.lossyScale.x * direction.x, direction.y, 0));
-                spriteRenderer.color = startingColor;
-
-                Collider2D bulletCollider = currentBullet.GetComponent<Collider2D>();
-                Collider2D enemyCollider = GetComponent<Collider2D>();
-                if (enemyCollider)
-                {
-                    Physics2D.IgnoreCollision(bulletCollider, enemyCollider);
-                }
-
-                foreach (Transform child in transform)
-                {
-                    if (child.TryGetComponent<Collider2D>(out var collider))
-                    {
-                        Physics2D.IgnoreCollision(bulletCollider, collider);
-                    }
-                }
+                ShootBullet(new Vector3(transform.lossyScale.x * direction.x, direction.y, 0));
             }
 
 
@@ -96,6 +74,30 @@ public class Shoot : MonoBehaviour
         }
         nextShotTime += Time.deltaTime;
 
+    }
+
+    public void ShootBullet(Vector3 target)
+    {
+        
+        currentBullet = GameController.Instance.PullFromPool(bullet, shotStartTransform ? shotStartTransform.position : transform.position);
+
+        currentBullet.GetComponent<bullet>().TargetPoint(currentBullet.transform.position + target);
+        spriteRenderer.color = startingColor;
+
+        Collider2D bulletCollider = currentBullet.GetComponent<Collider2D>();
+        Collider2D enemyCollider = GetComponent<Collider2D>();
+        if (enemyCollider)
+        {
+            Physics2D.IgnoreCollision(bulletCollider, enemyCollider);
+        }
+
+        foreach (Transform child in transform)
+        {
+            if (child.TryGetComponent<Collider2D>(out var collider))
+            {
+                Physics2D.IgnoreCollision(bulletCollider, collider);
+            }
+        }
     }
 
     private bool BulletStillExists()

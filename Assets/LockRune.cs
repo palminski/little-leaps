@@ -35,7 +35,7 @@ public class LockRune : MonoBehaviour
 
     bool ShouldTurnOn()
     {
-        return GameController.Instance.CollectedObjects.Contains(linkedChip);
+        return GameController.Instance.SessionCollectedObjects.Contains(linkedChip);
     }
 
     private void OnEventRaised()
