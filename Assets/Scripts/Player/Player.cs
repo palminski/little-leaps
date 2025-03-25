@@ -21,6 +21,8 @@ public class Player : MonoBehaviour
     private Vector3 lastPosition;
     private float invincibilityCountdown;
     private float nextInvincibilityBlinkTime;
+    private float actionCooldown = 0;
+    [SerializeField] private float MaxActionCooldown = 3;
 
     [Header("Horizontal Movement")]
     [SerializeField] public float moveSpeed = 0.4f;
@@ -30,6 +32,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float groundFriction = 0.1f;
     [SerializeField] private float airFriction = 0.1f;
     [SerializeField] private float horizontalDashCollisionForgivness = 0.3f;
+
     private float xInput;
     private float hSpeed;
     private float hExtraSpeed = 0;
@@ -105,6 +108,7 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+
         fastFallButton = playerInput.actions["FastFall"];
         movementCollisionHandler = GetComponent<MovementCollisionHandler>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -113,10 +117,37 @@ public class Player : MonoBehaviour
         jumpAction = playerInput.actions["Jump"];
         jumpAction.started += context => OnJumpPress();
         jumpAction.canceled += context => OnJumpRelease();
+
+        if (playerInput != null)
+        {
+            if (Gamepad.current != null)
+            {
+                if (Gamepad.current.leftStick.ReadValue().magnitude >= 0.1f)
+                {
+                    playerInput.SwitchCurrentControlScheme("Gamepad", Gamepad.current);
+                    InputSystem.Update();
+
+                }
+            }
+            if (InputController.Instance != null)
+            {
+                InputController.Instance.LoadBinding(playerInput);
+            }
+        }
     }
+
+    // private void OnDestroy()
+    // {
+    //     print(playerInput.currentControlScheme);
+    //     if (playerInput != null && InputController.Instance != null)
+    //     {
+    //         InputController.Instance.SetLastUsedDevice(playerInput.currentControlScheme);
+    //     }
+    // }
 
     private void Start()
     {
+
         playerAfterImage.Stop();
         minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpPower);
         invincibilityCountdown = 0;
@@ -129,6 +160,10 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         jumpAction.Disable();
+        if (playerInput != null && InputController.Instance != null)
+        {
+            InputController.Instance.SetLastUsedDevice(playerInput.currentControlScheme);
+        }
     }
 
     // -------------------
@@ -160,6 +195,8 @@ public class Player : MonoBehaviour
             }
             if (dashChangeTime > 0 && Mathf.Sign(xInput) != Mathf.Sign(transform.localScale.x))
             {
+                canDash = true;
+                dashChangeTime = 0;
                 Dash(Mathf.Sign(xInput) > 0 ? 0 : 180, false);
             }
         }
@@ -182,6 +219,11 @@ public class Player : MonoBehaviour
         if (doubleJumpTurnAroundFrames > 0)
         {
             doubleJumpTurnAroundFrames--;
+        }
+
+        if (actionCooldown > 0)
+        {
+            actionCooldown--;
         }
 
 
@@ -261,7 +303,7 @@ public class Player : MonoBehaviour
         //-----------------------
         //Jump logic starts here
         //-----------------------
-        if (jumpPressed)
+        if (jumpPressed && actionCooldown <= 0)
         {
             //on ground
             if (coyoteTime > 0 || movementCollisionHandler.OnGroundAtDist(jumpBuffer))
@@ -301,7 +343,7 @@ public class Player : MonoBehaviour
                     // && !movementCollisionHandler.AreHazardsAfterMove(new(-distanceWallsDetectable, 0, 0))
                     // && !movementCollisionHandler.AreHazardsAfterMove(new(distanceWallsDetectable, 0, 0))
                     && !movementCollisionHandler.OnSpikeWallAtDistInDirection(distanceWallsDetectable, -directionToJump)
-                    
+
                     )
                 {
                     //walljump
@@ -357,11 +399,11 @@ public class Player : MonoBehaviour
         jumpReleased = false;
 
         //Make Minor Corrections To Avoid Edges
-        if (!movementCollisionHandler.OnGround() && (Mathf.Abs(hExtraSpeed) > 0.1f || Mathf.Abs(velocity.x) > 0.1f)) 
+        if (!movementCollisionHandler.OnGround() && (Mathf.Abs(hExtraSpeed) > 0.1f))
         {
             movementCollisionHandler.CorrectSmallHorizontalEdgeCollisions(velocity * finalMoveSpeedScale, horizontalDashCollisionForgivness);
         }
-        if (!movementCollisionHandler.OnGround() && Mathf.Abs(velocity.y) > 0f) 
+        if (!movementCollisionHandler.OnGround() && Mathf.Abs(velocity.y) > 0f)
         {
             movementCollisionHandler.CorrectSmallAboveEdgeCollisions(velocity * finalMoveSpeedScale, verticalCollisionForgivness);
         }
@@ -376,8 +418,14 @@ public class Player : MonoBehaviour
     }
     private IEnumerator WaitAndJump()
     {
-        yield return new WaitForFixedUpdate();
-        velocity.y = jumpPower;
+        if (actionCooldown <= 0)
+        {
+            yield return new WaitForFixedUpdate();
+            velocity.y = jumpPower;
+            if (AudioController.Instance != null) AudioController.Instance.PlayJump();
+        }
+
+
     }
 
     private IEnumerator WaitAndWallJump(int directionToJump)
@@ -386,6 +434,8 @@ public class Player : MonoBehaviour
         movementCollisionHandler.Move(new Vector3(wallJumpOffset * directionToJump, 0, 0));
         hExtraSpeed = directionToJump * wallJumpXPower;
         hSpeed = directionToJump * moveSpeed;
+        if (AudioController.Instance != null) AudioController.Instance.PlayJump();
+
     }
     // --------------------------
     // Update Called Every Frame
@@ -443,9 +493,9 @@ public class Player : MonoBehaviour
     // ------------------------------------
     // Methods that do something to player
     // ------------------------------------
-    public void Damage(int damageDelt = 1, int directionToToss = 0)
+    public void Damage(int damageDelt = 1, int directionToToss = 0, bool ignoreImmune = false)
     {
-        if (IsInvincible()) return;
+        if (GameController.Instance.Health > 0 && !ignoreImmune && IsInvincible()) return;
         // transform.position = startPosition;
         GameController.Instance.ChangeHealth(-damageDelt, false);
         // invincibilityCountdown = invincibilityTime;
@@ -492,6 +542,21 @@ public class Player : MonoBehaviour
         // }
         gameObject.SetActive(true);
         StopDash();
+        if (playerInput != null)
+        {
+            if (Gamepad.current != null)
+            {
+                if (Gamepad.current.leftStick.ReadValue().magnitude >= 0.1f)
+                {
+                    playerInput.SwitchCurrentControlScheme("Gamepad", Gamepad.current);
+                    InputSystem.Update();
+                }
+            }
+            if (InputController.Instance != null)
+            {
+                InputController.Instance.LoadBinding(playerInput);
+            }
+        }
     }
 
     public void RemovePlayer()
@@ -507,6 +572,10 @@ public class Player : MonoBehaviour
 
     public void SetInputEnabled(bool shouldEnable)
     {
+        if (playerInput != null && InputController.Instance != null)
+        {
+            InputController.Instance.SetLastUsedDevice(playerInput.currentControlScheme);
+        }
         playerInput.enabled = shouldEnable;
     }
     public void SetPlayerSpawnPointToTransform(Transform transform)
@@ -527,6 +596,7 @@ public class Player : MonoBehaviour
         // StartCoroutine(WaitAndJump(jumpPower * bounceMultiplier));
         canCancelJump = false;
         velocity.y = jumpPower * bounceMultiplier;
+        actionCooldown = MaxActionCooldown;
         if (gameObject.activeSelf)
         {
             StartCoroutine(StopDashingNextFrame());
@@ -661,11 +731,16 @@ public class Player : MonoBehaviour
             StartCoroutine(HandleDashState(dashDuration));
             canDash = false;
             GameController.Instance.InvokeUpdateDashIcon();
-            velocity.y = 0;
+            if (actionCooldown <= 0)
+            {
+                velocity.y = 0;
+            }
             hExtraSpeed = 1 * xDashPower;
             hSpeed = 1 * moveSpeed;
             hasClung = false;
             clingTime = 0;
+            if (AudioController.Instance != null) AudioController.Instance.PlayDash();
+
             return;
         }
         if (canDash && (Mathf.Approximately(angle, 180f) || Mathf.Approximately(angle, -180f)) && !movementCollisionHandler.OnWallAtDistInDirection(0.05f, -1))
@@ -674,11 +749,16 @@ public class Player : MonoBehaviour
             StartCoroutine(HandleDashState(dashDuration));
             canDash = false;
             GameController.Instance.InvokeUpdateDashIcon();
-            velocity.y = 0;
+            if (actionCooldown <= 0)
+            {
+                velocity.y = 0;
+            }
             hExtraSpeed = -1 * xDashPower;
             hSpeed = -1 * moveSpeed;
             hasClung = false;
             clingTime = 0;
+            if (AudioController.Instance != null) AudioController.Instance.PlayDash();
+
             return;
         }
     }
@@ -698,6 +778,8 @@ public class Player : MonoBehaviour
         hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
         hExtraSpeed = 0;
         velocity.y = verticalDashPower;
+        if (AudioController.Instance != null) AudioController.Instance.PlayAirJump();
+
         doubleJumpTurnAroundFrames = maxDoubleJumpTurnAroundFrames;
     }
     private void DoubleJumpWithoutStoppingCoroutines()
@@ -709,6 +791,8 @@ public class Player : MonoBehaviour
         hSpeed = Mathf.Abs(hSpeed) * doubleJumpVelocityScaleX * Mathf.Sign(xInput);
         hExtraSpeed = 0;
         velocity.y = verticalDashPower;
+        if (AudioController.Instance != null) AudioController.Instance.PlayAirJump();
+
         doubleJumpTurnAroundFrames = maxDoubleJumpTurnAroundFrames;
     }
     private void Stomp()
@@ -719,6 +803,7 @@ public class Player : MonoBehaviour
         velocity.x = 0;
         hExtraSpeed = 0;
         hSpeed = 0;
+        if (AudioController.Instance != null) AudioController.Instance.PlayDash();
         velocity.y = -downDashPower;
         return;
     }
@@ -797,7 +882,6 @@ public class Player : MonoBehaviour
 
         if (fastFallButton.ReadValue<float>() < -0.85f)
         {
-            print(fastFallButton.ReadValue<float>());
             Stomp();
             return;
         }
@@ -816,7 +900,7 @@ public class Player : MonoBehaviour
         {
             angle = 180;
         }
-        Dash(angle);
+        if (canDash) Dash(angle);
 
     }
     void OnMove(InputValue value)
@@ -843,6 +927,8 @@ public class Player : MonoBehaviour
 
     IEnumerator WaitAndSetVelocity()
     {
+        // if (velocity.y < -0.1f) if (AudioController.Instance != null) AudioController.Instance.PlayLandings();
+
         yield return new WaitForFixedUpdate();
         if (movementCollisionHandler.collisionInfo.above || movementCollisionHandler.collisionInfo.below)
         {

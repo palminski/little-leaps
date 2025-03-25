@@ -12,6 +12,7 @@ public class FallthroughSolid : MonoBehaviour
     private  Collider2D playerCollider;
     private  PlayerInput playerInput;
     private Collider2D platformCollider;
+    private InputAction fastFallButton;
 
     private int passableIndex;
     private int solidIndex;
@@ -22,6 +23,8 @@ public class FallthroughSolid : MonoBehaviour
     void Start() {
         playerCollider = GameObject.FindGameObjectWithTag("Player").GetComponent<Collider2D>();
         playerInput = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInput>();
+        if (playerInput != null) fastFallButton = playerInput.actions["FastFall"];
+
         platformCollider = GetComponent<Collider2D>();
     }
     void Awake()
@@ -43,7 +46,7 @@ public class FallthroughSolid : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerControls.Movement.FastFall.IsPressed() && playerInput && playerInput.enabled) {
+        if (fastFallButton != null && fastFallButton.ReadValue<float>() < -0.55f && playerInput && playerInput.enabled) {
             gameObject.layer = passableIndex;
         }
         else if (IsPlayerAbove()) {

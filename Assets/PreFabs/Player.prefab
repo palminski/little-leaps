@@ -10090,12 +10090,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startPosition: {x: -15.569796, y: -9.5, z: 0}
+  MaxActionCooldown: 3
   moveSpeed: 0.28
   finalMoveSpeedScale: 0.5
   acceleration: 0.035
   fastFallModifier: 1
   groundFriction: 0.04
   airFriction: 0.02
+  horizontalDashCollisionForgivness: 0.3
   jumpPower: 0.92
   minJumpPower: 0.55
   coyoteTimeMax: 4
@@ -10103,14 +10105,15 @@ MonoBehaviour:
   gravity: 0.06
   terminalYVelocity: 0.8
   maxDoubleJumpTurnAroundFrames: 5
+  verticalCollisionForgivness: 0.1
   stompTimerMax: 5
   wallJumpPower: 0.75
   wallJumpOffset: 0.5
   wallJumpXPower: 0.37
-  distanceWallsDetectable: 0.325
+  distanceWallsDetectable: 0.425
   distanceClingStarts: 0.05
   wallClingGravityModifier: 0
-  wallJumpForgiveness: 0.075
+  wallJumpForgiveness: 0.09
   clingTimeMax: 6
   maxClingSpeed: 0.08
   maxWallJumpTime: 7
@@ -10120,6 +10123,7 @@ MonoBehaviour:
   verticalDashPower: 0.75
   downDashPower: 1
   doubleJumpVelocityScaleX: 0.9
+  maxDashChangeTime: 3
   invincibilityTime: 1
   invincibilityBlinkInterval: 0.05
   wallOverlapThreshold: 0.3
@@ -10161,7 +10165,7 @@ MonoBehaviour:
     m_ActionId: 795ef9b3-d081-4f9f-a04b-863b22cb328a
     m_ActionName: Movement/Jump[/Keyboard/upArrow,/Keyboard/w]
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
+  m_DefaultControlScheme: Keyboard
   m_DefaultActionMap: Movement
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}

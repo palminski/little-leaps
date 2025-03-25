@@ -4,21 +4,22 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.Universal;
+using System;
 
 public class Enemy : MonoBehaviour
 {
     [Header("Health Points Damage")]
     [SerializeField] private int pointValue = 100;
     [SerializeField] private float bounceMultiplier = 1;
-    [SerializeField] private int health = 1;
-    [SerializeField] private bool invincible = false;
-    [SerializeField] private GameObject blood;
+    [SerializeField] public int health = 1;
+    [SerializeField] public bool invincible = false;
+    [SerializeField] public GameObject blood;
     [SerializeField] private GameObject[] objectsToSpawnOnDeath;
     [SerializeField] private bool canRespwan = false;
 
     [Header("Vulnerabilities")]
-    [SerializeField] private bool canSwapColors = false;
-    [SerializeField] private bool vulnerableFromTop;
+    [SerializeField] public bool canSwapColors = false;
+    [SerializeField] public bool vulnerableFromTop;
     [SerializeField] private bool vulnerableFromSide;
 
     [Header("Purple Vulnerabilities")]
@@ -30,16 +31,27 @@ public class Enemy : MonoBehaviour
     [SerializeField] private bool greenVulnerableFromSide;
 
     [SerializeField] private float minimumPlayerFallAmmountToCountAsKill = 0.005f;
-    private GameObject player;
-    private GameObject playerAttack;
+    [HideInInspector] public GameObject player;
+    [HideInInspector] public GameObject playerAttack;
 
-    private bool canDamagePlayer = false;
+    public bool canDamagePlayer = false;
     private string enemyId;
 
-    private bool wasKilled = false;
+    public bool wasKilled = false;
 
     private Vector3 lastPosition;
 
+    [SerializeField] private float maxImunityTime = 1f;
+    public float immunityTime = 0;
+
+    public bool shouldStartHarmless = false;
+
+
+    void Update()
+    {
+        if (immunityTime > 0) immunityTime -= Time.deltaTime;
+        
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -51,8 +63,14 @@ public class Enemy : MonoBehaviour
             pointValue = 0;
         }
 
-        player = GameObject.FindGameObjectWithTag("Player");
-        playerAttack = GameObject.FindGameObjectWithTag("PlayerAttack");
+        if (player == null) player = GameObject.FindGameObjectWithTag("Player");
+        if (playerAttack == null) playerAttack = GameObject.FindGameObjectWithTag("PlayerAttack");
+
+        if (shouldStartHarmless)
+        {
+            canDamagePlayer = false;
+            StartCoroutine(WaitAndBecomeDangerous());
+        }
     }
 
     private void OnEnable()
@@ -110,7 +128,7 @@ public class Enemy : MonoBehaviour
         }
 
         // - Check if player can hurt enemy
-        if (hitCollider.gameObject == playerAttack)
+        if (hitCollider.gameObject == playerAttack && immunityTime <= 0)
         {
 
             Player hitPlayer = player.GetComponent<Player>();
@@ -126,6 +144,7 @@ public class Enemy : MonoBehaviour
             {
 
                 hitPlayer.ResetCoyoteTime();
+
                 player.transform.position = new Vector3(player.transform.position.x, enemyTop + 0.5f, player.transform.position.z);
                 hitPlayer.Bounce(bounceMultiplier);
 
@@ -148,7 +167,7 @@ public class Enemy : MonoBehaviour
             {
                 // hitPlayer.ResetCoyoteTime();
                 hitPlayer.RefreshDashMoves();
-                DamageEnemy();
+                DamageEnemy(1, true);
             }
         }
     }
@@ -177,10 +196,14 @@ public class Enemy : MonoBehaviour
     }
 
 
-    public void DamageEnemy(int damage = 1, bool IsDashing = false)
+    public virtual void DamageEnemy(int damage = 1, bool IsDashing = false)
     {
-        if (invincible) return;
+        if (invincible || immunityTime > 0) return;
+        immunityTime = maxImunityTime;
+        if (AudioController.Instance != null) AudioController.Instance.PlayEnemyKilled();
         health -= damage;
+        if (blood) GameController.Instance.PullFromPool(blood, transform.position);
+
         if (health <= 0)
         {
             KillEnemy(IsDashing);
@@ -193,7 +216,6 @@ public class Enemy : MonoBehaviour
         wasKilled = true;
         int bonusPointsToAdd = GameController.Instance.CollectedObjects.Contains(enemyId) ? 0 : 100;
         // GameController.Instance.AddToScore(pointValue);
-        if (blood) GameController.Instance.PullFromPool(blood, transform.position);
         GameLight light = GetComponentInChildren<GameLight>();
         if (light)
         {
@@ -228,12 +250,12 @@ public class Enemy : MonoBehaviour
     }
 
 
-    private void HandleRoomStateChange()
+    public void HandleRoomStateChange()
     {
         UpdateVulnerabilities();
     }
 
-    private void UpdateVulnerabilities()
+    public void UpdateVulnerabilities()
     {
         if (GameController.Instance.RoomState == RoomColor.Purple)
         {
@@ -246,4 +268,11 @@ public class Enemy : MonoBehaviour
             vulnerableFromSide = greenVulnerableFromSide;
         }
     }
+
+    IEnumerator WaitAndBecomeDangerous()
+    {
+        yield return new WaitForSeconds(0.15f);
+        canDamagePlayer = true;
+    }
+    
 }

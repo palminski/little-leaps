@@ -51,4 +51,12 @@ public static class SaveDataManager
         gameData.permanentCollectedObjects.Add(stringToAdd);
         SaveGameData(gameData);
     }
+
+    public static void RemovePermanentCollectedString(String stringToRemove)
+    {
+        SaveData gameData = LoadGameData();
+        if (!gameData.permanentCollectedObjects.Contains(stringToRemove)) return;
+        gameData.permanentCollectedObjects.Remove(stringToRemove);
+        SaveGameData(gameData);
+    }
 }

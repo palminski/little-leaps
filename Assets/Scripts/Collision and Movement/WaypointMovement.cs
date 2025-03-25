@@ -48,12 +48,21 @@ public class WaypointMovement : MonoBehaviour
     [SerializeField]
     private RoomColor activeOnRoomColor;
 
+    [SerializeField] private bool shouldPlaySmashSound = false;
+
+    private SpriteRenderer sr;
+    GameObject player;
+
 
 
     //===================================================================================================
     // Start is called before the first frame update
     void Start()
     {
+        if (shouldPlaySmashSound) {
+            player = player = GameObject.FindGameObjectWithTag("Player");
+        }
+        sr = GetComponent<SpriteRenderer>();
         doorId = $"{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
         if (behavior == MovementBehavior.OpenOnTrigger)
         {
@@ -69,7 +78,6 @@ public class WaypointMovement : MonoBehaviour
         {
             globalWaypoints[i] = localWaypoints[i] + transform.position;
         }
-        SetInitialPosition();
         if (behavior == MovementBehavior.MoveOnPreseure)
         {
             platformController = GetComponent<PlatformController>();
@@ -92,26 +100,6 @@ public class WaypointMovement : MonoBehaviour
         if (OpenEvent)
         {
             OpenEvent.OnEventRaised.RemoveListener(OnEventRaised);
-        }
-    }
-
-    public void SetInitialPosition()
-    {
-        if (behavior == MovementBehavior.Default)
-        {
-
-        }
-        else if (behavior == MovementBehavior.StopOnInactiveColor)
-        {
-
-        }
-        else if (behavior == MovementBehavior.ColorCorespondsToWaypoint)
-        {
-
-        }
-        else
-        {
-
         }
     }
 
@@ -159,6 +147,7 @@ public class WaypointMovement : MonoBehaviour
         if (percentBetweenWaypoints >= 1)
         {
             percentBetweenWaypoints = 0;
+            if(shouldPlaySmashSound && sr.isVisible && player) if (AudioController.Instance != null) AudioController.Instance.PlayPistonNoise(Mathf.Clamp01(1-(Vector2.Distance(transform.position, player.transform.position) - 4) /40));
             fromWaypointIndex++;
 
             if (shouldReverse)

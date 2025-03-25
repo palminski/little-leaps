@@ -236,22 +236,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
-      propertyPath: m_NormalizedViewPortRect.x
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
-      propertyPath: m_NormalizedViewPortRect.y
-      value: 0.08
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
-      propertyPath: m_NormalizedViewPortRect.width
-      value: 0.90000004
-      objectReference: {fileID: 0}
-    - target: {fileID: 4716866663008302067, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
-      propertyPath: m_NormalizedViewPortRect.height
-      value: 0.84
-      objectReference: {fileID: 0}
     - target: {fileID: 5658948705658991358, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_Name
       value: Main Camera
@@ -336,9 +320,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 715ebfc9daf6bd34ab4751afb7372ba9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eventToTrigger: {fileID: 0}
+  secondEventToTrigger: {fileID: 0}
   currentText: {fileID: 0}
   mainMenu: {fileID: 482022966}
   levelSelectMenu: {fileID: 0}
+  controlMenu: {fileID: 0}
   currentOptions: []
   menuOptions:
   - action:
@@ -356,6 +343,7 @@ MonoBehaviour:
             m_StringArgument: lv_1_start
             m_BoolArgument: 0
           m_CallState: 2
+    levelKey: 
     requiredKey: 
     text: Level 1
     sideText: Set Lift Target To Sector 1
@@ -374,6 +362,7 @@ MonoBehaviour:
             m_StringArgument: lv_2_start
             m_BoolArgument: 0
           m_CallState: 2
+    levelKey: 
     requiredKey: lv_1_complete
     text: Level 2
     sideText: Set Lift Target To Sector 2
@@ -392,6 +381,7 @@ MonoBehaviour:
             m_StringArgument: lv_3_start
             m_BoolArgument: 0
           m_CallState: 2
+    levelKey: 
     requiredKey: lv_2_complete
     text: Level 3
     sideText: Set Lift Target To Sector 3
@@ -410,6 +400,7 @@ MonoBehaviour:
             m_StringArgument: lv_4_start
             m_BoolArgument: 0
           m_CallState: 2
+    levelKey: 
     requiredKey: lv_3_complete
     text: Level 4
     sideText: Set Lift Target To Sector 4
@@ -428,6 +419,7 @@ MonoBehaviour:
             m_StringArgument: lv_5_start
             m_BoolArgument: 0
           m_CallState: 2
+    levelKey: 
     requiredKey: lv_4_complete
     text: Level 5
     sideText: Set Lift Target To Sector 5
@@ -446,6 +438,7 @@ MonoBehaviour:
             m_StringArgument: lv_6_start
             m_BoolArgument: 0
           m_CallState: 2
+    levelKey: 
     requiredKey: lv_5_complete
     text: Level 6
     sideText: Set Lift Target To Sector 6
@@ -464,6 +457,7 @@ MonoBehaviour:
             m_StringArgument: lv_7_start
             m_BoolArgument: 0
           m_CallState: 2
+    levelKey: 
     requiredKey: lv_6_complete
     text: Level 7
     sideText: Set Lift Target To Sector 7
@@ -482,6 +476,7 @@ MonoBehaviour:
             m_StringArgument: lv_8_start
             m_BoolArgument: 0
           m_CallState: 2
+    levelKey: 
     requiredKey: lv_7_complete
     text: Level 8
     sideText: Set Lift Target To Sector 8
@@ -500,10 +495,12 @@ MonoBehaviour:
             m_StringArgument: lv_9_start
             m_BoolArgument: 0
           m_CallState: 2
+    levelKey: 
     requiredKey: lv_8_complete
     text: Level 9
     sideText: Set Lift Target To Sector 9
   levelSelectOptions: []
+  controlOptions: []
   startingText: {fileID: 1156152321}
 --- !u!4 &307165575
 Transform:
@@ -700,7 +697,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -108.2}
+  m_AnchoredPosition: {x: 0, y: -108.19998}
   m_SizeDelta: {x: 304.11, y: 108.73}
   m_Pivot: {x: 0, y: 1}
 --- !u!1001 &485382835

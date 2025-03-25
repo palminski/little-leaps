@@ -7,7 +7,7 @@ using UnityEngine;
 public class EnemyPatrol : MonoBehaviour
 {
     [SerializeField]
-    private float speed = 0.35f;
+    public float speed = 0.35f;
 
     [SerializeField]
     private bool scaredOfHeights = false;
@@ -23,7 +23,7 @@ public class EnemyPatrol : MonoBehaviour
     private Enemy enemy;
 
     [SerializeField]
-    private bool startRight = true;
+    public bool startRight = true;
 
     [SerializeField]
     private float jumpPower = 1f;

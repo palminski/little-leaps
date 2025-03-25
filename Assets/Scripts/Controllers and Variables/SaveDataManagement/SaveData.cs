@@ -37,6 +37,25 @@ public class BestScore
     }
 }
 
+[Serializable]
+public class BestChips
+{
+    public string level;
+    public int chips;
+    public BestChips(string level, int chips)
+    {
+        this.level = level;
+        this.chips = chips;
+    }
+}
+
+[Serializable]
+public class ControlBinding
+{
+    public string key;
+    public string binding;
+}
+
 
 [Serializable]
 public class SaveData
@@ -50,25 +69,27 @@ public class SaveData
     
     // Permanent Saved Data
     public List<HighScore> highScores = new List<HighScore>{
-        new("TST", 100),
-        new("TST", 100),
-        new("TST", 200),
-        new("TST", 100),
-        new("TST", 100),
-        new("TST", 300),
-        new("TST", 100),
-        new("TST", 100),
-        new("TST", 500),
-        new("TST", 100),
+        new("RABIT", 100000),
+        new("MIM", 77800),
+        new("LIF", 77600),
+        new("WIL", 50000),
+        new("KAT", 40000),
+        new("BEN", 25000),
+        new("SMN", 10000),
+        new("KEV", 7500),
+        new("WKA", 5000),
+        new("TST", 1000),
     };
 
     public List<BestTime> bestTimes = new List<BestTime>();
     public List<BestScore> bestScores = new List<BestScore>();
+    public List<BestChips> bestChips = new List<BestChips>();
+    public List<ControlBinding> bindings = new List<ControlBinding>();
     public List<string> permanentCollectedObjects = new List<string>();
 
-    public int prestige = 0;
-    public int maxLives = 8;
-    public float healing = 0.05f;
+    // public int prestige = 0;
+    // public int maxLives = 8;
+    // public float healing = 0.05f;
 
     
 }

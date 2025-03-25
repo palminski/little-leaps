@@ -30,6 +30,7 @@ public class ObjectToggle : MonoBehaviour
 
     private void OnEnable()
     {
+        HandleRoomStateChange();
         GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
     }
     private void OnDisable()

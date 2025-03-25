@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7522d7d9b205b734b95fb33790c047dc, type: 3}
+  m_Name: Backend Dialogue
+  m_EditorClassIdentifier: 
+  dialogueSentences:
+  - text: "Forced RABIT Attunement Menu\r\n--------------------------------------------------------\r\n\rRABIT
+      can be attuned to the max here. This will result in VASTLY higher VNT yields,
+      but the required extra processing will drastically diminish other systems.\r\n\r\nMaxing
+      attunement here will reduce max EGO to one, greatly slow down healing, and
+      lower the allowed time before sector destabilization to 1 minute and 30 seconds.\r\n\r\n>
+      This looks like the secret menu that was encoded in the CAROTs boss.\r\n> Using
+      this looks like a sure fire way to increase how many VNTs we can collect.\r\n>
+      It does look a bit dangerous though.\r\n> I'll leave it up to you. Do we go
+      for it?\r\n\r\n\r\n[OPTIONTEXT]\n\r\n\n\n\nPlease make selection:\r\n--------------------------------------------------------"
+    dialogueOptions:
+    - option: Max Attunement
+      nextDialogue: {fileID: 0}
+      optionEvent: {fileID: 0}
+      triggerEvent: {fileID: 11400000, guid: 51eba1cc9c628604ea45bafa5a32f961, type: 2}
+      sideText: "Set RABIT Pilot attunement to max. \nThis will result in a difficult
+        climb."
+    - option: Do Not Attune
+      nextDialogue: {fileID: 0}
+      optionEvent: {fileID: 0}
+      triggerEvent: {fileID: 11400000, guid: b6abaed52a2078342bfa6bd9893ba06b, type: 2}
+      sideText: "Return to Border entrance without attunement.\r\nThis will not change
+        VNT absorption rate\r"

@@ -333,7 +333,7 @@ Transform:
   m_GameObject: {fileID: 7202008655110844764}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -13, y: -7, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -362,7 +362,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 98f3b0207f397334a9940cb12a172436, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -384,7 +384,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 30
   m_Sprite: {fileID: -1500429605, guid: 9fe41d73aab21324fa9c8e7fbe72d4e9, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -532,6 +532,7 @@ MonoBehaviour:
   greenVulnerableFromTop: 0
   greenVulnerableFromSide: 0
   minimumPlayerFallAmmountToCountAsKill: 0.005
+  maxImunityTime: 1
 --- !u!50 &2907452114936428677
 Rigidbody2D:
   serializedVersion: 4

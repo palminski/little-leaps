@@ -10,7 +10,7 @@ public class ShootAtPlayer : MonoBehaviour
         Purple,
         Green,
     }
-    [SerializeField] private ActiveColor activeOn = ActiveColor.Both;
+    // [SerializeField] private ActiveColor activeOn = ActiveColor.Both;
     private SpriteRenderer spriteRenderer;
     [SerializeField] private float blinkInterval = 0.0001f;
     [SerializeField] private float blinkStart = 0.5f;
@@ -24,6 +24,7 @@ public class ShootAtPlayer : MonoBehaviour
     private GameObject currentBullet;
     [SerializeField] bool canMultishoot = false;
     [SerializeField] Transform shotStartTransform;
+    [SerializeField] private Vector2 direction = Vector2.right; 
     [SerializeField] private float fieldOfView = 120f;
     private Vector2 currentTarget = Vector2.zero;
     [SerializeField] private LayerMask opaqueLayers;
@@ -38,9 +39,9 @@ public class ShootAtPlayer : MonoBehaviour
         nextShotTime = 0;
     }
 
-    void Update()
+    void LateUpdate()
     {
-
+print(CheckForPlayer());
         if (CheckForPlayer())
         {
             currentTarget = player.transform.position;
@@ -76,7 +77,7 @@ public class ShootAtPlayer : MonoBehaviour
         if (player == null) return false;
         float distanceToPlayer = Vector2.Distance(player.transform.position, transform.position);
         Vector2 directionToPlayer = (player.transform.position - transform.position).normalized;
-        float angleToPlayer = Vector2.Angle(transform.right * transform.localScale.x, directionToPlayer);
+        float angleToPlayer = Vector2.Angle(direction.normalized * new Vector2(transform.localScale.x, 1), directionToPlayer);
         if (angleToPlayer > fieldOfView / 2f) return false;
         RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, distanceToPlayer, opaqueLayers);
         if (hit.collider != null) return false;
@@ -86,7 +87,7 @@ public class ShootAtPlayer : MonoBehaviour
 
     public void ShootBulletAtPlayer()
     {
-
+        if (AudioController.Instance != null) AudioController.Instance.PlayEnemyShot();
         currentBullet = GameController.Instance.PullFromPool(bullet, shotStartTransform ? shotStartTransform.position : transform.position);
 
         currentBullet.GetComponent<bullet>().TargetPoint(currentTarget);
@@ -143,8 +144,8 @@ public class ShootAtPlayer : MonoBehaviour
 
         // Draw field of vision cone
         Gizmos.color = Color.green;
-        Vector3 leftBoundary = Quaternion.Euler(0, 0, -fieldOfView / 2) * transform.right * 2f;
-        Vector3 rightBoundary = Quaternion.Euler(0, 0, fieldOfView / 2) * transform.right * 2f;
+        Vector3 leftBoundary = Quaternion.Euler(0, 0, -fieldOfView / 2) * (direction.normalized * new Vector2(transform.localScale.x, 1)) * 2f;
+        Vector3 rightBoundary = Quaternion.Euler(0, 0, fieldOfView / 2) * (direction.normalized * new Vector2(transform.localScale.x, 1)) * 2f;
 
         Gizmos.DrawLine(transform.position, transform.position + leftBoundary);
         Gizmos.DrawLine(transform.position, transform.position + rightBoundary);

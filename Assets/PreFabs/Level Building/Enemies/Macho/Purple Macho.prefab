@@ -328,7 +328,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: -876546973899608171, guid: 594e6d39d37d28b4ab03014ddf0c17f3, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -350,7 +350,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 30
   m_Sprite: {fileID: -1339416273, guid: e6aefc549e3bcad4d96fd45122c2ba7b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -483,7 +483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointValue: 100
-  bounceMultiplier: 1.1
+  bounceMultiplier: 1.2
   health: 1
   invincible: 0
   blood: {fileID: 7157367465512552725, guid: 9d457ae5531f8364e82771533d6bfe9f, type: 3}
@@ -498,6 +498,13 @@ MonoBehaviour:
   greenVulnerableFromTop: 1
   greenVulnerableFromSide: 0
   minimumPlayerFallAmmountToCountAsKill: 0.005
+  player: {fileID: 0}
+  playerAttack: {fileID: 0}
+  canDamagePlayer: 0
+  wasKilled: 0
+  maxImunityTime: 1
+  immunityTime: 0
+  shouldStartHarmless: 0
 --- !u!50 &7240088921791125003
 Rigidbody2D:
   serializedVersion: 4
@@ -537,7 +544,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0802c264f26dce84eb81cea44d4a27e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeOn: 0
   blinkInterval: 0.05
   blinkStart: 0.5
   blinkColor: {r: 0, g: 0, b: 0, a: 0}
@@ -545,7 +551,8 @@ MonoBehaviour:
   bullet: {fileID: 3920251852512452274, guid: 174453d8ba38f624bb5ed28cea7b0967, type: 3}
   canMultishoot: 0
   shotStartTransform: {fileID: 1361045156223202102}
-  fieldOfView: 120
+  direction: {x: 0, y: -1}
+  fieldOfView: 235.4
   opaqueLayers:
     serializedVersion: 2
     m_Bits: 64

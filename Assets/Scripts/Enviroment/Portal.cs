@@ -61,4 +61,9 @@ public class Portal : MonoBehaviour
             GameController.Instance.ChangeScene(targetSceneName);
         }
     }
+
+    public void SetTargetScene(string scene)
+    {
+        targetSceneName = scene;
+    }
 }
