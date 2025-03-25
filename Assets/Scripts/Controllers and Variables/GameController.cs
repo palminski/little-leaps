@@ -10,10 +10,10 @@ using Unity.VisualScripting;
 
 public class FollowingObject
 {
-    public string Name {get; private set;}
-    public GameObject Object {get; private set;}
+    public string Name { get; private set; }
+    public GameObject Object { get; private set; }
 
-    public FollowingObject( string name, GameObject obj)
+    public FollowingObject(string name, GameObject obj)
     {
         Name = name;
         Object = obj;
@@ -22,7 +22,7 @@ public class FollowingObject
 
 public class GameController : MonoBehaviour
 {
-    
+
     public GameObject deathObject;
     public GlobalVariables globalVariables;
     public static Color ColorForPurple => Instance.globalVariables.colorForPurple;
@@ -33,12 +33,15 @@ public class GameController : MonoBehaviour
     [SerializeField] private float waitTimeAfterDamage;
     [SerializeField] private Animator levelChangerAnimator;
     [SerializeField] private PointCounter pointCounter;
+
+    private Coroutine changingScenesCoroutine;
     private int score;
     public int Score
     {
         get { return score; }
     }
 
+    // [SerializeField] private bool ShouldStartTimer;
     private bool timerMoving;
     public bool TimerMoving
     {
@@ -51,11 +54,22 @@ public class GameController : MonoBehaviour
     }
 
 
-    [SerializeField] private int  timerStartValue = 300;
     private int timer;
     public int Timer
     {
         get { return timer; }
+    }
+
+    private int startingScore = 0;
+    public int StartingScore
+    {
+        get { return startingScore; }
+    }
+
+    private float startingTimer = 0;
+    public float StartingTimer
+    {
+        get { return startingTimer; }
     }
 
     private RoomColor roomState = RoomColor.Purple;
@@ -84,13 +98,25 @@ public class GameController : MonoBehaviour
 
     public int ChargeMax
     {
-        get { return 100; }
+        get { return 1000; }
     }
 
-    private string checkpoint;
+    [SerializeField] private string checkpoint;
     public string Checkpoint
     {
         get { return checkpoint; }
+    }
+
+    [SerializeField] private string checkpointBackend;
+    public string CheckpointBackend
+    {
+        get { return checkpointBackend; }
+    }
+
+    [SerializeField] private bool shouldSkipGameOver;
+    public bool ShouldSkipGameOver
+    {
+        get { return shouldSkipGameOver; }
     }
 
     private HashSet<string> collectedObjects = new HashSet<string>();
@@ -99,13 +125,57 @@ public class GameController : MonoBehaviour
         get { return collectedObjects; }
     }
 
+    private HashSet<string> sessionCollectedObject = new HashSet<string>();
+    public HashSet<string> SessionCollectedObjects
+    {
+        get { return sessionCollectedObject; }
+    }
+
+    private int sessionInstability = 0;
+    public int SessionInstability
+    {
+        get { return sessionInstability; }
+    }
+
+    private int sessionPrestige = 0;
+    public int SessionPrestige
+    {
+        get { return sessionPrestige; }
+    }
+
+    private float sessionHealing = 0.05f;
+    public float SessionHealing
+    {
+        get { return sessionHealing; }
+    }
+
+    private float sessionMultiplier = 1;
+    public float SessionMultiplier
+    {
+        get { return sessionMultiplier; }
+    }
+
+    private int sectionChips = 0;
+    public int SectionChips
+    {
+        get { return sectionChips; }
+    }
+
     private Dictionary<string, FollowingObject> followingObjects = new Dictionary<string, FollowingObject>();
     public Dictionary<string, FollowingObject> FollowingObjects
     {
         get { return followingObjects; }
     }
 
+    private Dictionary<string, Sprite> savedSprites = new Dictionary<string, Sprite>();
+    public Dictionary<string, Sprite> SavedSprites
+    {
+        get { return savedSprites; }
+    }
+
     public GameObject pauseMenuPrefab;
+
+    // private int prestige = 0;
 
     private List<GameObject> disabledEnemies = new List<GameObject>();
 
@@ -120,68 +190,63 @@ public class GameController : MonoBehaviour
     // ---------------------------------------------------------------------------------- 
     void Awake()
     {
+
+
+        Cursor.visible = false;
         GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+
+
         if (Instance == null)
         {
+            Application.targetFrameRate = 60;
+            QualitySettings.vSyncCount = 0;
+
             Instance = this;
             DontDestroyOnLoad(gameObject);
             collectedObjects = SaveDataManager.LoadGameData().collectedObjects ?? new HashSet<string>();
             SceneManager.sceneLoaded += OnSceneLoad;
+            UpdateMultiplier(0, 8, 50);
 
-            if (player != null) {
-                StartTimer(timerStartValue);
-            }
         }
         else
         {
-            if (player != null && !Instance.TimerMoving) {
-                Instance.StartTimer(timerStartValue);
-            }
+            // if (ShouldStartTimer && !Instance.TimerMoving) {
+            //     Instance.ResetTimer();
+            //     Instance.StartTimer();
+            // }
+
+
             Destroy(gameObject);
         }
     }
     void Update()
     {
-        
 
-        if (bonusTimer > 0 )
+
+
+        if (timerMoving)
         {
-            if (timerMoving)
+            bonusTimer -= Time.deltaTime;
+            if (bonusTimer <= -29)
             {
-                bonusTimer -= Time.deltaTime;
-            }
-        }
-        else if(timerMoving)
-        {
-            bonusTimer = 0;
-            timerMoving = false;
-            if (deathObject)
-            {
-                GameObject player = GameObject.FindGameObjectWithTag("Player");
-                if (!player)
+                //Reset Game State
+                if (deathObject)
                 {
-                    ChangeScene("Game Over Menu");
-                    return;
+                    EndGame();
                 }
-                GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
-                _deathObject.transform.SetParent(null);
-                // print(player);
-                _deathObject.GetComponentInChildren<DeathScript>().SetPlayer(player);
-                player.SetActive(false);
-
-            }
-            else
-            {
-                ChangeScene("Game Over Menu");
+                bonusTimer = 0;
+                timerMoving = false;
             }
         }
+
 
         if (Input.GetKeyDown(KeyCode.P))
         {
             string currentSceneName = SceneManager.GetActiveScene().name;
             if (int.TryParse(currentSceneName, out int currentSceneNumber))
             {
-                int nextSceneNumber = currentSceneNumber+1;
+                int nextSceneNumber = currentSceneNumber + 1;
                 string nextSceneName = nextSceneNumber.ToString();
 
                 if (Application.CanStreamedLevelBeLoaded(nextSceneName))
@@ -195,7 +260,7 @@ public class GameController : MonoBehaviour
             }
             else
             {
-                ChangeScene("0");
+                return;
             }
         }
         if (Input.GetKeyDown(KeyCode.O))
@@ -212,12 +277,12 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {
-                    ChangeScene("61");
+                    ChangeScene("100");
                 }
             }
             else
             {
-                ChangeScene("61");
+                return;
             }
         }
     }
@@ -231,7 +296,7 @@ public class GameController : MonoBehaviour
         {
             if (entry.Value != null)
             {
-                FollowPlayer followPlayer = entry.Value.Object.GetComponent<FollowPlayer>();
+                OldFollowPlayer followPlayer = entry.Value.Object.GetComponent<OldFollowPlayer>();
                 if (followPlayer)
                 {
                     followPlayer.offset = i;
@@ -252,11 +317,14 @@ public class GameController : MonoBehaviour
     public event Action OnRoomStateChanged;
     public event Action OnPlayerDashed;
     public event Action OnUpdateHUD;
+    public event Action OnUpdateDashIcon;
+    public event Action OnUpdateJumpIcon;
     public event Action OnPlayerDamaged;
     public event Action OnEnemyKilled;
 
     public RoomColor ToggleRoomState()
     {
+        if (AudioController.Instance != null) AudioController.Instance.PlayShift();
         roomState = roomState == RoomColor.Purple ? RoomColor.Green : RoomColor.Purple;
         OnRoomStateChanged?.Invoke();
         return roomState;
@@ -272,19 +340,36 @@ public class GameController : MonoBehaviour
         OnEnemyKilled?.Invoke();
     }
 
+    public void InvokeUpdateDashIcon()
+    {
+        OnUpdateDashIcon?.Invoke();
+    }
+
+    public void InvokeUpdateJumpIcon()
+    {
+        OnUpdateJumpIcon?.Invoke();
+    }
+
 
     // ------------------------------
     // Update Variables in Controller
     // ------------------------------
     public void ResetGameState()
     {
-        bonusTimer = 300;
-        timerMoving = false;
 
-        health = 5;
-        UpdateHighScores();
+        UpdateMultiplier(0, 8, 50);
+        sectionChips = 0;
+        charge = 0;
+        bonusTimer = 0;
+        timerMoving = false;
+        sessionInstability = 0;
+        savedSprites.Clear();
+
+        health = maxHealth;
         score = 0;
+
         collectedObjects.Clear();
+        sessionCollectedObject.Clear();
 
         SaveData gameData = SaveDataManager.LoadGameData();
         gameData.score = score;
@@ -301,16 +386,59 @@ public class GameController : MonoBehaviour
         followingObjects.Clear();
     }
 
+    public void UpdateMultiplier(int newPrestige, int newMaxHealth, float newHealing)
+    {
+        sessionPrestige = newPrestige;
+        sessionHealing = newHealing;
+        maxHealth = newMaxHealth;
+        health = Mathf.Min(health, maxHealth);
+        sessionMultiplier = GlobalConstants.getMultiplier(sessionPrestige, maxHealth, sessionHealing);
+    }
+
+    public void UpdateInstability(int instabilityToAdd)
+    {
+        sessionInstability += instabilityToAdd;
+        sessionInstability = Mathf.Clamp(sessionInstability, 0, 4);
+    }
+
+    public void UpdateSectionChips(int chipsToAdd)
+    {
+        sectionChips += chipsToAdd;
+        sectionChips = Mathf.Clamp(sectionChips, 0, 3);
+    }
+
     public void SetCheckPoint(string scene)
     {
         checkpoint = scene;
     }
 
-    private void UpdateHighScores() {
+    public void SetCheckPointBackend(string scene)
+    {
+        checkpointBackend = scene;
+    }
+
+    public void SetShouldSkipGameover(bool shouldSkip)
+    {
+        shouldSkipGameOver = shouldSkip;
+    }
+
+    public void SetStartingScore(int score)
+    {
+        startingScore = score;
+    }
+
+    public void SetStartingTimer(float time)
+    {
+        startingTimer = time;
+    }
+
+    public void UpdateHighScores(string name = "???")
+    {
         SaveData gameData = SaveDataManager.LoadGameData();
-        gameData.highScores.Add(score);
-        gameData.highScores.Sort((a,b) => b.CompareTo(a));
-        while (gameData.highScores.Count > 10) {
+        gameData.highScores.Add(new(name, score));
+        gameData.highScores.Sort((a, b) => b.score.CompareTo(a.score));
+        while (gameData.highScores.Count > 10)
+        {
             gameData.highScores.RemoveAt(gameData.highScores.Count - 1);
         }
         SaveDataManager.SaveGameData(gameData);
@@ -318,37 +446,45 @@ public class GameController : MonoBehaviour
 
     public int AddToScore(int pointsToAdd)
     {
-        score += pointsToAdd;
+        score += (int)(pointsToAdd * sessionMultiplier);
         OnUpdateHUD?.Invoke();
         return score;
+    }
+    public int IncreasePrestige(int prestigeToAdd)
+    {
+        sessionPrestige += prestigeToAdd;
+        return sessionPrestige;
     }
     public int ChangeHealth(int healthChange, bool shouldResetRoom = false)
     {
         if (health <= 0) return 0;
         if (healthChange < 0) OnPlayerDamaged?.Invoke();
-        // health += healthChange;
+
+        //edge case for only 1 max health
+        bool willHealAtOneHealth = false;
+        if (maxHealth == 1 && charge >= ChargeMax)
+        {
+            willHealAtOneHealth = true;
+            charge = 0;
+        }
+        if (!willHealAtOneHealth) health += healthChange;
+
         ChangeCharge(0);
         health = Mathf.Clamp(health, 0, maxHealth);
         OnUpdateHUD?.Invoke();
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         Player playerScript = player ? player.GetComponent<Player>() : null;
+
         if (health <= 0)
         {
+            if (AudioController.Instance != null) AudioController.Instance.PlayPlayerKilled();
+            ClearFollowingObjects();
+
             //Reset Game State
             if (deathObject)
             {
-                player.SetActive(true);
-                
-                // GameObject player = GameObject.FindGameObjectWithTag("Player");
-                GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
-                _deathObject.transform.SetParent(null);
-                
-
-                _deathObject.GetComponentInChildren<DeathScript>().SetPlayer(player);
-                player.SetActive(false);
-                
-
+                EndGame();
             }
             else
             {
@@ -359,20 +495,14 @@ public class GameController : MonoBehaviour
         }
         else if (healthChange < 0)
         {
-            foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
-            {
-                if (entry.Value.Object)
-                {
-                    Destroy(entry.Value.Object);
-                }
-            }
-            followingObjects.Clear();
+            if (AudioController.Instance != null) AudioController.Instance.PlayPlayerKilled();
+            ClearFollowingObjects();
             if (shouldResetRoom)
             {
                 StartCoroutine(WaitAndChangeScene(waitTimeAfterDamage));
 
             }
-            else if(playerScript)
+            else if (playerScript)
             {
                 playerScript.HideAndStartRespawn();
             }
@@ -380,11 +510,19 @@ public class GameController : MonoBehaviour
         return health;
     }
 
-    public void StartTimer(float timerValue)
+    public void StartTimer(float timeToStartAt = 0)
     {
+        if (timeToStartAt == 0) return;
         timerMoving = true;
-        bonusTimer = timerValue;
+        bonusTimer = timeToStartAt;
     }
+
+    public void SetTimer(float timeToStartAt = 0)
+    {
+        bonusTimer = timeToStartAt;
+    }
+
+
     public void ResumeTimer()
     {
         timerMoving = true;
@@ -392,17 +530,41 @@ public class GameController : MonoBehaviour
     public void AddToTimer(int timeToAdd)
     {
         bonusTimer += timeToAdd;
-        if (bonusTimer > 3599) 
+        if (bonusTimer > 3599)
         {
             bonusTimer = 3599;
         }
     }
     public void StopTimer()
     {
-        int pointsToAdd = 100 * (int) bonusTimer;
-        print(bonusTimer + " - " + pointsToAdd);
+        // int pointsToAdd = 100 * (int)bonusTimer;
+        // AddToScore(pointsToAdd);
+        bonusTimer = 0;
+        timerMoving = false;
+    }
+
+    public void ResetTimer()
+    {
+        int pointsToAdd = 100 * (int)bonusTimer;
         AddToScore(pointsToAdd);
         timerMoving = false;
+        bonusTimer = 0;
+    }
+
+    private void EndGame()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        StopTimer();
+        player.SetActive(true);
+
+        // GameObject player = GameObject.FindGameObjectWithTag("Player");
+        GameObject _deathObject = Instantiate(deathObject, player.transform.position, Quaternion.identity);
+        if (AudioController.Instance != null) AudioController.Instance.PlayGameOver();
+        _deathObject.transform.SetParent(null);
+
+
+        _deathObject.GetComponentInChildren<DeathScript>().SetPlayer(player);
+        player.SetActive(false);
     }
 
     public IEnumerator WaitAndReactivatePlayer(Player player, float timeToWait)
@@ -425,7 +587,11 @@ public class GameController : MonoBehaviour
 
     public int ChangeCharge(int chargeChange)
     {
-        charge += chargeChange;
+        print("Session Healing => " + sessionHealing);
+        print("Charge Max => " + ChargeMax);
+        print("Charge Change => " + chargeChange);
+        print("Multiplied => " + (int)(chargeChange * sessionHealing));
+        charge += (int)(chargeChange * sessionHealing);
         if (charge >= ChargeMax)
         {
             if (health < maxHealth)
@@ -438,12 +604,15 @@ public class GameController : MonoBehaviour
                 charge = ChargeMax;
             }
         }
+
         OnUpdateHUD?.Invoke();
         return charge;
     }
 
     public void OpenPauseMenu()
     {
+        if (AudioController.Instance != null) AudioController.Instance.PlaySelect();
+
         PauseMenu currentMenu = FindObjectOfType<PauseMenu>();
         if (currentMenu)
         {
@@ -458,17 +627,27 @@ public class GameController : MonoBehaviour
         collectedObjects.Add(objectKey);
     }
 
+    public void TagObjectStringAsCollectedForSession(string objectKey)
+    {
+        sessionCollectedObject.Add(objectKey);
+    }
+
     public void AddFollowingObjects(string key, string name, GameObject gameObject)
     {
         if (followingObjects.ContainsKey(key)) return;
-        FollowingObject followingObject = new FollowingObject(name,gameObject);
+
+        FollowingObject followingObject = new FollowingObject(name, gameObject);
+
         followingObjects.Add(key, followingObject);
+
         int i = 1;
         foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
         {
+
             if (entry.Value != null)
             {
-                FollowPlayer followPlayer = entry.Value.Object.GetComponent<FollowPlayer>();
+                print(entry.Value);
+                OldFollowPlayer followPlayer = entry.Value.Object.GetComponent<OldFollowPlayer>();
                 if (followPlayer)
                 {
                     followPlayer.offset = i;
@@ -488,13 +667,31 @@ public class GameController : MonoBehaviour
         followingObjects.Remove(objectKey);
     }
 
+    public void ClearFollowingObjects()
+    {
+        foreach (KeyValuePair<string, FollowingObject> entry in followingObjects)
+        {
+            if (entry.Value.Object)
+            {
+                Destroy(entry.Value.Object);
+            }
+        }
+        followingObjects.Clear();
+    }
+
+    public void AddSavedSprite(string key, Sprite sprite)
+    {
+        if (savedSprites.ContainsKey(key)) return;
+        savedSprites.Add(key, sprite);
+    }
+
     public void AddInactiveEnemy(GameObject gameObject)
     {
         disabledEnemies.Add(gameObject);
     }
     public void ReactivateEnemies()
     {
-        
+
         foreach (GameObject enemy in disabledEnemies)
         {
             enemy.SetActive(true);
@@ -536,17 +733,20 @@ public class GameController : MonoBehaviour
         return pulledObject;
     }
 
-    public void ChangeScene(string sceneName)
+    public void ChangeScene(string sceneName, bool playLIftNoise = false)
     {
+        if (changingScenesCoroutine != null) return;
         levelChangerAnimator.SetTrigger("FadeIn");
-        StartCoroutine(ChangeSceneAfterDelay(sceneName));
+        changingScenesCoroutine = StartCoroutine(ChangeSceneAfterDelay(sceneName, playLIftNoise));
     }
-    public IEnumerator ChangeSceneAfterDelay(string sceneName)
+    public IEnumerator ChangeSceneAfterDelay(string sceneName, bool playLIftNoise = false)
     {
         yield return null;
         AnimatorStateInfo stateInfo = levelChangerAnimator.GetCurrentAnimatorStateInfo(0);
         yield return new WaitForSeconds(stateInfo.length);
+        if (playLIftNoise && AudioController.Instance) AudioController.Instance.PlayLiftClose();
         SceneManager.LoadScene(sceneName);
+        changingScenesCoroutine = null;
     }
     public void SaveGame()
     {
@@ -570,7 +770,7 @@ public class GameController : MonoBehaviour
     {
         if (!pointCounter) return;
         pointCounter.transform.position = position;
-        pointCounter.AddPointsToTotal(pointsToAdd, isCombo);
+        pointCounter.AddPointsToTotal((int)(pointsToAdd * sessionMultiplier), isCombo);
     }
 
     public void EndPointCombo()

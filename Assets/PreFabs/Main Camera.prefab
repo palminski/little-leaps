@@ -65,6 +65,7 @@ MonoBehaviour:
   volume: {fileID: 8079766415775216295}
   pulseSpeed: 1.07
   maxAbberation: 0.12
+  filmGrainReturnSpeed: 1
 --- !u!1 &5658948705658991358
 GameObject:
   m_ObjectHideFlags: 0
@@ -79,7 +80,7 @@ GameObject:
   - component: {fileID: 1873004492879072875}
   - component: {fileID: 4933265746777383274}
   - component: {fileID: 2547430725212961929}
-  - component: {fileID: 6813317861908667673}
+  - component: {fileID: 4634345391330985970}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -219,13 +220,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canMove: 1
-  offset: {x: 0, y: 1, z: -10}
-  easeTimeX: 0.075
-  easeTimeY: 0.075
+  yAxisOnly: 0
+  xAxisOnly: 0
+  offset: {x: 0, y: 2, z: -10}
+  easeTimeX: 0.17
+  easeTimeY: 0.17
   tilemap: {fileID: 0}
   boarderBuffer: 0.5
-  onlyUp: 0
-  distanceAllowedBack: 0.5
+  colorFadeSpeed: 2
+  colorDarkness: 0.8
+  finalColorDarkness: 1
 --- !u!114 &2547430725212961929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,10 +243,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ComponentVersion: 1
-  m_AssetsPPU: 16
-  m_RefResolutionX: 384
-  m_RefResolutionY: 224
-  m_CropFrame: 3
+  m_AssetsPPU: 8
+  m_RefResolutionX: 320
+  m_RefResolutionY: 180
+  m_CropFrame: 4
   m_GridSnapping: 0
   m_FilterMode: 0
   m_UpscaleRT: 0
@@ -250,7 +254,7 @@ MonoBehaviour:
   m_CropFrameX: 0
   m_CropFrameY: 0
   m_StretchFill: 0
---- !u!114 &6813317861908667673
+--- !u!114 &4634345391330985970
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -259,6 +263,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 5658948705658991358}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87c41f306b667f14fb0bc93fad1d4da6, type: 3}
+  m_Script: {fileID: 11500000, guid: c4f217da94240a04e9b45a18ec25013f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

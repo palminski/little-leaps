@@ -27,8 +27,10 @@ public class ObjectToggle : MonoBehaviour
     private Collider2D boxCollider;
     private Animator animator;
 
+
     private void OnEnable()
     {
+        HandleRoomStateChange();
         GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
     }
     private void OnDisable()
@@ -65,7 +67,10 @@ public class ObjectToggle : MonoBehaviour
     {
         if (spriteRenderer) spriteRenderer.color = activeColor;
         if (spriteRenderer) spriteRenderer.sprite = activeSprite;
-        if (animator) animator.SetTrigger("Activate");
+        if (animator && AnimatorHasParameter("Activate", AnimatorControllerParameterType.Trigger))
+        {
+            animator.SetTrigger("Activate");
+        }
         if (shouldWaitBeforeAddingCollision)
         {
             StartCoroutine(WaitThenAddCollision());
@@ -77,7 +82,7 @@ public class ObjectToggle : MonoBehaviour
     private void Deactivate()
     {
         if (shouldRemoveCollision) StartCoroutine(WaitThenRemoveCollision());
-        if (animator)
+        if (animator && AnimatorHasParameter("Deactivate", AnimatorControllerParameterType.Trigger))
         {
             animator.SetTrigger("Deactivate");
             return;
@@ -93,13 +98,22 @@ public class ObjectToggle : MonoBehaviour
 
     private IEnumerator WaitThenRemoveCollision()
     {
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.07f);
         if (boxCollider) boxCollider.enabled = false;
     }
 
     private IEnumerator WaitThenAddCollision()
     {
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.07f);
         if (boxCollider) boxCollider.enabled = true;
+    }
+
+    private bool AnimatorHasParameter(string parameter, AnimatorControllerParameterType parameterType)
+    {
+        foreach (AnimatorControllerParameter param in animator.parameters)
+        {
+            if (param.name == parameter && param.type == parameterType) return true;
+        }
+        return false;
     }
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3379932132946740758}
   m_Layer: 0
   m_Name: Rune
-  m_TagString: Untagged
+  m_TagString: Rune
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,7 +52,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: -876546973899608171, guid: 594e6d39d37d28b4ab03014ddf0c17f3, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 49
   m_Sprite: {fileID: 21300000, guid: 7a3e522496438c442b556994d7f14321, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5803922, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -93,9 +93,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7690226943282113065}
-  - component: {fileID: 3138759886727389556}
   - component: {fileID: 7283757511562044543}
   - component: {fileID: 3531737283211416254}
+  - component: {fileID: 5499665100911159632}
+  - component: {fileID: 2830275767861558918}
   m_Layer: 0
   m_Name: Pickup
   m_TagString: Untagged
@@ -120,20 +121,6 @@ Transform:
   - {fileID: 2211747509244158537}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3138759886727389556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6505369307954092987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56501747a7802854780d381825d7fe21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupName: A
-  followItem: {fileID: 3066932901191364747, guid: d6e2de4a4127713489b6ace52b3e4cf9, type: 3}
 --- !u!50 &7283757511562044543
 Rigidbody2D:
   serializedVersion: 4
@@ -206,6 +193,39 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &5499665100911159632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6505369307954092987}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2478f2974aacf554295f492a60ba8866, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointValue: 2500
+  chargeValue: 0
+  magnetRadius: 0
+  maxSpeed: 0
+  collectionParticle: {fileID: 7157367465512552725, guid: 2f0fd622c1d54d840b261124fb9b8cfd, type: 3}
+  coinParticleSystem: {fileID: 0}
+  pickUpString: 
+--- !u!114 &2830275767861558918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6505369307954092987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56501747a7802854780d381825d7fe21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupName: Dep
+  followItem: {fileID: 3066932901191364747, guid: d6e2de4a4127713489b6ace52b3e4cf9, type: 3}
 --- !u!1 &8211025820195035411
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,6 +236,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7136016833174969490}
   - component: {fileID: 1071923536726011273}
+  - component: {fileID: 44381328583056092}
   m_Layer: 0
   m_Name: Chip
   m_TagString: Untagged
@@ -258,7 +279,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: -876546973899608171, guid: 594e6d39d37d28b4ab03014ddf0c17f3, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -279,8 +300,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 48
-  m_Sprite: {fileID: 21300000, guid: 4e01d2c79c5c07b4f9af9096522fe4aa, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 583616001, guid: 4e01d2c79c5c07b4f9af9096522fe4aa, type: 3}
+  m_Color: {r: 1, g: 0.5803922, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -290,3 +311,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &44381328583056092
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8211025820195035411}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: faaefd8e6bef0954d81c79f93bebfc68, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

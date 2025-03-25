@@ -167,6 +167,7 @@ MonoBehaviour:
   easeAmount: 0
   speed: 0.2
   OpenEvent: {fileID: 0}
+  shouldMoveOnStart: 0
   activeOnRoomColor: 0
 --- !u!114 &916057865631616447
 MonoBehaviour:
@@ -205,11 +206,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   action: 1
+  requiresFirmPress: 0
   oneTimeUse: 0
   stringForFunction: 
   eventToTrigger: {fileID: 11400000, guid: 541bd80d56f4a8f43804b0914301407d, type: 2}
   worldDialogue: {fileID: 0}
-  timeToRefresh: 6
+  timeToRefresh: 0.5
 --- !u!1 &5985585648800461848
 GameObject:
   m_ObjectHideFlags: 0

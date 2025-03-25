@@ -34,12 +34,17 @@ public class DialogueOption
     public Dialogue nextDialogue;
     public DialogueEvent optionEvent;
 
+    public TriggerEvent triggerEvent;
+    [TextArea(15, 15)] public string sideText;
+
     public DialogueOption Clone()
     {
         DialogueOption newOption = new DialogueOption();
         newOption.option = this.option;
         newOption.nextDialogue = this.nextDialogue != null ? this.nextDialogue.Clone() : null;
         newOption.optionEvent = this.optionEvent;
+        newOption.sideText = this.sideText;
+        newOption.triggerEvent = this.triggerEvent;
         return newOption;
     }
 }

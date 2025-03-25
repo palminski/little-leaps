@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4414556075010402399}
   - component: {fileID: 3282130003129723622}
   m_Layer: 0
-  m_Name: L
+  m_Name: Digit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54,7 +54,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: -876546973899608171, guid: 594e6d39d37d28b4ab03014ddf0c17f3, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -75,8 +75,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 11
-  m_Sprite: {fileID: 21300000, guid: d1acc590c0992e34ab1e9161bde01250, type: 3}
-  m_Color: {r: 0.35, g: 0.35, b: 0.35, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 450f76a838e38f641b3f660324b25d68, type: 3}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 1075356258074583491}
   - component: {fileID: 8193604245924017821}
   m_Layer: 0
-  m_Name: H
+  m_Name: Digit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -172,7 +172,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: -876546973899608171, guid: 594e6d39d37d28b4ab03014ddf0c17f3, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -193,8 +193,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 11
-  m_Sprite: {fileID: 21300000, guid: bf5cacebfe5839c4bb7ae538f8b83ab0, type: 3}
-  m_Color: {r: 0.35, g: 0.35, b: 0.35, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 96ae5d3e8bb70764081ca6cefdcb9d8b, type: 3}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -246,6 +246,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4925952053896459903}
   - component: {fileID: 1280121099588971211}
+  - component: {fileID: 490268975965081382}
   m_Layer: 0
   m_Name: Rune Readout
   m_TagString: Untagged
@@ -323,6 +324,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &490268975965081382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5043761839429838967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7708dcfa4942b94ea205bc05130e89e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7294823381577768921
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,7 +349,7 @@ GameObject:
   - component: {fileID: 4339663702176578974}
   - component: {fileID: 6200702107479203245}
   m_Layer: 0
-  m_Name: P
+  m_Name: Digit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -377,7 +390,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: -876546973899608171, guid: 594e6d39d37d28b4ab03014ddf0c17f3, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -398,8 +411,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 11
-  m_Sprite: {fileID: 21300000, guid: bcbb4b6a82221a24eaa6c2f714e5c649, type: 3}
-  m_Color: {r: 0.35, g: 0.35, b: 0.35, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 96ae5d3e8bb70764081ca6cefdcb9d8b, type: 3}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

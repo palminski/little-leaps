@@ -95,8 +95,6 @@ public class FloatAtPlayer : MonoBehaviour
     private void FollowPlayer() {
         UpdateTargetPoint();
         Vector3 additionToTarget = hasLineOfSight ? Vector3.zero : (targetPoint - transform.position).normalized * 3;
-        
-        // print(CheckForFlock());
 
         if (CanMoveToTargetPoint()) transform.Translate((targetPoint - transform.position + additionToTarget).normalized * moveSpeed);
 

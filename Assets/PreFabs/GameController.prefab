@@ -93,8 +93,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.5
-  m_fontSizeBase: 0.5
+  m_fontSize: 0.65
+  m_fontSizeBase: 0.65
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -149,7 +149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   brightnessForRS0: 1
   brightnessForRS1: 1
-  maxAlphaSubtractionPercentage: 0.5
+  maxAlphaSubtractionPercentage: 0.6
   pulseSpeed: 1
   shouldPulse: 0
   debug: 0
@@ -163,7 +163,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5797071369597814858}
   - component: {fileID: 290677108157730506}
-  - component: {fileID: 5359352213058890681}
   m_Layer: 0
   m_Name: Level Changer
   m_TagString: Untagged
@@ -208,18 +207,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5359352213058890681
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3602872896639625174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a97a4ded2c718be4189ea9e6907ed9fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4532296407481921597
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,7 +258,9 @@ MonoBehaviour:
   waitTimeAfterDamage: 0.7
   levelChangerAnimator: {fileID: 290677108157730506}
   pointCounter: {fileID: 9170586686002542654}
-  timerStartValue: 300
+  checkpoint: 
+  checkpointBackend: 
+  shouldSkipGameOver: 0
   pauseMenuPrefab: {fileID: 8823798663782257130, guid: 450774eddeadebf46860f8c4aea6c966, type: 3}
 --- !u!1 &5335339392455829138
 GameObject:
@@ -390,7 +379,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointText: {fileID: 3942543865498963529}
   backgroundText: {fileID: 0}
-  offsetFromPlayer: {x: 0, y: 0.5, z: 0}
+  offsetFromPlayer: {x: 0, y: 0.6, z: 0}
 --- !u!1 &7929959475649396969
 GameObject:
   m_ObjectHideFlags: 0

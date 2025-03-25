@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 36
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -127,9 +127,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 72
-        width: 36
-        height: 36
+        y: 64
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -139,16 +139,16 @@ TextureImporter:
         - {x: 18, y: -18}
         - {x: 18, y: 18}
       physicsShape:
-      - - {x: 18, y: 16}
-        - {x: 17, y: 16}
-        - {x: 17, y: 2}
-        - {x: 17, y: -4}
-        - {x: 17, y: -17}
-        - {x: -16, y: -17}
-        - {x: -16, y: -18}
-        - {x: 18, y: -18}
-        - {x: 18, y: 12}
-      tessellationDetail: 0.2
+      - - {x: 16, y: 14}
+        - {x: 15, y: 11}
+        - {x: 15, y: 7}
+        - {x: 15, y: -4}
+        - {x: 15, y: -15}
+        - {x: -16, y: -15}
+        - {x: -16, y: -16}
+        - {x: 16, y: -16}
+        - {x: 16, y: -12}
+      tessellationDetail: 0.16
       bones: []
       spriteID: cc3461088de1e8a42adbf4d18085b931
       internalID: -373997034
@@ -160,20 +160,20 @@ TextureImporter:
       name: spikes_cave_1
       rect:
         serializedVersion: 2
-        x: 36
-        y: 72
-        width: 36
-        height: 36
+        x: 32
+        y: 64
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -16, y: -17}
-        - {x: -16, y: -18}
-        - {x: 18, y: -18}
-        - {x: 16, y: -18}
-        - {x: 16, y: -17}
+      - - {x: 16, y: -15}
+        - {x: -16, y: -15}
+        - {x: -16, y: -16}
+        - {x: -13, y: -16}
+        - {x: 16, y: -16}
       tessellationDetail: 0
       bones: []
       spriteID: 602e5ffde335fdf4aa50bd7061dc2cb8
@@ -186,24 +186,24 @@ TextureImporter:
       name: spikes_cave_2
       rect:
         serializedVersion: 2
-        x: 72
-        y: 72
-        width: 36
-        height: 36
+        x: 64
+        y: 64
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -4, y: -17}
-        - {x: -17, y: -17}
-        - {x: -17, y: 14}
-        - {x: -17, y: 16}
-        - {x: -18, y: 16}
-        - {x: -18, y: -18}
-        - {x: 16, y: -18}
-        - {x: 16, y: -17}
-        - {x: 6, y: -17}
+      - - {x: 16, y: -15}
+        - {x: -15, y: -15}
+        - {x: -15, y: 12}
+        - {x: -16, y: 14}
+        - {x: -16, y: 12}
+        - {x: -16, y: -16}
+        - {x: 16, y: -16}
+        - {x: 16, y: -16}
+        - {x: 16, y: -16}
       tessellationDetail: 0
       bones: []
       spriteID: a185d2e6d9a14de448881880b84c559a
@@ -217,19 +217,19 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 36
-        width: 36
-        height: 36
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: 18, y: 16}
-        - {x: 17, y: 16}
-        - {x: 17, y: -16}
-        - {x: 18, y: -16}
-        - {x: 18, y: 3}
+      - - {x: 16, y: 14}
+        - {x: 15, y: 13}
+        - {x: 15, y: -15}
+        - {x: 15, y: -15}
+        - {x: 16, y: -15}
       tessellationDetail: 0
       bones: []
       spriteID: c77d7ca2b72f3574ea5badb91e9d0454
@@ -242,21 +242,21 @@ TextureImporter:
       name: spikes_cave_4
       rect:
         serializedVersion: 2
-        x: 72
-        y: 36
-        width: 36
-        height: 36
+        x: 64
+        y: 32
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -18, y: 16}
-        - {x: -18, y: -18}
-        - {x: -18, y: -16}
-        - {x: -17, y: -16}
-        - {x: -17, y: 16}
-        - {x: -18, y: 16}
+      - - {x: -16, y: 12}
+        - {x: -16, y: -7}
+        - {x: -16, y: -15}
+        - {x: -15, y: -15}
+        - {x: -15, y: 12}
+        - {x: -16, y: 14}
       tessellationDetail: 0
       bones: []
       spriteID: d097434da53a6ad4ab8a832377019821
@@ -271,23 +271,23 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 36
-        height: 36
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -16, y: 18}
-        - {x: -16, y: 17}
-        - {x: -7, y: 17}
-        - {x: -3, y: 17}
-        - {x: 0, y: 17}
-        - {x: 11, y: 17}
-        - {x: 17, y: 17}
-        - {x: 17, y: -16}
-        - {x: 18, y: -16}
-        - {x: 18, y: 18}
+      - - {x: -2, y: 16}
+        - {x: -16, y: 16}
+        - {x: -16, y: 15}
+        - {x: -3, y: 15}
+        - {x: 3, y: 15}
+        - {x: 14, y: 15}
+        - {x: 15, y: 15}
+        - {x: 15, y: -15}
+        - {x: 16, y: -15}
+        - {x: 16, y: 16}
       tessellationDetail: 0.2
       bones: []
       spriteID: 85ffa74a08d97d14b9358e0ae55b3e4c
@@ -300,20 +300,20 @@ TextureImporter:
       name: spikes_cave_6
       rect:
         serializedVersion: 2
-        x: 36
+        x: 32
         y: 0
-        width: 36
-        height: 36
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: -5, y: 18}
-        - {x: -16, y: 18}
-        - {x: -16, y: 17}
-        - {x: 16, y: 17}
-        - {x: 16, y: 18}
+      - - {x: 16, y: 16}
+        - {x: -16, y: 16}
+        - {x: -16, y: 16}
+        - {x: -16, y: 15}
+        - {x: 16, y: 15}
       tessellationDetail: 0
       bones: []
       spriteID: dabb15a34a37caf46b2ff6c487faa9c0
@@ -326,24 +326,24 @@ TextureImporter:
       name: spikes_cave_7
       rect:
         serializedVersion: 2
-        x: 72
+        x: 64
         y: 0
-        width: 36
-        height: 36
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape:
-      - - {x: 9, y: 17}
-        - {x: 15, y: 17}
-        - {x: 16, y: 18}
-        - {x: -18, y: 18}
-        - {x: -18, y: -16}
-        - {x: -17, y: -16}
-        - {x: -17, y: 17}
-        - {x: 3, y: 17}
-        - {x: 7, y: 17}
+      - - {x: 16, y: 15}
+        - {x: 16, y: 16}
+        - {x: -5, y: 16}
+        - {x: -16, y: 16}
+        - {x: -16, y: 5}
+        - {x: -16, y: -15}
+        - {x: -15, y: -15}
+        - {x: -15, y: 2}
+        - {x: -15, y: 15}
       tessellationDetail: 0.2
       bones: []
       spriteID: 5c41dc9de611dc74199c1048948bfb9b

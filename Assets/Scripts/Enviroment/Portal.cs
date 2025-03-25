@@ -23,11 +23,18 @@ public class Portal : MonoBehaviour
 
         if (levelConnection == LevelConnection.ActiveConnection)
         {
+            MovementCollisionHandler playerHandler =  player.GetComponent<MovementCollisionHandler>();
             player.transform.position = spawnPoint.position;
-            player.GetComponent<Player>().startPosition = spawnPoint.position;
+            while(playerHandler.InGround())
+            {
+                player.transform.Translate(new Vector3(0,0.1f,0));
+            }
+
+            // player.transform.position = spawnPoint.position;
+            player.GetComponent<Player>().startPosition = player.transform.position;
             
             var camera = Camera.main.GetComponent<CameraControls>();
-            if (camera && camera.canMove && !camera.onlyUp && !camera.yAxisOnly) camera.SnapToPosition(spawnPoint);
+            if (camera && camera.canMove && !camera.yAxisOnly) camera.SnapToPosition(spawnPoint);
             player.transform.localScale = new(Mathf.Sign(spawnPoint.localPosition.x),1,1);
         }
     }
@@ -50,8 +57,13 @@ public class Portal : MonoBehaviour
             Player playerScript = player.GetComponent<Player>();
             LevelConnection.ActiveConnection = levelConnection;
             if(playerScript) playerScript.RemovePlayer();
-            GameController.Instance.ResumeTimer();
+            // GameController.Instance.ResumeTimer();
             GameController.Instance.ChangeScene(targetSceneName);
         }
+    }
+
+    public void SetTargetScene(string scene)
+    {
+        targetSceneName = scene;
     }
 }

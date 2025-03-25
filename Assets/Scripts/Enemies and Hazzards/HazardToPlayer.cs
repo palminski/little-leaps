@@ -7,10 +7,13 @@ public class HazardToPlayer : MonoBehaviour
     private GameObject player;
 
     private bool canDamagePlayer = true;
+    private Collider2D boxCollider;
     [SerializeField] public LayerMask collidableLayers;
+    [SerializeField]private bool shouldKillImmunePLayers = false;
     // Start is called before the first frame update
     void Start()
     {
+        boxCollider = GetComponent<Collider2D>();
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
@@ -21,14 +24,19 @@ public class HazardToPlayer : MonoBehaviour
         if (collision.gameObject == player && canDamagePlayer)
         {
            
+            var colliderDistance = boxCollider.Distance(collision);
+            
             Player hitPlayer = player.GetComponent<Player>();
-
-            if (!hitPlayer.IsInvincible())
+            if(Mathf.Abs(colliderDistance.distance) < 0.03f || (Mathf.Abs(colliderDistance.distance) < 0.06f && hitPlayer.GetVelocity().x != 0))
             {
-                int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
-                hitPlayer.Damage(1, directionToShove);
-                // hitPlayer.Shove(directionToShove);
+                return;
             }
+
+            
+                int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
+                hitPlayer.Damage(1, directionToShove, shouldKillImmunePLayers);
+                // hitPlayer.Shove(directionToShove);
+            
         }
     }
 
@@ -36,15 +44,19 @@ public class HazardToPlayer : MonoBehaviour
     {
         if (collision.gameObject == player && canDamagePlayer)
         {
+            var colliderDistance = boxCollider.Distance(collision);
             
             Player hitPlayer = player.GetComponent<Player>();
+            // if(Mathf.Abs(colliderDistance.distance) < 0.03f)
+            // {
+            //     return;
+            // }
 
-            if (!hitPlayer.IsInvincible())
-            {
+            
                 int directionToShove = (player.transform.position.x > transform.position.x) ? 1 : -1;
-                hitPlayer.Damage(1, directionToShove);
+                hitPlayer.Damage(1, directionToShove, shouldKillImmunePLayers);
                 // hitPlayer.Shove(directionToShove);
-            }
+            
         }
     }
 
@@ -59,10 +71,16 @@ public class HazardToPlayer : MonoBehaviour
         Collider2D overlapCollider = Physics2D.OverlapBox(boxCenter,boxSize,0,collidableLayers);
         if (overlapCollider != null) {
             Player playerComponent = overlapCollider.GetComponent<Player>();
-            if (playerComponent)
+            if (playerComponent && shouldDamagePlayer)
             {
-                playerComponent.Damage(1, 0);
+                
+                playerComponent.Damage(1, 0, shouldKillImmunePLayers);
             }
         } 
+    }
+
+    public bool IsCurrentlyDangerous()
+    {
+        return canDamagePlayer;
     }
 }

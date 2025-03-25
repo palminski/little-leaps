@@ -7,10 +7,10 @@ using UnityEngine;
 public class EnemyFloatAimless : MonoBehaviour
 {
     [SerializeField]
-    private float speed = 0.35f;
+    public float speed = 0.35f;
 
     [SerializeField]
-    private Vector2 startDirection;
+    public Vector2 startDirection;
     
     private Vector2 direction = new(1,1);
     

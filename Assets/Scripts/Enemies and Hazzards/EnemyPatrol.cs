@@ -7,7 +7,7 @@ using UnityEngine;
 public class EnemyPatrol : MonoBehaviour
 {
     [SerializeField]
-    private float speed = 0.35f;
+    public float speed = 0.35f;
 
     [SerializeField]
     private bool scaredOfHeights = false;
@@ -20,10 +20,10 @@ public class EnemyPatrol : MonoBehaviour
     [SerializeField]
     private float hopDetectionHeight = 1;
 
-private Enemy enemy;
+    private Enemy enemy;
 
     [SerializeField]
-    private bool startRight = true;
+    public bool startRight = true;
 
     [SerializeField]
     private float jumpPower = 1f;
@@ -54,9 +54,9 @@ private Enemy enemy;
 
         velocity.y -= gravity;
 
-    if (canHop && ShouldJump() && movementCollisionHandler.collisionInfo.below)
+        if (canHop && ShouldJump() && movementCollisionHandler.collisionInfo.below)
         {
-            
+
             velocity.y = jumpPower;
         }
 
@@ -70,7 +70,7 @@ private Enemy enemy;
         {
             TurnAround();
         }
-        
+
 
 
     }
@@ -104,7 +104,7 @@ private Enemy enemy;
     {
         Vector2 rayStartPosition = collider2d.bounds.center;
         rayStartPosition.x += direction * collider2d.bounds.extents.x;
-        rayStartPosition.y -= collider2d.bounds.extents.y-0.005f;
+        rayStartPosition.y -= collider2d.bounds.extents.y - 0.005f;
 
 
         Debug.DrawRay(rayStartPosition, new Vector3(hopDetectionDist * direction, 0, 0), Color.red);
@@ -126,7 +126,7 @@ private Enemy enemy;
     {
         yield return new WaitForFixedUpdate();
 
-        if (movementCollisionHandler.InGround()) 
+        if (movementCollisionHandler.InGround())
         {
             enemy.KillEnemy();
             StopAllCoroutines();

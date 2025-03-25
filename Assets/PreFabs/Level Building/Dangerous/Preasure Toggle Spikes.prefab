@@ -57,7 +57,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: -876546973899608171, guid: 594e6d39d37d28b4ab03014ddf0c17f3, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -77,8 +77,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
-  m_Sprite: {fileID: 379543412, guid: 38ed4088201423b48b4a53e81fa980e2, type: 3}
+  m_SortingOrder: 44
+  m_Sprite: {fileID: -1340561300, guid: 47f085b516e8a5240abdd076eb663d6d, type: 3}
   m_Color: {r: 1, g: 0.045656387, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -99,7 +99,7 @@ Animator:
   m_GameObject: {fileID: 6447878430202715409}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 9dd7ef3e27bdb114b836be5da7f6d5c4, type: 2}
+  m_Controller: {fileID: 9100000, guid: 2d302a85cfc0db74a8ba15d0de74363f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -124,7 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collidableLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!61 &7179925340292706149
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -159,7 +159,7 @@ BoxCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
-    border: {x: 0, y: 2, z: 0, w: 0}
+    border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 1, y: 2}
     newSize: {x: 1, y: 2}
@@ -168,7 +168,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.05}
+  m_Size: {x: 1, y: 0.06}
   m_EdgeRadius: 0
 --- !u!50 &4521275679029596129
 Rigidbody2D:
@@ -209,6 +209,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77419e01fef5c2c45915d1f38a98bc21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToExtend: 0.2
+  timeToExtend: 0.34
   timeToRetract: 1.1
   timeToRetractOnPlainJump: 1.3

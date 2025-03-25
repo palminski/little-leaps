@@ -82,7 +82,11 @@ public class ColorSwapper : MonoBehaviour
             if (spriteRenderer) spriteRenderer.color = colorForRS0;
             if (tilemap) tilemap.color = colorForRS0;
             if (image) image.color = colorForRS0;
-            if (text) text.color = colorForRS0;
+            if (text) {
+                text.color = colorForRS0;
+                text.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, colorForRS0 * 2f);
+                text.fontMaterial.SetFloat(ShaderUtilities.ID_GlowPower, 40000f);
+            }
             if (light2D) light2D.color = colorForRS0;
             if (partSys) {
                 UpdateParticles(colorForRS0);
@@ -95,7 +99,11 @@ public class ColorSwapper : MonoBehaviour
             if (spriteRenderer) spriteRenderer.color = colorForRS1;
             if (tilemap) tilemap.color = colorForRS1;
             if (image) image.color = colorForRS1;
-            if (text) text.color = colorForRS1;
+            if (text) {
+                text.color = colorForRS1;
+                text.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, colorForRS1 * 2f);
+                text.fontMaterial.SetFloat(ShaderUtilities.ID_GlowPower, 40000f);
+            }
             if (light2D) light2D.color = colorForRS1;
             if (partSys) {
                 UpdateParticles(colorForRS1);

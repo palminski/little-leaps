@@ -37,11 +37,26 @@ public static class SaveDataManager
         return loadedData;
     }
 
+    public static void DeleteGameData() {
+        SaveData loadedData;
+        loadedData = new SaveData();
+        Debug.Log("File Not Found or Data Unable to load. Recreating new save data");
+        SaveGameData(loadedData);
+    }
+
     public static void AddPermanentCollectedString(String stringToAdd)
     {
         SaveData gameData = LoadGameData();
         if (gameData.permanentCollectedObjects.Contains(stringToAdd)) return;
         gameData.permanentCollectedObjects.Add(stringToAdd);
+        SaveGameData(gameData);
+    }
+
+    public static void RemovePermanentCollectedString(String stringToRemove)
+    {
+        SaveData gameData = LoadGameData();
+        if (!gameData.permanentCollectedObjects.Contains(stringToRemove)) return;
+        gameData.permanentCollectedObjects.Remove(stringToRemove);
         SaveGameData(gameData);
     }
 }

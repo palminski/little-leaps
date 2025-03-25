@@ -10,9 +10,11 @@ public class bullet : MonoBehaviour
     private Vector3 direction;
 
     public ParticleSystem ps;
+    [SerializeField] public GameObject shatterObject;
 
     void OnEnable()
     {
+        ps.Clear();
         ps.transform.position = transform.position;
         ps.transform.SetParent(transform);
         ps.Play();
@@ -32,23 +34,31 @@ public class bullet : MonoBehaviour
     {
         if (hitCollider.gameObject.CompareTag("PlayerAttack"))
         {
+
             return;
         }
         if (hitCollider.gameObject.CompareTag("Player"))
         {
+
             
             ps.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-            ps.transform.SetParent(null);
+            Player hitPlayer = hitCollider.GetComponent<Player>();
+            hitPlayer.Damage(1);
+            ps.transform.SetParent(null,worldPositionStays: true);
             gameObject.SetActive(false);
+            if (shatterObject) GameController.Instance.PullFromPool(shatterObject, transform.position);
         }
         else if (hitCollider.gameObject.layer == LayerMask.NameToLayer("Solid"))
         {
+
             ps.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-            ps.transform.SetParent(null);
+            ps.transform.SetParent(null,worldPositionStays: true);
             gameObject.SetActive(false);
+            if (shatterObject) GameController.Instance.PullFromPool(shatterObject, transform.position);
         }
 
         
 
     }
+
 }
