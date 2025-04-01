@@ -93,10 +93,7 @@ public class Lift : MonoBehaviour
                 // GameController.Instance.ChangeScene(targetSceneName);
                 isMoving = true;
 
-                if (SceneManager.GetActiveScene().name == GlobalConstants.lastScene)
-                {
-                    GameController.Instance.IncreasePrestige(1);
-                }
+            
 
                 StartCoroutine(WaitAndChangeScene());
         }

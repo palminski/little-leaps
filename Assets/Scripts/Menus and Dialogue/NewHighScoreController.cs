@@ -205,8 +205,6 @@ public class NewHighScoreController : MonoBehaviour
     {
         GameController.Instance.UpdateHighScores(string.Concat(letter0, letter1, letter2));
         yield return new WaitForSeconds(1f);
-        print("TESTING");
-        print(GameController.Instance.ShouldSkipGameOver);
         if (GameController.Instance.ShouldSkipGameOver)
         {
             GameController.Instance.SetShouldSkipGameover(false);

@@ -48,15 +48,12 @@ public class InputController : MonoBehaviour
         PlayerInput[] playerInputs = FindObjectsOfType<PlayerInput>();
         foreach (var input in playerInputs)
         {
-            print("updating binding");
             LoadBinding(input);
         }
     }
 
     public void LoadBinding(PlayerInput input)
     {
-        print("In Binding Controller");
-
         // foreach (var action in input.actions)
         // {
         //     print(action.name);
@@ -126,7 +123,6 @@ public class InputController : MonoBehaviour
         var action = playerInput.actions.FindAction(actionName);
         if (action == null)
         {
-            Debug.LogError($"Action '{actionName}' was not found");
             return;
         }
 
@@ -147,7 +143,6 @@ public class InputController : MonoBehaviour
 
         if (bindingIndex == -1)
         {
-            Debug.LogError($"No Bindings Found FOr '{actionName}' on '{controlScheme}'");
             return;
         }
 
@@ -178,8 +173,6 @@ public class InputController : MonoBehaviour
         SaveDataManager.SaveGameData(saveData);
 
 
-
-        print(controlScheme + " Reset");
         OnRestoredToDefault?.Invoke();
 
         // print(lastUsedSCheme);
@@ -188,9 +181,7 @@ public class InputController : MonoBehaviour
     public void SetLastUsedDevice(string device)
     {
         if(device == null) return;
-        print(device);
         lastUsedDevice = device;
-        print(lastUsedDevice);
     }
     public string GetLastUsedDevice()
     {

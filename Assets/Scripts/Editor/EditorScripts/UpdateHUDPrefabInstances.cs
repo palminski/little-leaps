@@ -50,10 +50,8 @@ public class UpdateHUDPrefabInstances : EditorWindow
             if (sceneModified)
             {
                 EditorSceneManager.SaveScene(scene);
-                Debug.Log($"Updates prefab instances in scene: {scene.name}");
             }
         }
-        Debug.Log($"Comblete");
     }
 
     private static bool RevertPrefabInstances(GameObject obj, GameObject prefab)

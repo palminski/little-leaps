@@ -69,16 +69,17 @@ public class SaveData
     
     // Permanent Saved Data
     public List<HighScore> highScores = new List<HighScore>{
-        new("RABIT", 100000),
-        new("MIM", 77800),
+        
         new("LIF", 77600),
+        new("MIM", 70000),
+        new("WKA", 60000),
         new("WIL", 50000),
         new("KAT", 40000),
         new("BEN", 25000),
         new("SMN", 10000),
         new("KEV", 7500),
-        new("WKA", 5000),
-        new("TST", 1000),
+        new("KAI", 5000),
+        new("DRW", 1000),
     };
 
     public List<BestTime> bestTimes = new List<BestTime>();

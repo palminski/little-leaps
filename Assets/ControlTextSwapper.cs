@@ -38,14 +38,38 @@ public class ControlTextSwapper : MonoBehaviour
                         {
                             if (binding.path.Contains(currentControlScheme == "Gamepad" ? "Gamepad" : "Keyboard"))
                             {
-                                print(binding.ToDisplayString());
-                                worldDialogue.textToType = worldDialogue.textToType.Replace("[BINDING]", "[ " + binding.ToDisplayString() + " ]");
+                                worldDialogue.textToType = worldDialogue.textToType.Replace("[BINDING]", "[ " + AdjustAndGetInputString(currentControlScheme, binding.ToDisplayString()) + " ]");
                                 break;
                             }
                         }
                     }
                 }
             }
+    }
+
+    string AdjustAndGetInputString(string currentControlScheme, string bindingString)
+    {
+        if (currentControlScheme != "Gamepad")
+        {
+            return bindingString;
+        }
+        if (bindingString == "A")
+        {
+            return "Button South";
+        }
+        if (bindingString == "B")
+        {
+            return "Button East";
+        }
+        if (bindingString == "X")
+        {
+            return "Button West";
+        }
+        if (bindingString == "Y")
+        {
+            return "Button North";
+        }
+        return bindingString;
     }
 
     // Update is called once per frame

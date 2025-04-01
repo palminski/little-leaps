@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using Unity.VisualScripting.Dependencies.NCalc;
 using Unity.VisualScripting;
+using Steamworks;
 
 public class FollowingObject
 {
@@ -199,8 +200,7 @@ public class GameController : MonoBehaviour
 
         if (Instance == null)
         {
-            Application.targetFrameRate = 60;
-            QualitySettings.vSyncCount = 0;
+            ApplyGraphicsSettings();
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
@@ -222,9 +222,6 @@ public class GameController : MonoBehaviour
     }
     void Update()
     {
-
-
-
         if (timerMoving)
         {
             bonusTimer -= Time.deltaTime;
@@ -239,53 +236,14 @@ public class GameController : MonoBehaviour
                 timerMoving = false;
             }
         }
-
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            string currentSceneName = SceneManager.GetActiveScene().name;
-            if (int.TryParse(currentSceneName, out int currentSceneNumber))
-            {
-                int nextSceneNumber = currentSceneNumber + 1;
-                string nextSceneName = nextSceneNumber.ToString();
-
-                if (Application.CanStreamedLevelBeLoaded(nextSceneName))
-                {
-                    SceneManager.LoadScene(nextSceneName);
-                }
-                else
-                {
-                    ChangeScene("0");
-                }
-            }
-            else
-            {
-                return;
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            string currentSceneName = SceneManager.GetActiveScene().name;
-            if (int.TryParse(currentSceneName, out int currentSceneNumber))
-            {
-                int nextSceneNumber = currentSceneNumber - 1;
-                string nextSceneName = nextSceneNumber.ToString();
-
-                if (Application.CanStreamedLevelBeLoaded(nextSceneName))
-                {
-                    SceneManager.LoadScene(nextSceneName);
-                }
-                else
-                {
-                    ChangeScene("100");
-                }
-            }
-            else
-            {
-                return;
-            }
-        }
     }
+
+    public void ApplyGraphicsSettings()
+    {
+        Application.targetFrameRate = PlayerPrefs.HasKey("TargetFPS") ? PlayerPrefs.GetInt("TargetFPS") : 0;
+        QualitySettings.vSyncCount = 0;
+    }
+
     private void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
         levelChangerAnimator.Play("Fade_In", 0, 0f);
@@ -441,6 +399,25 @@ public class GameController : MonoBehaviour
         {
             gameData.highScores.RemoveAt(gameData.highScores.Count - 1);
         }
+        if (SteamManager.Initialized)
+        {
+            if (score > 77600)
+            {
+                SteamUserStats.SetAchievement("ACH_HIGH_SCORE");
+                SteamUserStats.StoreStats();
+            }
+            if (score >= 1000000)
+            {
+                SteamUserStats.SetAchievement("ACH_MILLION");
+                SteamUserStats.StoreStats();
+            }
+            if (score >= 2000000)
+            {
+                SteamUserStats.SetAchievement("ACH_MULTI_MILLION");
+                SteamUserStats.StoreStats();
+            }
+
+        }
         SaveDataManager.SaveGameData(gameData);
     }
 
@@ -587,10 +564,6 @@ public class GameController : MonoBehaviour
 
     public int ChangeCharge(int chargeChange)
     {
-        print("Session Healing => " + sessionHealing);
-        print("Charge Max => " + ChargeMax);
-        print("Charge Change => " + chargeChange);
-        print("Multiplied => " + (int)(chargeChange * sessionHealing));
         charge += (int)(chargeChange * sessionHealing);
         if (charge >= ChargeMax)
         {
@@ -646,7 +619,6 @@ public class GameController : MonoBehaviour
 
             if (entry.Value != null)
             {
-                print(entry.Value);
                 OldFollowPlayer followPlayer = entry.Value.Object.GetComponent<OldFollowPlayer>();
                 if (followPlayer)
                 {
@@ -759,11 +731,6 @@ public class GameController : MonoBehaviour
     private void OnApplicationQuit()
     {
         SaveGame();
-    }
-
-    public void TestDialogueSystem()
-    {
-        Debug.Log("TEST");
     }
 
     public void ShowPointCounter(int pointsToAdd, Vector3 position, bool isCombo = true)

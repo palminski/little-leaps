@@ -9,6 +9,9 @@ using UnityEngine.InputSystem;
 using Unity.VisualScripting.Dependencies.NCalc;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UnityEngine.TextCore.Text;
+using Steamworks;
+using UnityEngine.SocialPlatforms.Impl;
 
 [Serializable]
 public class MenuOption
@@ -33,6 +36,7 @@ public class MainMenu : MonoBehaviour
     // public TMP_Text maxLivesMenu;
     // public TMP_Text healingMenu;
     public TMP_Text controlMenu;
+    public TMP_Text graphicMenu;
     private PlayerInput playerInput;
     private int selectedIndex;
     public MenuOption[] currentOptions;
@@ -42,9 +46,19 @@ public class MainMenu : MonoBehaviour
     // public MenuOption[] maxLivesOptions;
     // public MenuOption[] healingOptions;
     public MenuOption[] controlOptions;
+    public MenuOption[] graphicOptions;
     public StartingText startingText;
     private List<string> permCollected;
     public Dictionary<string, MenuOption> levelDictionary;
+
+    //=======================================
+    private SteamLeaderboard_t leaderboard;
+    private bool leaderboardReady = false;
+    private int localScore;
+    private CallResult<LeaderboardFindResult_t> findResult;
+    private CallResult<LeaderboardScoreUploaded_t> uploadResult;
+    private CallResult<LeaderboardScoresDownloaded_t> downloadResult;
+    private string leaderboardText = "loading Leaderboard...";
 
     void Start()
     {
@@ -63,6 +77,8 @@ public class MainMenu : MonoBehaviour
 
         GameController.Instance.SetShouldSkipGameover(false);
 
+        ManageHighScores();
+
     }
 
     void OnEnable()
@@ -78,7 +94,7 @@ public class MainMenu : MonoBehaviour
     {
         InputController.Instance.OnFinishedRebind -= HandleFinishedRebind;
         InputController.Instance.OnRestoredToDefault -= HandleFinishedBindingReset;
-       
+
         if (playerInput != null && InputController.Instance != null)
         {
             InputController.Instance.SetLastUsedDevice(playerInput.currentControlScheme);
@@ -115,6 +131,11 @@ public class MainMenu : MonoBehaviour
         SetCurrentMenu(controlOptions, controlMenu);
     }
 
+    public void AdjustGraphics()
+    {
+        SetCurrentMenu(graphicOptions, graphicMenu);
+    }
+
     public void StartLevel(string levelToStart)
     {
         if (playerInput != null && InputController.Instance != null)
@@ -125,7 +146,7 @@ public class MainMenu : MonoBehaviour
         GameController.Instance.ResetGameState();
 
         var permCollected = SaveDataManager.LoadGameData().permanentCollectedObjects;
-        
+
         if (permCollected.Contains("RABIT escaped"))
         {
             GameController.Instance.SetCheckPoint(levelToStart);
@@ -161,14 +182,13 @@ public class MainMenu : MonoBehaviour
         GameController.Instance.ChangeScene("maze_end");
     }
 
-    public void Debug()
-    {
-        print("Debug");
-        SaveDataManager.DeleteGameData();
-        PlayerPrefs.DeleteAll();
-        GameController.Instance.ChangeScene("Main Menu");
+    // public void Debug()
+    // {
+    //     SaveDataManager.DeleteGameData();
+    //     PlayerPrefs.DeleteAll();
+    //     GameController.Instance.ChangeScene("Main Menu");
 
-    }
+    // }
 
     public void Shift()
     {
@@ -177,7 +197,6 @@ public class MainMenu : MonoBehaviour
 
     public void ExitGame()
     {
-        print("Exit Game");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -327,6 +346,7 @@ public class MainMenu : MonoBehaviour
         // if (maxLivesMenu) maxLivesMenu.gameObject.SetActive(false);
         // if (healingMenu) healingMenu.gameObject.SetActive(false);
         if (controlMenu) controlMenu.gameObject.SetActive(false);
+        if (graphicMenu) graphicMenu.gameObject.SetActive(false);
     }
 
     private string ParseSideText(MenuOption option)
@@ -374,7 +394,7 @@ public class MainMenu : MonoBehaviour
                     }
                     else
                     {
-                        textToDisplay += $"-- {kvp.Key} Node{(kvp.Key !=1 ? 's' : ' ')} Required --\n\n";
+                        textToDisplay += $"-- {kvp.Key} Node{(kvp.Key != 1 ? 's' : ' ')} Required --\n\n";
                         // exitedEarly = true;
                         // break;
                     }
@@ -391,6 +411,17 @@ public class MainMenu : MonoBehaviour
                 textToParse = textToParse.Replace("[SCORE THRESHOLDS]", textToDisplay);
             }
 
+            if (option.sideText.Contains("[FPS]"))
+            {
+                textToParse = textToParse.Replace("[FPS]", "[ " + (PlayerPrefs.HasKey("TargetFPS") ? PlayerPrefs.GetInt("TargetFPS") : "Uncapped") + " ]");
+
+            }
+
+            if (option.sideText.Contains("[LEADERBOARD]"))
+            {
+                textToParse = textToParse.Replace("[LEADERBOARD]", leaderboardText);
+
+            }
 
             //Write Out Text For Controls
             // BestTime existingTime = saveData.bestTimes.FirstOrDefault(time => time.level == option.levelKey);
@@ -406,7 +437,7 @@ public class MainMenu : MonoBehaviour
                         {
                             if (binding.path.Contains(currentControlScheme == "Gamepad" ? "Gamepad" : "Keyboard"))
                             {
-                                textToParse = textToParse.Replace("[BINDING]", "[ " + binding.ToDisplayString() + " ]");
+                                textToParse = textToParse.Replace("[BINDING]", "[ " + AdjustAndGetInputString(currentControlScheme, binding.ToDisplayString()) + " ]");
                                 break;
                             }
                         }
@@ -414,8 +445,35 @@ public class MainMenu : MonoBehaviour
                 }
             }
 
+
+
         }
         return textToParse;
+    }
+
+    string AdjustAndGetInputString(string currentControlScheme, string bindingString)
+    {
+        if (currentControlScheme != "Gamepad")
+        {
+            return bindingString;
+        }
+        if (bindingString == "A")
+        {
+            return "Button South";
+        }
+        if (bindingString == "B")
+        {
+            return "Button East";
+        }
+        if (bindingString == "X")
+        {
+            return "Button West";
+        }
+        if (bindingString == "Y")
+        {
+            return "Button North";
+        }
+        return bindingString;
     }
 
     public void SetSideText(string newSideText)
@@ -476,7 +534,7 @@ public class MainMenu : MonoBehaviour
         // return;
         InputController.Instance.StartRebinding(actionName, playerInput.currentControlScheme != null ? playerInput.currentControlScheme : "Keyboard", updatedBinding =>
         {
-            print("Rebound!" + updatedBinding);
+
         });
         SetSideText("Awaiting Input...");
     }
@@ -499,5 +557,155 @@ public class MainMenu : MonoBehaviour
     private void HandleFinishedBindingReset()
     {
         SetSideText("Controls Reset!");
+    }
+
+    public void SetFPS(int targetFPS)
+    {
+        if (targetFPS == 0)
+        {
+            if (PlayerPrefs.HasKey("TargetFPS"))
+            {
+                PlayerPrefs.DeleteKey("TargetFPS");
+                PlayerPrefs.Save();
+                if (startingText.isFinishedTyping) startingText.SetSideText(ParseSideText(currentOptions[selectedIndex]));
+            }
+            return;
+        }
+        PlayerPrefs.SetInt("TargetFPS", targetFPS);
+        PlayerPrefs.Save();
+        GameController.Instance.ApplyGraphicsSettings();
+        if (startingText.isFinishedTyping) startingText.SetSideText(ParseSideText(currentOptions[selectedIndex]));
+    }
+
+    // ========================================
+    private void ManageHighScores()
+    {
+        if (SteamManager.Initialized)
+        {
+            // My Highest Score
+            SaveData gameData = SaveDataManager.LoadGameData();
+            gameData.highScores.Sort((a, b) => b.score.CompareTo(a.score));
+            HighScore highScore = gameData.highScores.First();
+            int score = highScore.score;
+
+            string name = SteamFriends.GetPersonaName();
+            localScore = score;
+
+            //Call leaderboard
+            SteamAPICall_t handle = SteamUserStats.FindOrCreateLeaderboard(
+                "Top VNT Yields",
+                ELeaderboardSortMethod.k_ELeaderboardSortMethodDescending,
+                ELeaderboardDisplayType.k_ELeaderboardDisplayTypeNumeric
+            );
+
+            findResult = CallResult<LeaderboardFindResult_t>.Create(OnLeaderboardFound);
+            findResult.Set(handle);
+        }
+    }
+
+    void OnLeaderboardFound(LeaderboardFindResult_t result, bool bIOFailure)
+    {
+        if (bIOFailure)
+        {
+            Debug.LogError("Steam I/O Failure while finding leaderboard");
+            leaderboardText = "leaderboard could not be loaded.";
+            return;
+        }
+        if (result.m_bLeaderboardFound == 0)
+        {
+            Debug.LogError("Leaderboard not found and could not be created");
+            leaderboardText = "leaderboard could not be loaded.";
+            return;
+        }
+        leaderboard = result.m_hSteamLeaderboard;
+        leaderboardReady = true;
+        UploadScore(localScore);
+
+    }
+
+    void UploadScore(int score)
+    {
+        SteamAPICall_t handle = SteamUserStats.UploadLeaderboardScore(
+            leaderboard,
+            ELeaderboardUploadScoreMethod.k_ELeaderboardUploadScoreMethodKeepBest,
+            score,
+            null,
+            0
+        );
+
+        uploadResult = CallResult<LeaderboardScoreUploaded_t>.Create(OnScoreUploaded);
+        uploadResult.Set(handle);
+    }
+
+    void OnScoreUploaded(LeaderboardScoreUploaded_t result, bool bIOFailure)
+    {
+        if (bIOFailure || result.m_bSuccess == 0)
+        {
+            Debug.LogWarning("Score not updated");
+        }
+        else
+        {
+        }
+        DownloadLeaderboard();
+    }
+
+    void DownloadLeaderboard()
+    {
+        SteamAPICall_t handle = SteamUserStats.DownloadLeaderboardEntries(
+            leaderboard,
+            ELeaderboardDataRequest.k_ELeaderboardDataRequestFriends,
+            0,
+            0
+        );
+        downloadResult = CallResult<LeaderboardScoresDownloaded_t>.Create(OnScoresDownloaded);
+        downloadResult.Set(handle);
+    }
+
+    void OnScoresDownloaded(LeaderboardScoresDownloaded_t result, bool bIOFailure)
+    {
+        if (bIOFailure)
+        {
+            Debug.LogError("Failed to download leaderboard");
+            return;
+        }
+
+        int entryCount = result.m_cEntryCount;
+        leaderboardText = $@"Leaderboard - Readout Start
+-----------------------------------
+
+Pilot VNT Records:
+
+";
+        int i = 0;
+        while (i < entryCount && i < 10)
+        {
+            LeaderboardEntry_t entry;
+            SteamUserStats.GetDownloadedLeaderboardEntry(result.m_hSteamLeaderboardEntries, i, out entry, null, 0);
+            string friendName = SteamFriends.GetFriendPersonaName(entry.m_steamIDUser);
+            if (friendName.Length > 10)
+            {
+                friendName = friendName.Substring(0, 10);
+            }
+            else
+            {
+                friendName = friendName.PadRight(10);
+            }
+            string textEntry = $"{friendName} : {entry.m_nScore}";
+            leaderboardText = leaderboardText + textEntry + "\n";
+            i++;
+        }
+        while (i < 10)
+        {
+            leaderboardText = leaderboardText + "\n";
+            i++;
+        }
+
+        leaderboardText += $@"
+        
+
+        
+
+-----------------------------------
+Readout End";
     }
 }

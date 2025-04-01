@@ -9,7 +9,6 @@ public class AudioController : MonoBehaviour
     public AudioClip bgMusic;
     public bool shouldStopMusic = false;
 
-    public float bgVolume = 1;
 
     [SerializeField] private AudioClip[] jumps;
     [SerializeField] private AudioClip[] dashes;
@@ -34,6 +33,7 @@ public class AudioController : MonoBehaviour
     [SerializeField] private AudioClip[] liftMoves;
     [SerializeField] private AudioClip[] blueBlocks;
     [SerializeField] private AudioClip[] gameOvers;
+    [SerializeField] private AudioClip[] victories;
 
     private AudioSource audioSource;
     private AudioSource typingAudioSource;
@@ -55,6 +55,8 @@ public class AudioController : MonoBehaviour
             if (shouldStopMusic)
             {
                 Instance.audioSource.Stop();
+                Instance.bgMusic = null;
+
             }
             Destroy(gameObject);
             return;
@@ -168,7 +170,7 @@ public class AudioController : MonoBehaviour
 
     public void PlayEnemyShot()
     {
-        if (PlayerPrefs.HasKey("SFXOff")) return;
+        if (PlayerPrefs.HasKey("SFXOff") || bgMusic == null) return;
         if(enemyShots.Length == 0) return;
         AudioClip soundEffect = enemyShots[Random.Range(0,enemyShots.Length)];
         AudioSource tempAudioSource = gameObject.AddComponent<AudioSource>();
@@ -243,7 +245,7 @@ public class AudioController : MonoBehaviour
     }
     public void PlayPistonNoise(float scale)
     {
-        if (PlayerPrefs.HasKey("SFXOff")) return;
+        if (PlayerPrefs.HasKey("SFXOff") || bgMusic == null) return;
         if(pistons.Length == 0) return;
         AudioClip soundEffect = pistons[Random.Range(0,pistons.Length)];
         AudioSource tempAudioSource = gameObject.AddComponent<AudioSource>();
@@ -269,7 +271,7 @@ public class AudioController : MonoBehaviour
 
     public void PlayBlueBlokcs()
     {
-        if (PlayerPrefs.HasKey("SFXOff")) return;
+        if (PlayerPrefs.HasKey("SFXOff") || bgMusic == null) return;
         if(blueBlocks.Length == 0) return;
         AudioClip soundEffect = blueBlocks[Random.Range(0,blueBlocks.Length)];
         AudioSource tempAudioSource = gameObject.AddComponent<AudioSource>();
@@ -308,7 +310,7 @@ public class AudioController : MonoBehaviour
         if(moveCursor.Length == 0) return;
         AudioClip soundEffect = moveCursor[Random.Range(0,moveCursor.Length)];
         AudioSource tempAudioSource = gameObject.AddComponent<AudioSource>();
-        tempAudioSource.volume = 0.6f;
+        tempAudioSource.volume = 0.3f;
 
         // tempAudioSource.pitch = Random.Range(0.9f, 1.1f);
         tempAudioSource.PlayOneShot(soundEffect);
@@ -320,6 +322,7 @@ public class AudioController : MonoBehaviour
         if(select.Length == 0) return;
         AudioClip soundEffect = select[Random.Range(0,select.Length)];
         AudioSource tempAudioSource = gameObject.AddComponent<AudioSource>();
+        tempAudioSource.volume = 0.3f;
 
         tempAudioSource.pitch = 1.5f;
         tempAudioSource.PlayOneShot(soundEffect);
@@ -331,6 +334,7 @@ public class AudioController : MonoBehaviour
         if(back.Length == 0) return;
         AudioClip soundEffect = back[Random.Range(0,back.Length)];
         AudioSource tempAudioSource = gameObject.AddComponent<AudioSource>();
+        tempAudioSource.volume = 0.3f;
 
         // tempAudioSource.pitch = Random.Range(0.9f, 1.1f);
         tempAudioSource.PlayOneShot(soundEffect);
@@ -341,7 +345,7 @@ public class AudioController : MonoBehaviour
     {
         if(typingBlips.Length == 0 || PlayerPrefs.HasKey("SFXOff")) return;
         AudioClip soundEffect = typingBlips[Random.Range(0,typingBlips.Length)];
-        typingAudioSource.volume = 0.1f;
+        typingAudioSource.volume = 0.03f;
         typingAudioSource.pitch = Random.Range(0.87f, 0.93f);
         typingAudioSource.PlayOneShot(soundEffect);
     }
@@ -349,7 +353,19 @@ public class AudioController : MonoBehaviour
     public void PlayGameOver()
     {
         if(gameOvers.Length == 0 || PlayerPrefs.HasKey("MusicOff")) return;
+        audioSource.Stop();
+        bgMusic = null;
         AudioClip soundEffect = gameOvers[Random.Range(0,gameOvers.Length)];
+        AudioSource tempAudioSource = gameObject.AddComponent<AudioSource>();
+        tempAudioSource.PlayOneShot(soundEffect);
+    }
+
+    public void PlayVictory()
+    {
+        if(victories.Length == 0 || PlayerPrefs.HasKey("MusicOff")) return;
+        audioSource.Stop();
+        bgMusic = null;
+        AudioClip soundEffect = victories[Random.Range(0,victories.Length)];
         AudioSource tempAudioSource = gameObject.AddComponent<AudioSource>();
         tempAudioSource.PlayOneShot(soundEffect);
     }
@@ -376,7 +392,9 @@ public class AudioController : MonoBehaviour
     //MUSIC===========================================================================
     public void UpdateAndPlayBGMusic() {
         audioSource.Stop();
-        audioSource.volume = bgVolume;
+        StopAllCoroutines();
+        audioSource.volume = 1;
+        // audioSource.volume = bgVolume;
         audioSource.clip = bgMusic;
         if (audioSource.clip != null && !PlayerPrefs.HasKey("MusicOff"))
         {
@@ -411,5 +429,19 @@ public class AudioController : MonoBehaviour
         PlayerPrefs.SetInt("SFXOff",1);
         PlayerPrefs.Save();
         // SetCurrentMenu(menuOptions, mainMenu);
+    }
+
+    public void StartMusicFade()
+    {
+        StartCoroutine(FadeMusic());
+    }
+
+    IEnumerator FadeMusic()
+    {
+        while (audioSource.volume > 0)
+        {
+            yield return new WaitForSecondsRealtime(0.05f);
+            audioSource.volume -= 0.05f;
+        }
     }
 }

@@ -19,7 +19,7 @@ public class RuneCollectionTerminal : MonoBehaviour
         id = $"{SceneManager.GetActiveScene().buildIndex}{transform.position.x}{transform.position.y}";
         if (GameController.Instance.CollectedObjects.Contains(id)) wasUsed = true;
         player = GameObject.FindGameObjectWithTag("Player");
-        if (!wasUsed) runeObject.SetActive(false);
+        // if (!wasUsed) runeObject.SetActive(false);
 
         GameController.Instance.SavedSprites.TryGetValue(id, out Sprite savedSprite);
         if (savedSprite != null)

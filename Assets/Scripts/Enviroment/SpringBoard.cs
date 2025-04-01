@@ -53,7 +53,6 @@ public class SpringBoard : MonoBehaviour
         if (activeDuration > 0)
         {
             Player playerComponent = hitCollider.GetComponent<Player>();
-            print(hitCollider.gameObject);
             if (playerComponent)
             {
                 if (sr.isVisible) if (AudioController.Instance != null) AudioController.Instance.PlaySpringNoise();

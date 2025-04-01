@@ -918,6 +918,7 @@ public class Player : MonoBehaviour
     }
     void OnToggleRoom()
     {
+        if (Time.timeScale == 0) return;
         GameController.Instance.ToggleRoomState();
     }
     void OnOpenMenu()

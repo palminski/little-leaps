@@ -160,6 +160,11 @@ public class Button : MonoBehaviour
             float levelTime = GameController.Instance.StartingTimer - remainingTime;
 
             int foundChips = GameController.Instance.SectionChips;
+            GameController.Instance.ChangeHealth(foundChips + 1);
+            if (foundChips >= 3)
+            {
+                GameController.Instance.ChangeHealth(1);
+            }
 
             GameController.Instance.StopTimer();
             GameController.Instance.UpdateInstability(1);
@@ -169,6 +174,7 @@ public class Button : MonoBehaviour
             GameController.Instance.TagObjectStringAsCollected(id);
             GameController.Instance.TagObjectStringAsCollectedForSession(stringForFunction);
             SaveDataManager.AddPermanentCollectedString(stringForFunction);
+            if (AudioController.Instance != null) AudioController.Instance.PlayVictory();
 
 
             SaveData saveData = SaveDataManager.LoadGameData();
@@ -286,11 +292,11 @@ Message End";
         if (GameController.Instance.Health < 3)
         {
             string[] options = {
-            "> Whew, I am feeling a bit tired.",
-            "> Feelin a bit tired Boss.",
-            "> That was a close call Boss.",
+            "> Whew, feeling a bit tired.",
+            "> Feelin a bit tired ...",
+            "> That was a close call!",
             "> I'm not sure how much farther we can go.",
-            "> We can't give up here Boss.",
+            "> Can't give up here...",
             "> When the going gets tough...",
             };
             return options[Random.Range(0, options.Length)];
@@ -298,9 +304,8 @@ Message End";
         else if (wasWellDone)
         {
             string[] options = {
-            "> Looks like we got all the CAROTs Boss!",
-            "> Easy as pie Boss!",
-            "> All CAROTs accounted for Boss!",
+            "> Easy as pie!",
+            "> All CAROTs accounted for!",
             "> Solid sector clear!",
             "> That was nothin!",
             "> Nothing to it!",
@@ -310,12 +315,12 @@ Message End";
         else
         {
             string[] options = {
-            "> How was that Boss?",
-            "> Clearin the sector Boss!",
-            "> Way to go Boss!",
+            "> How was that?",
+            "> Clearin the sector!",
+            "> Way to go!",
             "> That wasn't too bad!",
             "> Success! One step closer!",
-            "> Sector complete Boss!",
+            "> Sector complete!",
             };
             return options[Random.Range(0, options.Length)];
         }
