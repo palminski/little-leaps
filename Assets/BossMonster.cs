@@ -83,6 +83,40 @@ public class BossMonster : Enemy
             if (blood) GameController.Instance.PullFromPool(blood, transform.position + new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f), 0f));
             base.DamageEnemy();
 
+
+
+
+
+            foreach (GameObject corpseEnemy in corpseEnemies)
+            {
+                GameObject newEnemy = Instantiate(corpseEnemy, transform.position, transform.rotation);
+                // if (blood) GameController.Instance.PullFromPool(blood, transform.position);
+
+
+                Enemy enemy = newEnemy.GetComponent<Enemy>();
+                if (enemy != null)
+                {
+                    enemy.player = player;
+                    enemy.playerAttack = playerAttack;
+                    enemy.shouldStartHarmless = true;
+                }
+
+                EnemyPatrol enemyPatrol = newEnemy.GetComponent<EnemyPatrol>();
+                if (enemyPatrol != null)
+                {
+                    enemyPatrol.startRight = startRight;
+                    if (randomiseSpeed) enemyPatrol.speed = Random.Range(0.035f, 0.05f);
+                }
+
+                EnemyFloatAimless enemyFloatAimless = newEnemy.GetComponent<EnemyFloatAimless>();
+                if (enemyFloatAimless != null)
+                {
+                    enemyFloatAimless.startDirection = new(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+                    if (randomiseSpeed) enemyFloatAimless.speed = Random.Range(0.035f, 0.07f);
+                }
+                startRight = !startRight;
+            }
+
         }
 
 
@@ -99,7 +133,6 @@ public class BossMonster : Enemy
         yield return new WaitForEndOfFrame();
         foreach (GameObject enemy in spawnedRetainers)
         {
-            print(enemy);
             if (enemy != null) yield break;
         }
         invincible = false;
@@ -113,10 +146,11 @@ public class BossMonster : Enemy
         yield return new WaitForSeconds(0.1f);
         if (crown != null) crown.SetActive(true);
         HazardToPlayer hazardToPlayer = crown.GetComponent<HazardToPlayer>();
-        
+
         vulnerableFromTop = false;
 
-        if (hazardToPlayer != null) {
+        if (hazardToPlayer != null)
+        {
             hazardToPlayer.SetCanDamagePlayer(false);
             yield return new WaitForSeconds(0.4f);
             hazardToPlayer.SetCanDamagePlayer(true);
@@ -132,38 +166,7 @@ public class BossMonster : Enemy
 
 
         Enemy[] allEnemies = FindObjectsOfType<Enemy>();
-        bool startRight = Random.value > 0.5f;
 
-
-        foreach (GameObject corpseEnemy in corpseEnemies)
-        {
-            GameObject newEnemy = Instantiate(corpseEnemy, transform.position, transform.rotation);
-            if (blood) GameController.Instance.PullFromPool(blood, transform.position);
-
-
-            Enemy enemy = newEnemy.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                enemy.player = player;
-                enemy.playerAttack = playerAttack;
-                enemy.shouldStartHarmless = true;
-            }
-
-            EnemyPatrol enemyPatrol = newEnemy.GetComponent<EnemyPatrol>();
-            if (enemyPatrol != null)
-            {
-                enemyPatrol.startRight = startRight;
-                if (randomiseSpeed) enemyPatrol.speed = Random.Range(0.035f, 0.05f);
-            }
-
-            EnemyFloatAimless enemyFloatAimless = newEnemy.GetComponent<EnemyFloatAimless>();
-            if (enemyFloatAimless != null)
-            {
-                enemyFloatAimless.startDirection = new(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
-                if (randomiseSpeed) enemyFloatAimless.speed = Random.Range(0.035f, 0.07f);
-            }
-            startRight = !startRight;
-        }
 
         int enemyCount = allEnemies.Length;
         if (enemyCount <= 0)

@@ -30,7 +30,6 @@ public class DialogueManager : MonoBehaviour
     {
 
         currentIndex = 0;
-        print(currentDialogue.dialogueSentences[currentIndex].text);
         typingCoroutine = StartCoroutine(TypeSentence(SwapInSideText(currentDialogue.dialogueSentences[currentIndex].text)));
         if (GameObject.FindGameObjectWithTag("Player"))
         {
@@ -164,7 +163,7 @@ public class DialogueManager : MonoBehaviour
         {
             
                 string currentControlScheme = (InputController.Instance != null) ? InputController.Instance.GetLastUsedDevice() : "";
-                text = text.Replace("[BINDING]", currentControlScheme == "Gamepad" ? "[ A ]" : "[ Enter ]") ;
+                text = text.Replace("[BINDING]", currentControlScheme == "Gamepad" ? "[ Button South ]" : "[ Enter ]") ;
             
         }
         if (currentDialogue.dialogueSentences[currentIndex].dialogueOptions.Count > 0)

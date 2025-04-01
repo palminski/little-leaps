@@ -41,7 +41,6 @@ public class ShootAtPlayer : MonoBehaviour
 
     void LateUpdate()
     {
-print(CheckForPlayer());
         if (CheckForPlayer())
         {
             currentTarget = player.transform.position;

@@ -19,7 +19,6 @@ public class LockRune : MonoBehaviour
 
     public void LightUp()
     {
-        print("DONE!!!");
         if (colorSwapper) colorSwapper.enabled = true;
     }
 }

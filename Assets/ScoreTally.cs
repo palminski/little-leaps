@@ -42,7 +42,7 @@ public class ScoreTally : MonoBehaviour
         SaveData gameData = SaveDataManager.LoadGameData();
         gameData.highScores.Sort((a, b) => b.score.CompareTo(a.score));
         float lowestHighestScore = gameData.highScores.Count > 0 ? gameData.highScores[gameData.highScores.Count - 1].score : 0;
-
+        if (!PlayerPrefs.HasKey("MusicOff")) yield return new WaitForSeconds(7.5f);
         if (GameController.Instance.Score > lowestHighestScore)
         {
             GameController.Instance.ChangeScene("New High Score Menu");

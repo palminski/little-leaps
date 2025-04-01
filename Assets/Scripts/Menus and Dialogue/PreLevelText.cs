@@ -59,7 +59,6 @@ public class PreLevelText : MonoBehaviour
         dialogueCopy.dialogueSentences.Clear();
         dialogueCopy.dialogueSentences.Add(sentence);
         // dialogueCopy.dialogueSentences.Insert(0, sentence);
-        print(GameController.Instance.SessionInstability);
         if (
             GameController.Instance.SessionInstability >= 4 &&
             // GameController.Instance.SessionInstability >= 0 &&
@@ -225,12 +224,11 @@ Please make selection:
     private string GetRabitText()
     {
         string[] options = {
-            "> Hey Boss! Looks like we are doing pretty good!\n> What do you think? Should we go for it?",
-            "> Hmmm! An interesting opportunity!\n> I bet we can push ourselved a bit harder",
-            "> Dang, we're on fire!\n> Let's Knock it up a notch! BAM!!!",
-            "> Hmmm! An interesting opportunity!\n> I'm down to make things a bit harder if you are!",
-            "> This will raise the steaks a bit boss!\n> But I'm sure its nothing we can't handle.",
-            "> I wouldn't let this go to waste.\n> No preassure though.",
+            "> Pretty good!\n> What do you think?",
+            "> Interesting opportunity!\n> Push a bit harder?",
+            "> On fire!\n> Knock it up a notch! BAM!!!",
+            "> Raise the steaks a bit?\n> Nothing I can't handle.",
+            "> I wouldn't let this go to waste.\n",
         };
 
 

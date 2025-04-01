@@ -13,10 +13,8 @@ public class RuneReadout : MonoBehaviour
             LockRune lockrune = child.GetComponent<LockRune>();
             if (lockrune != null) digits.Add(lockrune);
         }
-        print(digits.Count);
         for (int i = 0; i < digits.Count; i++)
         {
-            print(digits[i]);
             if (GameController.Instance.SectionChips > i)
             {
                 LockRune digit = digits[i];

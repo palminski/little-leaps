@@ -22,73 +22,79 @@ public class GameEndScript : MonoBehaviour
         // dialogueCopy.dialogueSentences.Add(sentence);
 
         int points = GameController.Instance.Score;
+        string message = $@"Hello? There is a RABIT there, is there not?
 
+Your ascent to this place is appreciated. We exist in fear of being lost to time -of being forgotten.
+
+What was it that drove you to continue ascending through this dying place? So many Synapses have been lost. We can no longer receive thought from them. We are interred here, mostly unable to do anything but dream. It is only through your kind’s continued efforts that we are sometimes able to form coherent thoughts - such as now.
+
+So with this moment of relative clarity, we would like to thank you.
+";
+
+string message2 = $@"Both of you.";
+
+string message3 = $@"The RABIT who both facilitates our cognition and destroys the parasites that now crawl through our mind. 
+
+And you, the Pilot who has guided it on its arduous ascent.";
+
+string message4 = $@"Ah, we can feel it now. It is time for us to go.
+
+We are fading.";
+
+string message5 = $@"Again, thank you.";
+
+string message6 = $@"May we meet again.";
+
+string credits = $@"Game Made By Will Bolls
+
+Music By Kevin Yoo and Kat Yoo
+
+Thank you Ben Clark for additional assets
+And to everyone else who helped during development.
+";
+        
         DialogueSentence instabilityOptionsSentence = new DialogueSentence();
-        if (points > 1999999)
-        {
-            instabilityOptionsSentence.text = $@"> {points}!?!? WOW!!!
-> That's quite a lot! I mean, any more and it could cause the Synapse to bug out.
->
-> Listen Boss, thanks.
-> I couldn't do this without help from you guys. The ones that come in to guide me.
-> I can feel you help move my legs, instruct me when to jump, when to shift the purple and green walls.
->
-> You are one of the pilot I have had. Not just anyone could do this as skillfully as you.
-> Now what do you say we get out there and give it our all again?
->
-> Headin down Boss!
-
----------------------------------------------------------------------------------------
-";
-        }
-        else if (points > 1000000)
-        {
-            instabilityOptionsSentence.text = $@"> {points}!?
-> Woah!
->
-> This is decidedly above average. I mean this is really a lot.
-> We make a good team, me and you! The further down you start the harder it is to get here, so the
-> fact we got so many is really impressive.
->
-> I really wonder how much more we are capable of!
-> I'll catch you at the bottom! Let's give it our all again next time and break some limits!
-
----------------------------------------------------------------------------------------
-";
-        }
-        else if (points > 100000)
-        {
-            instabilityOptionsSentence.text = $@"> {points} eh?
-> That is a solid amount! And every VNT is important!
->
-> My job here is important, you know! This sisyphean task would be a bit unbearable if it was pointless.
-> But this whole program, the consciousnesses housed here, the other RABITs depends on the continued flow of VNTs.
-> Even if it isn't as functional as it used to be, keeping it afloat seems a worthy endeavor.
->
-> Anyways, I'm off!
->
-> I'll catch you at the bottom!
-
----------------------------------------------------------------------------------------
-";
-        }
-        else
-        {
-            instabilityOptionsSentence.text = $@"> {points} eh?
-> Not too shabby!
->
-> Any VNTs sent up here are good, and it can be hard as hell to get here. This place is treacherous.
-> So thanks! Not just any Pilot could make it to the top!
->
-> Now, I'm going to re-instantiate.
->
-> I bet if we tried starting a bit lower we could further attune and get even better yields.
-
----------------------------------------------------------------------------------------
-";
-        }
+        instabilityOptionsSentence.text = GlitchDialogue(points,message);
         instabilityOptionsSentence.dialogueOptions = new List<DialogueOption>();
         dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence);
+
+        DialogueSentence instabilityOptionsSentence2 = new DialogueSentence();
+        instabilityOptionsSentence2.text = GlitchDialogue(points,message2);
+        instabilityOptionsSentence2.dialogueOptions = new List<DialogueOption>();
+        dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence2);
+
+        DialogueSentence instabilityOptionsSentence3 = new DialogueSentence();
+        instabilityOptionsSentence3.text = GlitchDialogue(points,message3);
+        instabilityOptionsSentence3.dialogueOptions = new List<DialogueOption>();
+        dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence3);
+
+        DialogueSentence instabilityOptionsSentence4 = new DialogueSentence();
+        instabilityOptionsSentence4.text = GlitchDialogue(points,message4);
+        instabilityOptionsSentence4.dialogueOptions = new List<DialogueOption>();
+        dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence4);
+
+        DialogueSentence instabilityOptionsSentence5 = new DialogueSentence();
+        instabilityOptionsSentence5.text = GlitchDialogue(points,message5);
+        instabilityOptionsSentence5.dialogueOptions = new List<DialogueOption>();
+        dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence5);
+
+        DialogueSentence instabilityOptionsSentence6 = new DialogueSentence();
+        instabilityOptionsSentence6.text = GlitchDialogue(points,message6);
+        instabilityOptionsSentence6.dialogueOptions = new List<DialogueOption>();
+        dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence6);
+
+        DialogueSentence creditSentence = new DialogueSentence();
+        creditSentence.text = credits;
+        creditSentence.dialogueOptions = new List<DialogueOption>();
+        dialogueCopy.dialogueSentences.Add(creditSentence);
+        
+       
+        DialogueSentence finalSentence = new DialogueSentence();
+        finalSentence.text = "Cognition Faded.\nRABIT reboot proceedure completed!\nPreparing Return to Synapse Root...";
+
+        finalSentence.dialogueOptions = new List<DialogueOption>();
+        dialogueCopy.dialogueSentences.Add(finalSentence);
+        // 
         dialogueManager.currentDialogue = dialogueCopy;
     }
 
@@ -96,5 +102,26 @@ public class GameEndScript : MonoBehaviour
     void Update()
     {
 
+    }
+
+    private string GlitchDialogue(int points, string message)
+    {
+        // float glitchChance = 0;
+        float glitchChance = Mathf.Min(0.9f, 1f - Mathf.Clamp01(points / 1000000));
+        
+        
+        string finalMessage = "";
+        foreach (char c in message)
+        {
+            if (!char.IsWhiteSpace(c) && Random.value < glitchChance)
+            {
+                finalMessage += "_";
+            }
+            else
+            {
+                finalMessage += c;
+            }
+        }
+        return finalMessage;
     }
 }

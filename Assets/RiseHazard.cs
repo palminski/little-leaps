@@ -19,7 +19,6 @@ public class RiseHazard : MonoBehaviour
     {
         if (shouldStop && raiseSpeed > 0)
         {
-            print("SLOWING");
             raiseSpeed = Mathf.Max(0,(raiseSpeed - slowSpeed * Time.deltaTime));
         }
         float cameraBottom = mainCamera.transform.position.y - mainCamera.orthographicSize;
