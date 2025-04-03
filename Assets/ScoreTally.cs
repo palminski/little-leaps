@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using TMPro;
 public class ScoreTally : MonoBehaviour
 {
@@ -17,15 +18,33 @@ public class ScoreTally : MonoBehaviour
         StartCoroutine(IncreaseScore());
     }
 
-    // Update is called once per frame
-    // void Update()
-    // {
-    //     if (score < GameController.Instance.Score)
-    //     {
-    //         score = Mathf.Min(GameController.Instance.Score, score + 10);
-    //     }
-    //     text.text = score.ToString();
-    // }
+
+    void Update()
+    {
+        // if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Joystick1Button0) )
+        if (Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame || (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame) )
+        {
+            StopAllCoroutines();
+            SaveData gameData = SaveDataManager.LoadGameData();
+            gameData.highScores.Sort((a, b) => b.score.CompareTo(a.score));
+            float lowestHighestScore = gameData.highScores.Count > 0 ? gameData.highScores[gameData.highScores.Count - 1].score : 0;
+            if (GameController.Instance.Score > lowestHighestScore)
+            {
+                GameController.Instance.ChangeScene("New High Score Menu");
+            }
+            else if (GameController.Instance.ShouldSkipGameOver)
+            {
+                GameController.Instance.SetShouldSkipGameover(false);
+                GameController.Instance.ResetGameState();
+                GameController.Instance.ChangeScene("Main Menu");
+            }
+            else
+            {
+                GameController.Instance.ChangeScene("Game Over Menu");
+
+            }
+        }
+    }
 
     IEnumerator IncreaseScore()
     {
@@ -39,10 +58,11 @@ public class ScoreTally : MonoBehaviour
         deathScript.shouldFade = true;
 
         yield return new WaitForSeconds(2);
+        if (!PlayerPrefs.HasKey("MusicOff")) yield return new WaitForSeconds(7.5f);
+
         SaveData gameData = SaveDataManager.LoadGameData();
         gameData.highScores.Sort((a, b) => b.score.CompareTo(a.score));
         float lowestHighestScore = gameData.highScores.Count > 0 ? gameData.highScores[gameData.highScores.Count - 1].score : 0;
-        if (!PlayerPrefs.HasKey("MusicOff")) yield return new WaitForSeconds(7.5f);
         if (GameController.Instance.Score > lowestHighestScore)
         {
             GameController.Instance.ChangeScene("New High Score Menu");

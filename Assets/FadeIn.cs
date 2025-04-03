@@ -110,7 +110,7 @@ Attempting RE--.[;]'?:---[CRITICAL ERROR]
             Application.Quit();
 #endif
         }
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(2f);
 
         GameController.Instance.ChangeScene("Game Complete");
 

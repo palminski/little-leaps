@@ -20,6 +20,27 @@ public class InputController : MonoBehaviour
     // public PlayerInput playerInput;
     private InputActionRebindingExtensions.RebindingOperation rebindingOperation;
 
+    void OnEnable()
+    {
+        InputSystem.onDeviceChange += OnDeviceChange;        
+    }
+
+    void OnDisable()
+    {
+        InputSystem.onDeviceChange -= OnDeviceChange;        
+    }
+
+    void OnDeviceChange(InputDevice device, InputDeviceChange change)
+    {
+        if (device is Gamepad)
+        {
+            if (change == InputDeviceChange.Removed)
+            {
+                GameController.Instance.OpenPauseMenu();
+            }
+        }
+    }
+
     void Awake()
     {
         // if (playerInput == null) playerInput = FindObjectOfType<PlayerInput>();
@@ -187,6 +208,8 @@ public class InputController : MonoBehaviour
     {
         return lastUsedDevice;
     }
+
+
 
 
 }

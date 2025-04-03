@@ -10800,17 +10800,21 @@ PrefabInstance:
       propertyPath: m_NormalizedViewPortRect.height
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4933265746777383274, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5658948705658991358, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_Name
       value: Main Camera
       objectReference: {fileID: 0}
     - target: {fileID: 7671440866829961978, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7671440866829961978, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.625
       objectReference: {fileID: 0}
     - target: {fileID: 7671440866829961978, guid: 1d03d6efe6bd6f744a356e2e9f784c81, type: 3}
       propertyPath: m_LocalPosition.z
@@ -30346,7 +30350,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8177042357306595083, guid: df9e5e2295b9a57429880485069f505a, type: 3}
       propertyPath: m_Name
-      value: Player
+      value: MenuPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 8177042357306595083, guid: df9e5e2295b9a57429880485069f505a, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 8764759206690607133, guid: df9e5e2295b9a57429880485069f505a, type: 3}
       propertyPath: gravity
@@ -30478,6 +30486,10 @@ PrefabInstance:
       propertyPath: OpenEvent
       value: 
       objectReference: {fileID: 11400000, guid: b6abaed52a2078342bfa6bd9893ba06b, type: 2}
+    - target: {fileID: 8393486617458288550, guid: 1f5bad11063d9c34b8d35c80a481d96f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8556194841645431395, guid: 1f5bad11063d9c34b8d35c80a481d96f, type: 3}
       propertyPath: m_Name
       value: Lift

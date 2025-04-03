@@ -29,10 +29,15 @@ public class PauseMenu : MonoBehaviour
         // playerInput = GetComponent<PlayerInput>();
         selectedIndex = 0;
         currentOptions = menuOptions;
-        if (GameObject.FindGameObjectWithTag("Player"))
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null && GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInput>())
         {
             playerInput = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInput>();
             playerInput.SwitchCurrentActionMap("Menu");
+        }
+        else
+        {
+            Continue();
         }
         UpdateMenuText();
     }

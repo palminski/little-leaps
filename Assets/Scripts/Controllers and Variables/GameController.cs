@@ -238,6 +238,14 @@ public class GameController : MonoBehaviour
         }
     }
 
+    void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+        {
+            OpenPauseMenu();
+        }
+    }
+
     public void ApplyGraphicsSettings()
     {
         Application.targetFrameRate = PlayerPrefs.HasKey("TargetFPS") ? PlayerPrefs.GetInt("TargetFPS") : 0;
@@ -584,6 +592,7 @@ public class GameController : MonoBehaviour
 
     public void OpenPauseMenu()
     {
+        if (GameObject.FindGameObjectWithTag("Player") == null) return;
         if (AudioController.Instance != null) AudioController.Instance.PlaySelect();
 
         PauseMenu currentMenu = FindObjectOfType<PauseMenu>();
