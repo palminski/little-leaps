@@ -138,6 +138,10 @@ public class MainMenu : MonoBehaviour
 
     public void StartLevel(string levelToStart)
     {
+        if(levelToStart == "lv_1_start")
+        {
+            GameController.Instance.TagObjectStringAsCollectedForSession("lv_1_started");
+        }
         if (playerInput != null && InputController.Instance != null)
         {
             InputController.Instance.SetLastUsedDevice(playerInput.currentControlScheme);

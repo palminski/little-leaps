@@ -31,7 +31,7 @@ public class FinalTarget : MonoBehaviour
             Instantiate(finalObject, playerTransform.position, playerTransform.rotation);
             if (SteamManager.Initialized)
             {
-                if (GameController.Instance.SessionCollectedObjects.Contains("lv_1_complete"))
+                if (GameController.Instance.SessionCollectedObjects.Contains("lv_1_started"))
                 {
                     SteamUserStats.SetAchievement("ACH_ONE_QUARTER");
                     SteamUserStats.StoreStats();
