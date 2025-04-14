@@ -17,6 +17,8 @@ public class ConveyorBelt : RaycastController
     private float startingDirection;
 
     private float boostDirection;
+    private float playerBoostTimeMax = 0.2f;
+    private float playerBoostTime = 0;
 
     public enum MovementBehavior
     {
@@ -31,7 +33,7 @@ public class ConveyorBelt : RaycastController
     public override void Start()
     {
         base.Start();
-        
+
         startingDirection = Mathf.Sign(speed);
 
         animator = GetComponent<Animator>();
@@ -39,7 +41,7 @@ public class ConveyorBelt : RaycastController
 
         animator.speed = Mathf.Abs(speed * 28f);
         boostDirection = Mathf.Sign(speed);
-        transform.localScale = new(Mathf.Sign(speed),1,1);
+        transform.localScale = new(Mathf.Sign(speed), 1, 1);
         if (behavior != MovementBehavior.Default)
         {
             HandleRoomStateChange();
@@ -52,8 +54,8 @@ public class ConveyorBelt : RaycastController
         {
             GameController.Instance.OnRoomStateChanged += HandleRoomStateChange;
         }
-        
-        
+
+
     }
     private void OnDisable()
     {
@@ -63,18 +65,19 @@ public class ConveyorBelt : RaycastController
         }
     }
 
-    void HandleRoomStateChange() {
+    void HandleRoomStateChange()
+    {
         if (activeOnRoomColor == GameController.Instance.RoomState)
         {
             speed = Mathf.Abs(speed) * startingDirection;
             animator.speed = Mathf.Abs(speed * 28f);
-            transform.localScale = new(Mathf.Sign(speed),1,1);
+            transform.localScale = new(Mathf.Sign(speed), 1, 1);
         }
         else
         {
             speed = Mathf.Abs(speed) * -startingDirection;
             animator.speed = Mathf.Abs(speed * 28f);
-            transform.localScale = new(Mathf.Sign(speed),1,1);
+            transform.localScale = new(Mathf.Sign(speed), 1, 1);
         }
         StartCoroutine(WaitAndSwapBoost());
     }
@@ -83,7 +86,7 @@ public class ConveyorBelt : RaycastController
     {
         updateRaycastOrigins();
 
-        if (boxCollider.enabled) 
+        if (boxCollider.enabled)
         {
             CalculatePassengerMovement();
             MovePassengers();
@@ -92,9 +95,17 @@ public class ConveyorBelt : RaycastController
 
     void Update()
     {
-        if (player.PressedJump() && PlayerOnPlatform())
+        if (player.PressedJump() && playerBoostTime > 0)
         {
             BoostPlayerJump();
+        }
+        if (playerBoostTime > 0)
+        {
+            playerBoostTime -= Time.deltaTime;
+        }
+        else
+        {
+            playerBoostTime = 0;
         }
     }
 
@@ -102,22 +113,22 @@ public class ConveyorBelt : RaycastController
     {
         StopAllCoroutines();
         if (
-            
+
             boostAmmount != 0
         )
         {
-            if(Mathf.Sign(player.GetVelocity().x) == boostDirection && player.IsMoving())
+            if (Mathf.Sign(player.GetVelocity().x) == boostDirection && player.IsMoving())
             {
                 player.Boost(boostAmmount * boostDirection);
             }
             else if (!player.IsMoving())
             {
-                player.Boost((boostAmmount/3) * boostDirection);
+                player.Boost((boostAmmount / 3) * boostDirection);
             }
         }
     }
 
-     void MovePassengers()
+    void MovePassengers()
     {
         foreach (PassengerMovement passenger in passengerMovements)
         {
@@ -126,7 +137,7 @@ public class ConveyorBelt : RaycastController
                 passengerCollisionHandlers.Add(passenger.transform, passenger.transform.GetComponent<MovementCollisionHandler>());
 
             }
-                if (passengerCollisionHandlers[passenger.transform]) passengerCollisionHandlers[passenger.transform].Move(passenger.velocity, passenger.onPlatform, false);
+            if (passengerCollisionHandlers[passenger.transform]) passengerCollisionHandlers[passenger.transform].Move(passenger.velocity, passenger.onPlatform, false);
 
         }
     }
@@ -139,30 +150,34 @@ public class ConveyorBelt : RaycastController
 
     void CalculatePassengerMovement()
     {
-        
+
         HashSet<Transform> movedPassengers = new HashSet<Transform>();
         passengerMovements = new List<PassengerMovement>();
 
         //Passenger on top of a platform not moving up====================================
-        
-            float rayLength = skinWidth * 2;
-            Vector2 rayOrigin = raycastOrigins.topLeft;
-            for (int i = 0; i < xRayCount; i++)
+
+        float rayLength = skinWidth * 2;
+        Vector2 rayOrigin = raycastOrigins.topLeft;
+        for (int i = 0; i < xRayCount; i++)
+        {
+            Debug.DrawRay(rayOrigin + i * verticalRaySpacing * Vector2.right, Vector2.up, Color.cyan);
+            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, Vector2.up, rayLength, passengerMask);
+            if (collision.transform && !movedPassengers.Contains(collision.transform))
             {
-                Debug.DrawRay(rayOrigin + i * verticalRaySpacing * Vector2.right, Vector2.up, Color.cyan);
-                RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, Vector2.up, rayLength, passengerMask);
-                if (collision.transform && !movedPassengers.Contains(collision.transform))
+                if (collision.transform == player.transform)
                 {
-
-                    float pushX = speed;
-
-                    // collision.transform.Translate(new Vector3(pushX, pushY));
-                    passengerMovements.Add(new PassengerMovement(collision.transform, new Vector3(pushX, 0), true, false));
-                    movedPassengers.Add(collision.transform);
-
+                    playerBoostTime = playerBoostTimeMax;
                 }
+
+                float pushX = speed;
+
+                // collision.transform.Translate(new Vector3(pushX, pushY));
+                passengerMovements.Add(new PassengerMovement(collision.transform, new Vector3(pushX, 0), true, false));
+                movedPassengers.Add(collision.transform);
+
             }
-        
+        }
+
     }
 
     public bool PlayerOnPlatform()
@@ -170,13 +185,13 @@ public class ConveyorBelt : RaycastController
         float rayLength = skinWidth * 2;
         Vector2 rayOrigin = raycastOrigins.topLeft;
         for (int i = 0; i < xRayCount; i++)
+        {
+            RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, Vector2.up, rayLength, passengerMask);
+            if (collision.transform == player.transform)
             {
-                RaycastHit2D collision = Physics2D.Raycast(rayOrigin + i * verticalRaySpacing * Vector2.right, Vector2.up, rayLength, passengerMask);
-                if (collision.transform == player.transform)
-                {
-                    return true;
-                }
+                return true;
             }
+        }
         return false;
     }
 

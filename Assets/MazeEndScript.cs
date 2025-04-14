@@ -58,15 +58,14 @@ public class MazeEndScript : MonoBehaviour
         GameController.Instance.StartTimer(timeSet);
         GameController.Instance.SetStartingTimer(timeSet);
 
-        if (GameController.Instance.CheckpointBackend != "" && GameController.Instance.CheckpointBackend != "Main Menu")
-        {
-            GameController.Instance.ChangeScene(GameController.Instance.CheckpointBackend);
-        }
-        else
-        {
-            GameController.Instance.SetCheckPointBackend("backend_start");
-            GameController.Instance.ChangeScene("backend_start");
-        }
+        GameController.Instance.TagObjectStringAsCollectedForSession("lv_9_complete");
+        GameController.Instance.TagObjectStringAsCollectedForSession("lv_10_complete");
+        GameController.Instance.TagObjectStringAsCollectedForSession("lv_17_complete");
+        GameController.Instance.TagObjectStringAsCollectedForSession("lv_15_complete");
+
+
+        GameController.Instance.SetCheckPointBackend("backend_start_4");
+        GameController.Instance.ChangeScene("backend_start_4");
     }
 
     private void JustProceed()

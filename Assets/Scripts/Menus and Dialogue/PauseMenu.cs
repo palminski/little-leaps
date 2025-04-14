@@ -94,6 +94,27 @@ public class PauseMenu : MonoBehaviour
     }
 
 
+    public void KillPlayer()
+    {
+        Time.timeScale = 1;
+
+        
+        GameController.Instance.ChangeHealth(-776);
+        // SaveData gameData = SaveDataManager.LoadGameData();
+        // gameData.highScores.Sort((a, b) => b.score.CompareTo(a.score));
+        // float lowestHighestScore = gameData.highScores.Count > 0 ? gameData.highScores[gameData.highScores.Count - 1].score : 0;
+
+        // if (GameController.Instance.Score > lowestHighestScore)
+        // {
+        //     GameController.Instance.ChangeScene("New High Score Menu");
+        // }
+        // else
+        // {
+        //     GameController.Instance.ChangeScene("Main Menu");
+        // }
+
+    }
+
     public void ReturnToMainMenu()
     {
         Time.timeScale = 1;
