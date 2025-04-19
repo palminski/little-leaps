@@ -39,7 +39,7 @@ public class StartingText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isFinishedTyping && Input.anyKeyDown)
+        if (!isFinishedTyping && (Input.anyKeyDown || Input.GetKeyDown(KeyCode.Joystick1Button0)))
         {
             StopAllCoroutines();
             if (AudioController.Instance != null) AudioController.Instance.PlaySelect();

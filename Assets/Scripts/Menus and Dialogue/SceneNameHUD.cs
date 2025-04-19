@@ -115,7 +115,7 @@ public class SceneNameHUD : MonoBehaviour
         }
         else if(scene.Contains("lv_21_"))
         {
-            text.text = "Sector 2-2";
+            text.text = "?????????";
         }
         else
         {
