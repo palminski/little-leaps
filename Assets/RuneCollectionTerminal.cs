@@ -64,7 +64,7 @@ public class RuneCollectionTerminal : MonoBehaviour
                         if (dialogue != null) {
 
                             
-                            dialogue.SetTextAs("ATUNEMENT UP!");
+                            dialogue.SetTextAs("ATTUNEMENT UP!");
 
                         }
                     }

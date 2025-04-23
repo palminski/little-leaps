@@ -24,8 +24,13 @@ public class OldFollowPlayer : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    public void AssignToPlayer() {
+    public void AssignToPlayer()
+    {
         player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null)
+        {
+            return;
+        }
         transform.position = player.GetComponent<Player>().startPosition;
     }
 
@@ -52,17 +57,17 @@ public class OldFollowPlayer : MonoBehaviour
         GameController.Instance.UpdateInstability(1);
 
         if (AudioController.Instance != null) AudioController.Instance.PlayPickupNoise();
-        
+
         GameController.Instance.AddToScore(pointsToAward);
         if (GameController.Instance.TimerMoving) GameController.Instance.AddToTimer(30);
-        if (player) GameController.Instance.ShowPointCounter(pointsToAward, player.transform.position + new Vector3(0,1,0), false);
+        if (player) GameController.Instance.ShowPointCounter(pointsToAward, player.transform.position + new Vector3(0, 1, 0), false);
         GameController.Instance.ChangeCharge(chargeValue);
         if (coinParticleSystem)
         {
             coinParticleSystem.transform.SetParent(null);
             coinParticleSystem.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-        } 
-        GameController.Instance.PullFromPool(collectionParticle,transform.position);
+        }
+        GameController.Instance.PullFromPool(collectionParticle, transform.position);
         GameController.Instance.TagObjectStringAsCollected(pickupId);
         GameController.Instance.TagObjectStringAsCollectedForSession(pickupId);
         Destroy(gameObject);

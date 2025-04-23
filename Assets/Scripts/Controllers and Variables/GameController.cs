@@ -42,7 +42,7 @@ public class GameController : MonoBehaviour
         get { return score; }
     }
 
-    // [SerializeField] private bool ShouldStartTimer;
+    //This is for level wipe timer
     private bool timerMoving;
     public bool TimerMoving
     {
@@ -54,9 +54,14 @@ public class GameController : MonoBehaviour
         get { return bonusTimer; }
     }
 
-
-    private int timer;
-    public int Timer
+    //This is for speed running timer, naming is bad, but its already been coded like this
+    private bool countUpTimerMoving;
+    public bool CountUpTimerMoving
+    {
+        get { return countUpTimerMoving; }
+    }
+    private float timer;
+    public float Timer
     {
         get { return timer; }
     }
@@ -235,6 +240,11 @@ public class GameController : MonoBehaviour
                 bonusTimer = 0;
                 timerMoving = false;
             }
+        }
+
+        if (countUpTimerMoving && timer < 5940)
+        {
+            timer += Time.deltaTime;
         }
     }
 
@@ -502,6 +512,14 @@ public class GameController : MonoBehaviour
         bonusTimer = timeToStartAt;
     }
 
+    public void StartSpeedRunTimer()
+    {
+        if (!PlayerPrefs.HasKey("ShowSpeedRunTimer")) return;
+        if (countUpTimerMoving) return;
+        timer = 0;
+        countUpTimerMoving = true;
+    }
+
     public void SetTimer(float timeToStartAt = 0)
     {
         bonusTimer = timeToStartAt;
@@ -528,6 +546,12 @@ public class GameController : MonoBehaviour
         timerMoving = false;
     }
 
+    public void StopSpeedRunTimer()
+    {
+        countUpTimerMoving = false;
+        timer = 0;
+    }
+
     public void ResetTimer()
     {
         int pointsToAdd = 100 * (int)bonusTimer;
@@ -540,6 +564,7 @@ public class GameController : MonoBehaviour
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         StopTimer();
+        StopSpeedRunTimer();
         player.SetActive(true);
 
         // GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -588,6 +613,11 @@ public class GameController : MonoBehaviour
 
         OnUpdateHUD?.Invoke();
         return charge;
+    }
+
+    public void RemoveCharge()
+    {
+        charge = 0;
     }
 
     public void OpenPauseMenu()

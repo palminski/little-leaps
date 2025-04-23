@@ -97,8 +97,8 @@ public class PauseMenu : MonoBehaviour
     public void KillPlayer()
     {
         Time.timeScale = 1;
-
         
+        GameController.Instance.RemoveCharge();
         GameController.Instance.ChangeHealth(-776);
         // SaveData gameData = SaveDataManager.LoadGameData();
         // gameData.highScores.Sort((a, b) => b.score.CompareTo(a.score));
@@ -120,6 +120,7 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1;
 
         GameController.Instance.SetShouldSkipGameover(true);
+        GameController.Instance.RemoveCharge();
         GameController.Instance.ChangeHealth(-776);
         // SaveData gameData = SaveDataManager.LoadGameData();
         // gameData.highScores.Sort((a, b) => b.score.CompareTo(a.score));

@@ -56,22 +56,25 @@ public class MazeEndScript : MonoBehaviour
 
         float timeSet = GlobalConstants.prestigeTime[GameController.Instance.SessionPrestige];
         GameController.Instance.StartTimer(timeSet);
+        GameController.Instance.StartSpeedRunTimer();
         GameController.Instance.SetStartingTimer(timeSet);
 
-        GameController.Instance.TagObjectStringAsCollectedForSession("lv_9_complete");
-        GameController.Instance.TagObjectStringAsCollectedForSession("lv_10_complete");
-        GameController.Instance.TagObjectStringAsCollectedForSession("lv_17_complete");
-        GameController.Instance.TagObjectStringAsCollectedForSession("lv_15_complete");
+        // GameController.Instance.TagObjectStringAsCollectedForSession("lv_9_complete");
+        // GameController.Instance.TagObjectStringAsCollectedForSession("lv_10_complete");
+        // GameController.Instance.TagObjectStringAsCollectedForSession("lv_17_complete");
+        // GameController.Instance.TagObjectStringAsCollectedForSession("lv_15_complete");
 
 
-        GameController.Instance.SetCheckPointBackend("backend_start_4");
-        GameController.Instance.ChangeScene("backend_start_4");
+        GameController.Instance.SetCheckPointBackend("backend_start");
+        GameController.Instance.ChangeScene("backend_start");
     }
 
     private void JustProceed()
     {
         float timeSet = GlobalConstants.prestigeTime[GameController.Instance.SessionPrestige];
         GameController.Instance.StartTimer(timeSet);
+        GameController.Instance.StartSpeedRunTimer();
+        
         GameController.Instance.SetStartingTimer(timeSet);
         if (GameController.Instance.CheckpointBackend != "")
         {

@@ -528,6 +528,18 @@ public class MainMenu : MonoBehaviour
         AudioController.Instance.ToggleSFX();
     }
 
+    public void ToggleSpeedRunTimer()
+    {
+        if (PlayerPrefs.HasKey("ShowSpeedRunTimer"))
+        {
+            PlayerPrefs.DeleteKey("ShowSpeedRunTimer");
+            PlayerPrefs.Save();
+            return;
+        }
+        PlayerPrefs.SetInt("ShowSpeedRunTimer",1);
+        PlayerPrefs.Save();
+    }
+
     public void RebindControl(string actionName)
     {
         // print(playerInput.currentControlScheme);

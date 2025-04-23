@@ -70,6 +70,8 @@ public class LevelStart : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player")?.GetComponent<Player>();
         playerPosition = player.transform.position;
+        GameController.Instance.StartSpeedRunTimer();
+
 
         currentLevel = SceneManager.GetActiveScene().name;
 
