@@ -452,7 +452,8 @@ public class GameController : MonoBehaviour
     }
     public int ChangeHealth(int healthChange, bool shouldResetRoom = false)
     {
-        if (health <= 0) return 0;
+        // if (health <= 0) return 0;
+        if (health + healthChange > maxHealth) return 0;
         if (healthChange < 0) OnPlayerDamaged?.Invoke();
 
         //edge case for only 1 max health
@@ -464,7 +465,7 @@ public class GameController : MonoBehaviour
         }
         if (!willHealAtOneHealth) health += healthChange;
 
-        ChangeCharge(0);
+        if (healthChange <= 0) ChangeCharge(0);
         health = Mathf.Clamp(health, 0, maxHealth);
         OnUpdateHUD?.Invoke();
 
