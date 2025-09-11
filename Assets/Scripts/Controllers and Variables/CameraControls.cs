@@ -181,6 +181,7 @@ public class CameraControls : MonoBehaviour
 
     private void HandleRoomStateChange()
     {
+        if (cam == null) return;
         if (GameController.Instance.RoomState == RoomColor.Purple)
         {
             cam.backgroundColor = Color.Lerp(colorForRS0, Color.black, colorDarkness);

@@ -292,35 +292,29 @@ Message End";
         if (GameController.Instance.Health < 3)
         {
             string[] options = {
-            "> Whew, feeling a bit tired.",
-            "> Feelin a bit tired ...",
-            "> That was a close call!",
-            "> I'm not sure how much farther we can go.",
-            "> Can't give up here...",
-            "> When the going gets tough...",
+            "> 01110100 01101001 01110010 01100100",
+            "> 01100010 01100001 01100100",
+            "> 01101000 01100001 01110010 01100100",
+            "> 01110101 01100111 01101000",
             };
             return options[Random.Range(0, options.Length)];
         }
         else if (wasWellDone)
         {
             string[] options = {
-            "> Easy as pie!",
-            "> All CAROTs accounted for!",
-            "> Solid sector clear!",
-            "> That was nothin!",
-            "> Nothing to it!",
+            "> 01000101 01100001 01110011 01111001",
+            "> 01100100 01101111 01101110 01100101",
+            "> 01111001 01100001 01111001",
+            "> 01100101 01111010",
+            "> 01111001 01100001 01110100 01100001",
             };
             return options[Random.Range(0, options.Length)];
         }
         else
         {
             string[] options = {
-            "> How was that?",
-            "> Clearin the sector!",
-            "> Way to go!",
-            "> That wasn't too bad!",
-            "> Success! One step closer!",
-            "> Sector complete!",
+            "> 01100100 01101111 01110101 00111111",
+            "> 01101001 01101001 01101011 01100001",
             };
             return options[Random.Range(0, options.Length)];
         }

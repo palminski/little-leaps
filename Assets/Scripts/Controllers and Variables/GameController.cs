@@ -306,6 +306,13 @@ public class GameController : MonoBehaviour
         return roomState;
     }
 
+    public RoomColor SetRoomState(RoomColor roomColor)
+    {
+        roomState = roomColor;
+        OnRoomStateChanged?.Invoke();
+        return roomState;
+    }
+
     public void InvokePlayerDashed()
     {
         OnPlayerDashed?.Invoke();

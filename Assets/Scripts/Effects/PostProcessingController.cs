@@ -89,6 +89,7 @@ public class PostProcessingController : MonoBehaviour
     }
     private void HandleRoomStateChange()
     {
+        if (chromaticAberration == null) return;
         shouldPulse = true;
         chromaticAberration.active = true;
         UpdateColor();

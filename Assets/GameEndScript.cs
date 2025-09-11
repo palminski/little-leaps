@@ -24,34 +24,26 @@ public class GameEndScript : MonoBehaviour
         int points = GameController.Instance.Score;
         string message = $@"Hello? There is a RABIT there, is there not?
 
-Your ascent to this place is appreciated. We exist in fear of being lost to time -of being forgotten.
+___r ascent to this place is appreciated. __ exist in fear of being lost to time -of being forgotten.
 
-What was it that drove you to continue ascending through this dying place? So many Synapses have been lost. We can no longer receive thought from them. We are interred here, mostly unable to do anything but dream. It is only through your kind’s continued efforts that we are sometimes able to form coherent thoughts - such as now.
+What was it that drove ___ to continue ascending through this dying place? So many Synapses have been lost. __ can no longer receive thought from them. __ are interred here, mostly unable to do anything but dream. It is only through ___r kind’s continued efforts that __ are sometimes able to form coherent thoughts - such as now.
 
-So with this moment of relative clarity, we would like to thank you.
+So with this moment of relative clarity, __ would like to thank ___.
 ";
 
-string message2 = $@"Both of you.";
+string message2 = $@"____ of ___.";
 
-string message3 = $@"The RABIT who both facilitates our cognition and destroys the parasites that now crawl through our mind. 
+string message3 = $@"___ RABIT who both facili_ates ___ cogn_tion ___ destroys the para__tes that now crawl through ___ mind. 
 
-And you, the Pilot who has guided it on its arduous ascent.";
+And ___, the Pil_t who has gu__ed it on its arduous ascent.";
 
-string message4 = $@"Ah, we can feel it now. It is time for us to go.
+string message4 = $@"Ah, __ can feel it now. It is time for __ to go.
 
-We are fading.";
+__ are fading.";
 
-string message5 = $@"Again, thank you.";
+string message5 = $@"Again, thank ___.";
 
-string message6 = $@"May we meet again.";
-
-string credits = $@"Game Made By Will Bolls
-
-Music By Kevin Yoo and Kat Yoo
-
-Thank you Ben Clark for additional assets
-And to everyone else who helped during development.
-";
+string message6 = $@"May __ meet again.";
         
         DialogueSentence instabilityOptionsSentence = new DialogueSentence();
         instabilityOptionsSentence.text = GlitchDialogue(points,message);
@@ -83,10 +75,7 @@ And to everyone else who helped during development.
         instabilityOptionsSentence6.dialogueOptions = new List<DialogueOption>();
         dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence6);
 
-        DialogueSentence creditSentence = new DialogueSentence();
-        creditSentence.text = credits;
-        creditSentence.dialogueOptions = new List<DialogueOption>();
-        dialogueCopy.dialogueSentences.Add(creditSentence);
+       
         
        
         DialogueSentence finalSentence = new DialogueSentence();
