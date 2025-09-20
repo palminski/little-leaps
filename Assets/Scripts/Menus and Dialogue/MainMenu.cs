@@ -69,7 +69,7 @@ public class MainMenu : MonoBehaviour
         }
 
         selectedIndex = 0;
-        gameObject.SetActive(false);
+        // gameObject.SetActive(false);
 
         permCollected = SaveDataManager.LoadGameData().permanentCollectedObjects;
         menuOptions = menuOptions.Where(option => option.requiredKey.Length == 0 || permCollected.Contains(option.requiredKey)).ToArray();
@@ -141,6 +141,7 @@ public class MainMenu : MonoBehaviour
         if (playerInput != null && InputController.Instance != null)
         {
             InputController.Instance.SetLastUsedDevice(playerInput.currentControlScheme);
+            playerInput.enabled = false;
         }
         LevelConnection.ActiveConnection = null;
         GameController.Instance.ResetGameState();
@@ -209,35 +210,46 @@ public class MainMenu : MonoBehaviour
     // ==============================================================================
     void OnNavigateRight()
     {
+        if (!startingText.isFinishedTyping) return;
         UpdateIndex(1);
         if (AudioController.Instance != null) AudioController.Instance.PlayMoveCursor();
     }
 
     void OnNavigateLeft()
     {
+        if (!startingText.isFinishedTyping) return;
         UpdateIndex(-1);
         if (AudioController.Instance != null) AudioController.Instance.PlayMoveCursor();
     }
 
     void OnNavigateDown()
     {
+        if (!startingText.isFinishedTyping) return;
         UpdateIndex(1);
         if (AudioController.Instance != null) AudioController.Instance.PlayMoveCursor();
     }
 
     void OnNavigateUp()
     {
+        if (!startingText.isFinishedTyping) return;
         UpdateIndex(-1);
         if (AudioController.Instance != null) AudioController.Instance.PlayMoveCursor();
     }
 
     void OnSelect()
     {
+        if (!startingText.isFinishedTyping)
+        {
+            startingText.ActivateAndCompleteText();
+            return;
+        }
+        
         currentOptions[selectedIndex].action.Invoke();
         if (AudioController.Instance != null) AudioController.Instance.PlaySelect();
     }
     void OnBack()
     {
+        if (!startingText.isFinishedTyping) return;
         SetCurrentMenu(menuOptions, mainMenu);
         if (AudioController.Instance != null) AudioController.Instance.PlayBack();
     }

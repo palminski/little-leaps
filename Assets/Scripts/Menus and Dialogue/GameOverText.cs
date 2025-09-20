@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class GameOverText : MonoBehaviour
 {
-    [SerializeField] private GameObject objectToActivateUponCompletion;
+    [SerializeField] private GameOverMenu gameOverMenu;
 
     [SerializeField] public float timeBetweenCharacters = 0.05f;
 
@@ -57,7 +57,16 @@ Please Select Option Below:
         CompleteText();
     }
 
-    
+    public void ActivateAndCompleteText()
+    {
+        if (!isFinishedTyping)
+        {
+            StopAllCoroutines();
+            if (AudioController.Instance != null) AudioController.Instance.PlaySelect();
+            textElement.text = startingText;
+            StartCoroutine(WaitAndCompleteText());
+        }
+    }
 
     IEnumerator TypeSentence(string textToType)
     {
@@ -73,9 +82,8 @@ Please Select Option Below:
 
     void CompleteText()
     {
-        objectToActivateUponCompletion.SetActive(true);
+        if (gameOverMenu != null) gameOverMenu.UpdateMenuText();
         isFinishedTyping = true;
-        Destroy(GetComponent<PlayerInput>());
     }
 
     public void SetSideText(string text)

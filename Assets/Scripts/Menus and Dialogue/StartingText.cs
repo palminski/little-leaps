@@ -12,9 +12,16 @@ public class StartingText : MonoBehaviour
 
     [SerializeField] private TMP_Text textElement;
 
+
+
+
     private string startingText;
     public bool isFinishedTyping = false;
     private List<HighScore> highScores;
+
+
+
+
 
     // Start is called before the first frame update
     void Awake()
@@ -25,9 +32,6 @@ public class StartingText : MonoBehaviour
         gameData.highScores.Sort((a, b) => b.score.CompareTo(a.score));
         highScores = gameData.highScores;
         // startingText = textElement.text;
-
-
-
     }
     void Start()
     {
@@ -37,17 +41,20 @@ public class StartingText : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (!isFinishedTyping && (Input.anyKeyDown || Input.GetKeyDown(KeyCode.Joystick1Button0) || Input.GetKeyDown(KeyCode.Joystick1Button1)))
-        {
-            StopAllCoroutines();
-            if (AudioController.Instance != null) AudioController.Instance.PlaySelect();
-            textElement.text = startingText;
-            // CompleteText();
-            StartCoroutine(WaitAndCompleteText());
-        }
-    }
+    // void Update()
+    // {
+    //     if (!isFinishedTyping && (Input.anyKeyDown || Input.GetKeyDown(KeyCode.Joystick1Button0) || Input.GetKeyDown(KeyCode.Joystick1Button1)))
+    //     {
+    //         print("here");
+    //         StopAllCoroutines();
+    //         if (AudioController.Instance != null) AudioController.Instance.PlaySelect();
+    //         textElement.text = startingText;
+    //         // CompleteText();
+    //         StartCoroutine(WaitAndCompleteText());
+    //     }
+    // }
+
+
 
     IEnumerator TypeSentence(string textToType)
     {
@@ -67,12 +74,23 @@ public class StartingText : MonoBehaviour
         CompleteText();
     }
 
+    public void ActivateAndCompleteText()
+    {
+        if (!isFinishedTyping)
+        {
+            StopAllCoroutines();
+            if (AudioController.Instance != null) AudioController.Instance.PlaySelect();
+            textElement.text = startingText;
+            StartCoroutine(WaitAndCompleteText());
+        }
+    }
+
     void CompleteText()
     {
 
         objectToActivateUponCompletion.SetActive(true);
         isFinishedTyping = true;
-        Destroy(GetComponent<PlayerInput>());
+        // Destroy(GetComponent<PlayerInput>());
     }
 
     public void SetSideText(string text)
@@ -94,8 +112,8 @@ public class StartingText : MonoBehaviour
         float healingMultiplier = GlobalConstants.healingMultiplier.ContainsKey(healing) ? GlobalConstants.healingMultiplier[healing] : 1f;
         // print(SessionPrestige);
         // maxHealth = savedMaxLives;
-var permCollected = SaveDataManager.LoadGameData().permanentCollectedObjects;
-        
+        var permCollected = SaveDataManager.LoadGameData().permanentCollectedObjects;
+
         string rabitStatus = permCollected.Contains("RABIT escaped") ? "MISSING" : "INSTANTIATED";
         startingText = $@"RABIT {rabitStatus} - Readout Start
 -----------------------------------

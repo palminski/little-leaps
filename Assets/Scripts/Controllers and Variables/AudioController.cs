@@ -40,6 +40,7 @@ public class AudioController : MonoBehaviour
 
     void Awake()
     {
+        
         if (Instance == null)
         {
             Instance = this;
@@ -47,10 +48,10 @@ public class AudioController : MonoBehaviour
         }
         else
         {
-            if (Instance.bgMusic != bgMusic) 
+            if (Instance.bgMusic != bgMusic)
             {
                 Instance.bgMusic = bgMusic;
-                Instance.UpdateAndPlayBGMusic();    
+                Instance.UpdateAndPlayBGMusic();
             }
             if (shouldStopMusic)
             {
@@ -75,6 +76,8 @@ public class AudioController : MonoBehaviour
     }
     void Start()
     {
+        
+
         UpdateAndPlayBGMusic();
     }
 
@@ -352,12 +355,23 @@ public class AudioController : MonoBehaviour
 
     public void PlayGameOver()
     {
-        if(gameOvers.Length == 0 || PlayerPrefs.HasKey("MusicOff")) return;
-        audioSource.Stop();
+        if (gameOvers.Length == 0 || PlayerPrefs.HasKey("MusicOff")) return;
+
         bgMusic = null;
-        AudioClip soundEffect = gameOvers[Random.Range(0,gameOvers.Length)];
-        AudioSource tempAudioSource = gameObject.AddComponent<AudioSource>();
-        tempAudioSource.PlayOneShot(soundEffect);
+        audioSource.Stop();
+        StopAllCoroutines();
+        audioSource.volume = 1;
+        audioSource.loop = false;
+        audioSource.clip = gameOvers[Random.Range(0, gameOvers.Length)];
+        if (audioSource.clip != null && !PlayerPrefs.HasKey("MusicOff"))
+        {
+            audioSource.Play();
+        }
+        
+        // bgMusic = null;
+        // AudioClip soundEffect = gameOvers[Random.Range(0,gameOvers.Length)];
+        // AudioSource tempAudioSource = gameObject.AddComponent<AudioSource>();
+        // tempAudioSource.PlayOneShot(soundEffect);
     }
 
     public void PlayVictory()
@@ -394,6 +408,7 @@ public class AudioController : MonoBehaviour
         audioSource.Stop();
         StopAllCoroutines();
         audioSource.volume = 1;
+        audioSource.loop = true;
         // audioSource.volume = bgVolume;
         audioSource.clip = bgMusic;
         if (audioSource.clip != null && !PlayerPrefs.HasKey("MusicOff"))

@@ -67,6 +67,7 @@ public class SpringBoard : MonoBehaviour
     {
         activeDuration = maxActiveDuration;
         if (!CanBounce()) return;
+        
         if (animator) animator.SetTrigger("Launch");
         if (veinsAnimator) veinsAnimator.SetTrigger("Launch");
         Vector2 boxCenter = boxCollider.bounds.center;

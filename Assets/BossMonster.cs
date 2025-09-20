@@ -12,9 +12,11 @@ public class BossMonster : Enemy
 
     [SerializeField] private GameObject[] corpseEnemies;
 
+    private bool shouldBeVulnerableFromTop;
+
     void OnEnable()
     {
-
+        shouldBeVulnerableFromTop = vulnerableFromTop ? true : false;
         if (crown != null) crown.SetActive(false);
 
         GameController.Instance.OnEnemyKilled += CheckIfNoEnemies;
@@ -136,7 +138,7 @@ public class BossMonster : Enemy
             if (enemy != null) yield break;
         }
         invincible = false;
-        vulnerableFromTop = true;
+        if (shouldBeVulnerableFromTop) vulnerableFromTop = true; //
         if (crown != null) crown.SetActive(false);
 
     }

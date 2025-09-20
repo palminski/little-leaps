@@ -85,7 +85,14 @@ public class PauseMenu : MonoBehaviour
     void OnDestroy()
     {
         Time.timeScale = 1;
-        if (playerInput != null) playerInput.SwitchCurrentActionMap("Movement");
+
+        if (
+            playerInput != null &&
+            playerInput.enabled &&
+            playerInput.actions != null &&
+            playerInput.actions.enabled
+            )
+            playerInput.SwitchCurrentActionMap("Movement");
     }
 
     void OnOpenMenu()
@@ -97,7 +104,7 @@ public class PauseMenu : MonoBehaviour
     public void KillPlayer()
     {
         Time.timeScale = 1;
-        
+
         GameController.Instance.RemoveCharge();
         GameController.Instance.ChangeHealth(-776);
         // SaveData gameData = SaveDataManager.LoadGameData();

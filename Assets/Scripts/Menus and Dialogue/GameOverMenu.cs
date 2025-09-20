@@ -25,7 +25,7 @@ public class GameOverMenu : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         selectedIndex = 0;
         currentOptions = menuOptions;
-        gameObject.SetActive(false);
+        // gameObject.SetActive(false);
     }
 
     void OnEnable()
@@ -61,30 +61,39 @@ public class GameOverMenu : MonoBehaviour
     // ==============================================================================
     void OnNavigateRight()
     {
+        if (!startingText.isFinishedTyping) return;
         UpdateIndex(1);
         if (AudioController.Instance != null) AudioController.Instance.PlayMoveCursor();
     }
 
     void OnNavigateLeft()
     {
+        if (!startingText.isFinishedTyping) return;
         UpdateIndex(-1);
         if (AudioController.Instance != null) AudioController.Instance.PlayMoveCursor();
     }
 
     void OnNavigateDown()
     {
+        if (!startingText.isFinishedTyping) return;
         UpdateIndex(1);
         if (AudioController.Instance != null) AudioController.Instance.PlayMoveCursor();
     }
 
     void OnNavigateUp()
     {
+        if (!startingText.isFinishedTyping) return;
         UpdateIndex(-1);
         if (AudioController.Instance != null) AudioController.Instance.PlayMoveCursor();
     }
 
     void OnSelect()
     {
+        if (!startingText.isFinishedTyping)
+        {
+            startingText.ActivateAndCompleteText();
+            return;
+        }
         currentOptions[selectedIndex].action.Invoke();
         if (AudioController.Instance != null) AudioController.Instance.PlaySelect();
     }
@@ -108,7 +117,7 @@ public class GameOverMenu : MonoBehaviour
         UpdateMenuText();
     }
 
-    private void UpdateMenuText()
+    public void UpdateMenuText()
     {
         currentText.text = "";
         foreach (MenuOption menuOption in currentOptions)
