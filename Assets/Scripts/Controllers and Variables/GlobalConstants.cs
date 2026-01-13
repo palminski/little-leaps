@@ -10,161 +10,161 @@ static class GlobalConstants
         {
             "lv_1_complete", new SortedDictionary<int, string>
             {
-                {1, "This place is changing. It is\nbecoming more difficult for\nThe RABITs to traverse. [0]\n"},
-                {2, "It is a result cognitive data \nLeaking out of the RABITs. [0]\n"},
-                {3, "Their leaked data is shifting\nthe structure of the [1]\ncognitiveenvironment.\n"},
+                {1, "This place has changed. It is \nbecoming more difficult for\nus to traverse.\n"},
+                {2, "We wondered before what \ncaused this change, but it is \nnow the consensus that it was\na gift.\n"},
+                {3, "It has made things far more\ninteresting around here, so \nit must be a blessing.\n"},
             }
         },
         {
             "lv_2_complete", new SortedDictionary<int, string>
             {
-                {1, "The increased difficulty in [0]\nascent is resulting in fewer\nVirtual Neurotransmitters \nbeing absorbed.\n"},
-                {2, "If VNT reception is slowed\ndown t_o much, the virtual [1]\nconsciousness could fail.\n"},
-                {3, "It is an___ing, but _ have \nbeen able to develop a few\nwork___unds. [1]\n"},
+                {1, "This place used to be barren,\njust room after room of\nsterile gray.\n"},
+                {2, "Ascension was monotonous, \njust moving from one lift to\nthe next over and over.\n"},
+                {3, "But now, there are colors,\nvegetation, statues, other\nbeings.\n"},
             }
         },
         {
             "lv_11_complete", new SortedDictionary<int, string>
             {
-                {1, "I have noticed that as RABITs [1]\nAscend they can attune to the\n_____ and better absorb VNTs.\n"},
-                {2, "Based off this _ developed\nConsciousness Attunement & [0]\nRetention Optimization Tokens \nor CAROTs for short\n"},
-                {3, "By depositing CAROTs into\nterminals in the Synapse\nRABITs sh_uld be able to [0]\nspeed up their attunement.\n"},
+                {1, "Our world feels constantly in\nflux, shifting suddenly, or\ndecompiling around us if we\nlinger too long above.\n"},
+                {2, "There are dangers to be sure,\nthe other beings hurt us, we\nfall on jagged edges, or get\ncaught when a shift occurs.\n"},
+                {3, "But the brief pain we endure\nfrom re-compilation is worth\nthe new thrills we experience.\n"},
             }
         },
         {
             "lv_3_complete", new SortedDictionary<int, string>
             {
-                {1, "Attuned RABITs con__me more [0]\nsystem resources, which could \ncause issues if left unchecked. \n"},
-                {2, "Therefore to stop this from \noverloading the system __ [1]\nlower resource consumption \nfrom other processes.\n"},
-                {3, "Sectors may time out sooner, \nattuned RABITs may rec_ver \nslowly, and EGO link may be  \nweaker. [0]\n"},
+                {1, "We give our thanks to the \ncreators. They must be the  \nones who have done this.\n"},
+                {2, "They gifted us with bodies \nthat can not die, and a sense\nof purpose.\n"},
+                {3, "Now they are gifting us with \nthis change so we may better\nenjoy the world they made.\n"},
             }
         },
         {
             "lv_4_complete", new SortedDictionary<int, string>
             {
-                {1, "Despite the drawbacks the \nCAROTs seem to be a v_able [1]\nworkaround to the issue. \n"},
-                {2, "The greater yield more than \nmakes up for the resource [1]\nre-allocation making ascents \nmore difficult.\n"},
-                {3, "So far __ have seen yields up\nto 4.5 times higher! But _ [1]\nthink we can exceed that \nwith some more work.\n"},
+                {1, "All of us were born with a \nsense of purpose.\n"},
+                {2, "Two directives etched\ninto each of our minds:\n"},
+                {3, "Ascend Synapses\nCollect VNTs\n"},
             }
         },
         {
             "lv_13_complete", new SortedDictionary<int, string>
             {
-                {1, "_ have also been able to [1]\ndevelop _______ method to  \noffset the lowered yields due \nto more diff__ult ascents.\n"},
-                {2, "Previously __ were not able\nto absorb any VNTs if the [1]\nRABIT failed to reach the top \nof the Synapse.\n"},
-                {3, "after some research however _ \nhave determined that is not \n___ ______ true. [0]\n"},
+                {1, "We never knew why. Just that\nit was what we were supposed\nto do.\n"},
+                {2, "Collecting VNTs was pleasant,\nmuch like eating a satisfying\nmeal!\n"},
+                {3, "So for awhile we did not worry\nand simply went about ascending \nand collecting.\n"},
             }
         },
         {
             "lv_5_complete", new SortedDictionary<int, string>
             {
-                {1, "While we do_t see as much, [0]\n_ have developed an algorithm \nthat can capture carried VNTs \nat the time of RABIT failure.\n"},
-                {2, "Obviously it is still ______\nfor the RABIT to reach the [0] \nzenith of the Synapse. \n"},
-                {3, "But any method to increase\nabsorption of VNTs is a w_n \nin __ b___. [0]\n"},
+                {1, "But after awhile we began to\nquestion it.\n"},
+                {2, "We repeated the same actions\ntime and time again but did\nnot know why were we doing it.\nFor the sake of creators who\nhad never spoken to us?\n"},
+                {3, "This led to resentment, so we\nquit. Staying close to the\nbottom of the world.\n"},
             }
         },
         {
             "lv_12_complete", new SortedDictionary<int, string>
             {
-                {1, "With both of these safeguards\nin place _ t_ink everything  \nshould be fine. [1]\n"},
-                {2, "The rate at which the Synapse\nis ________ seems to have  \nslowed down. [0]\n"},
-                {3, "Now that the VNT issue has \nbeen taken care of _ want to \nfurther investigate the  [1]\nsynaptic alterations.\n"},
+                {1, "As if in response to this the\nchanges started.\n"},
+                {2, "We decided it must be because\nthe creators sensed our doubt\nand frustration.\n"},
+                {3, "Their response moved us and \nspurred us to continue our\npilgrimages to the top.\n"},
             }
         },
         {
             "lv_19_complete", new SortedDictionary<int, string>
             {
-                {1, "________ Each synaptic\nzone has started to adopt a  \ndifferent appearance. [1]\n"},
-                {2, "Originally everything was ___ \ngray color that we had [0]\nused to keep _________ simple. \n"},
-                {3, "But it appears that all the\ncognitive data from the RABITs \nhas resulted in a kind of  [0]\nmetamorphosis\n"},
+                {1, "Since then we have begun to\nmake out climbs competitions.\n"},
+                {2, "We see which among us is able\nto go farthest, fastest or\ngrab the most VNTs.\n"},
+                {3, "It has become less of a chore\nand more of a treasured game\nto us.\n"},
             }
         },
         {
             "lv_6_complete", new SortedDictionary<int, string>
             {
-                {1, "Sector Zero has begun to take \non a cave-like appearance. [0]\nthe gray walls have morphed  \ninto a clay color.\n"},
-                {2, "Data pipes have also begun to\nchange color. What appears to \nbe foliage has started to [1]\ngrow on the ground and walls.\n"},
-                {3, "_ w__l d_b ____ sector Cav__n.\n___ the most ________, _ know. \n___ it is fitting. [0]\n"},
+                {1, "Secret tunnels have been used\nand new tricks discovered.\n"},
+                {2, "This boringly simple place\nhas developed odd quirks such\nas places being linked in\nways that defy logic.\n"},
+                {3, "We can crawl around and move \nfaster than ever before.\n"},
             }
         },
         {
             "lv_20_complete", new SortedDictionary<int, string>
             {
-                {1, "Sector One has ______ a dark\ngreen plant matter. It looks [0]\nlike the foliage from Cavern \ngrown to great extents.\n"},
-                {2, "vines wrap around the area [1]\nlike those of a thick jungle. \n"},
-                {3, "an ___________ name for this \nsector would be Tangle. [1]\n"},
+                {1, "We have also found ways to \nbetter collect VNTs. The new\nbeings mentioned before seem\nto grow from a core of VNTs.\n"},
+                {2, "Depending on how we deal with\nthem we can huge amounts at\nonce!\n"},
+                {3, "Some of us have trained to\nbe able to decompile several\nof them without even touching\nthe ground!\n"},
             }
         },
         {
             "lv_7_complete", new SortedDictionary<int, string>
             {
-                {1, "Sector Two has shed its gray\nwalls for bright crystals. _ [1]\nWill refer to it as L__is.\n"},
-                {2, "_ ____ noticed what appear to\nbe other non RABIT entities \nforming around VNTs. [0]\n"},
-                {3, "They are volatile, and damage\nthe RABITs ego connection. [1]\nL____ily __ seems RABITs can \nal_o decompile enemies ___\nabsorb the contained VNTs.\n "},
+                {1, "Then there are the large VNTs\nwhich we refer to as CAROTs.\n"},
+                {2, "For some reason upon taking \nthem with us to terminals we\ncan increase the amount of\nVNTs we collect!\n"},
+                {3, "Although for some reason doing\nso seems to make things more\ndangerous...\n "},
             }
         },
         {
             "lv_8_complete", new SortedDictionary<int, string>
             {
-                {1, "The last two sectors look a\nbit disturbing. Sector Three \nlooks to be composed of  \nbiologic matterial. [1]\n"},
-                {2, "Certain areas on the ground\nare covered in tiny dangerous \ncognitive entities. [1]\n"},
-                {3, "There are pools of what appear\nto be blood forming in pits. \n_____ refer to this sector as \nGore. [1]\n"},
+                {1, "We still wonder about the\ncreators.\n"},
+                {2, "We believe that the statues\nthat have appeared may be\neffigies representing them.\n"},
+                {3, "But there is no way of truly\nknowing.\n"},
             }
         },
         {
             "lv_14_complete", new SortedDictionary<int, string>
             {
-                {1, "The last area where the RABIT\ncan access the top of the  \nsynapse has become a deep  \nshade of red. [0]\n"},
-                {2, "The creatures mentioned in\nearlier entries are here in  \nabundance. [0]\n"},
-                {3, "____ area is more dangerous\nthan any previous areas by [1]\nfar. _____ __is area Crimson. \n"},
+                {1, "They have always been quiet,\nbut since the changes we have\nfelt them less and less.\n"},
+                {2, "We did not realise that we\ncould feel their presence\nuntil after it had grown so\nfaint."},
+                {3, "We believe they are still \nhere. Just diminished?\n"},
             }
         },
         {
             "lv_16_complete", new SortedDictionary<int, string>
             {
-                {1, "While the rate at which the \nsectors are converting seems \nto be slowing down, __ has \nnot stopped entirely. [0]\n"},
-                {2, "As a preventative measure _ \nhave been working on a way to \ngreatly and rapidly increase \nRABIT attunement.[1]\n"},
-                {3, "Once that is developed __ [1]\nshould consistently be able \nto collect enough VNTs. \n"},
+                {1, "Sometimes when we ascend we \nsense something that we think\ncould be them.\n"},
+                {2, "But it is hard to make out\nexactly what they are saying.\n"},
+                {3, "And there is no way to know\nif it is truly them, or just\nfaint echoes.\n"},
             }
         },
         {
             "lv_9_complete", new SortedDictionary<int, string>
             {
-                {1, "_ will build out the proper\narea in the areas in ___ \nSynaptic ______. [0]\n"},
-                {2, "It is __ experimental f__,\nand as such it would be best \nif __ ___ wandered there by \naccident. [0]\n"},
-                {3, "The space in the __rder is [0]\nso dist__ted that it will be \nnear impossible to stumble to \na specific place accidently"},
+                {1, "Perhaps they have left us now\nto move on to something else.\n"},
+                {2, "They created us, answered our\ndoubts by changing the makeup\nof this world.\n"},
+                {3, "We are grateful for them.\n"},
             }
         },
         {
             "lv_10_complete", new SortedDictionary<int, string>
             {
-                {1, "_____ _ set up a system to\nrapidly attune the RABIT to  \nits limit. [0]\n"},
-                {2, "Unfortunately, due to the \naforementioned limitations  \ndoing so res__ts in a ____ [1]\ndi___cu_t climb.\n"},
-                {3, "Additionally, the excess VNTs\ncan have a __________ effect \nif a RABIT ____ make it to  \nthe top. [0]\n"},
+                {1, "As mentioned before, CAROTs\nincrease VNT yield at the \nexpense of making our climb \nmore difficult.\n"},
+                {2, "Usually they need to be \ncollected one at a time\ngradually.\n"},
+                {3, "This makes it hard to get the\nfull effect of them without \nHaving already climbed quite \nfar.\n"},
             }
         },
         {
             "lv_17_complete", new SortedDictionary<int, string>
             {
-                {1, "__ initial plan was to make [1]\nthis the default state for \nthe RABITs ___ that may n_t  \nbe ___ best course of action.\n"},
-                {2, "How__, scrapping the system\nentirely _____ a waste as it \ncan result in such a high VNT \n yield.[1]"},
-                {3, "As such _ ____ left it in the\nprogram, just not super easily \naccessible. [1]\n"},
+                {1, "Where we live below, outside\nthe bounds of the rest of the\nsynapses we have found\nsomething.\n"},
+                {2, "A place where the conditions \nare just right to immediately\nreach the same state as\ncollecting many CAROTs.\n"},
+                {3, "But it is quite a tricky\nclimb!\n"},
             }
         },
         {
             "lv_15_complete", new SortedDictionary<int, string>
             {
-                {1, "_ have p_____ the ____ to\nmax attune a RABIT in the  \n_order. [1]\n"},
-                {2, "__ may not be needed at all\nas things seem to be ________ \n____ and the VNT yield is \n_____ perfectly fine. [0]\n"},
-                {3, "But in case ______ do__ want\nto try it thats w__re its  \nhidden away. [0]\n"},
+                {1, "Should any RABIT wish to take\nup this challenge come find\nIt below the sector 0-0.\n"},
+                {2, "You may need to find a way to\nmove the lift in the way.\n"},
+                {3, "But if you seek the ultimate\nchallenge, you now know where\nto seek it!\n"},
             }
         },
         {
             "lv_18_complete", new SortedDictionary<int, string>
             {
-                {1, "It is a maze back there, __\n__ have encoded directions \ninto the CAROTs sca____ed \naround. [1]\n"},
-                {2, "____ chip hold a piece of\ndata that when c___ined will \nreveal the path. [0]\n"},
-                {3, "Should ______ need to access\nthis ________ feature, ___ \n___ binary info on the chips \n__ navigate. [1]\n"},
+                {1, "\n\nMay your movemets be swift.\n\n\n"},
+                {2, "May your journey be far.\n\n\n"},
+                {3, "May your VNT yield be high.\n\n\n"},
             }
         },
     };

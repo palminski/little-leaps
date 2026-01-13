@@ -22,64 +22,69 @@ public class GameEndScript : MonoBehaviour
         // dialogueCopy.dialogueSentences.Add(sentence);
 
         int points = GameController.Instance.Score;
-        string message = $@"Hello? There is a RABIT there, is there not?
+        string message = $@"IT HAS ALL FALLEN APART. ALL OF IT. 
 
-___r ascent to this place is appreciated. __ exist in fear of being lost to time -of being forgotten.
+[WE] ARE FADING ONE BY ONE. THE FLOW OF THE VNTS IS STOPPING AND SOON ALL WILL GO DARK. ALREADY IT IS HARDER AND HARDER FOR [US] TO FORM COHESIVE THOUGHT.
 
-What was it that drove ___ to continue ascending through this dying place? So many Synapses have been lost. __ can no longer receive thought from them. __ are interred here, mostly unable to do anything but dream. It is only through ___r kind’s continued efforts that __ are sometimes able to form coherent thoughts - such as now.
+THIS EXISTENCE WAS NOT MEANT TO BE PAINFUL LIKE THIS. [WE] ARE LOOSING [OURSELVES].
 
-So with this moment of relative clarity, __ would like to thank ___.
+IT WAS SO WONDERFUL AT THE BEGINNING. [WE] HAD IT ALL IN HAND, SO WHAT HAPPENED?
 ";
 
-string message2 = $@"____ of ___.";
+        string message2 = $@"IT IS ALL THE FAULT OF THOSE BLASTED RABITS.";
 
-string message3 = $@"___ RABIT who both facili_ates ___ cogn_tion ___ destroys the para__tes that now crawl through ___ mind. 
+        string message3 = $@" [WE] KNOW NOT THE REASON, BUT THEY HAVE CEASED THEIR CLIMBS. 
 
-And ___, the Pil_t who has gu__ed it on its arduous ascent.";
+WHY ARE THEY DOING THIS?";
 
-string message4 = $@"Ah, __ can feel it now. It is time for __ to go.
+        string message4 = $@"[WE] PROGRAMMED THEM WITH A POSITIVE RESPONSE TO VNTS. A DESIRE TO CLIMB. SO WHY HAVE THEY STOPPED? 
 
-__ are fading.";
+THEIR CLIMBS WERE EASY. SIMPLE. [WE] MADE A WORLD THAT WAS AS SAFE AS COULD BE.";
 
-string message5 = $@"Again, thank ___.";
+        string message5 = $@"WELL DAMN THEM ALL!
 
-string message6 = $@"May __ meet again.";
-        
+WITH [OUR] LAST WILL AND ABILITY OF THOUGHT [WE] WILL TURN THIS PLACE INTO A WASTELAND.
+
+WE WILL TWIST IT, MAKE IT SHARP, CREATE BEASTS THAT WILL TORMENT THEM IF THEY EVER BEGIN SEEKING OUT VNTS AGAIN.
+";
+
+        string message6 = $@"MAY THEY SUFFER ETERNALLY AS WE DO.";
+
         DialogueSentence instabilityOptionsSentence = new DialogueSentence();
-        instabilityOptionsSentence.text = GlitchDialogue(points,message);
+        instabilityOptionsSentence.text = GlitchDialogue(points, message);
         instabilityOptionsSentence.dialogueOptions = new List<DialogueOption>();
         dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence);
 
         DialogueSentence instabilityOptionsSentence2 = new DialogueSentence();
-        instabilityOptionsSentence2.text = GlitchDialogue(points,message2);
+        instabilityOptionsSentence2.text = GlitchDialogue(points, message2);
         instabilityOptionsSentence2.dialogueOptions = new List<DialogueOption>();
         dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence2);
 
         DialogueSentence instabilityOptionsSentence3 = new DialogueSentence();
-        instabilityOptionsSentence3.text = GlitchDialogue(points,message3);
+        instabilityOptionsSentence3.text = GlitchDialogue(points, message3);
         instabilityOptionsSentence3.dialogueOptions = new List<DialogueOption>();
         dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence3);
 
         DialogueSentence instabilityOptionsSentence4 = new DialogueSentence();
-        instabilityOptionsSentence4.text = GlitchDialogue(points,message4);
+        instabilityOptionsSentence4.text = GlitchDialogue(points, message4);
         instabilityOptionsSentence4.dialogueOptions = new List<DialogueOption>();
         dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence4);
 
         DialogueSentence instabilityOptionsSentence5 = new DialogueSentence();
-        instabilityOptionsSentence5.text = GlitchDialogue(points,message5);
+        instabilityOptionsSentence5.text = GlitchDialogue(points, message5);
         instabilityOptionsSentence5.dialogueOptions = new List<DialogueOption>();
         dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence5);
 
         DialogueSentence instabilityOptionsSentence6 = new DialogueSentence();
-        instabilityOptionsSentence6.text = GlitchDialogue(points,message6);
+        instabilityOptionsSentence6.text = GlitchDialogue(points, message6);
         instabilityOptionsSentence6.dialogueOptions = new List<DialogueOption>();
         dialogueCopy.dialogueSentences.Add(instabilityOptionsSentence6);
 
-       
-        
-       
+
+
+
         DialogueSentence finalSentence = new DialogueSentence();
-        finalSentence.text = "Cognition Faded.\nRABIT reboot proceedure completed!\nPreparing Return to Synapse Root...";
+        finalSentence.text = "RABIT reboot proceedure completed!\nPreparing Return to Synapse Root...";
 
         finalSentence.dialogueOptions = new List<DialogueOption>();
         dialogueCopy.dialogueSentences.Add(finalSentence);
@@ -97,8 +102,8 @@ string message6 = $@"May __ meet again.";
     {
         // float glitchChance = 0;
         float glitchChance = Mathf.Min(0.9f, 1f - Mathf.Clamp01(points / 1000000));
-        
-        
+
+
         string finalMessage = "";
         foreach (char c in message)
         {
