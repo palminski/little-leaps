@@ -312,6 +312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e731332a04d9c824bbf6a3e06ace7d2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::possiblyHideOnStartBasedOnScore
+  minChanceToHide: 0.4
 --- !u!114 &187690628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -373,6 +374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e731332a04d9c824bbf6a3e06ace7d2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::possiblyHideOnStartBasedOnScore
+  minChanceToHide: 0.4
 --- !u!114 &271472262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -551,6 +553,7 @@ MonoBehaviour:
   debug: 0
 --- !u!483693784 &335329721
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -596,6 +599,7 @@ TilemapRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -603,7 +607,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!1839735485 &335329722
 Tilemap:
   m_ObjectHideFlags: 0
@@ -2435,6 +2438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e731332a04d9c824bbf6a3e06ace7d2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::possiblyHideOnStartBasedOnScore
+  minChanceToHide: 0.4
 --- !u!114 &579014010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2731,6 +2735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e731332a04d9c824bbf6a3e06ace7d2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::possiblyHideOnStartBasedOnScore
+  minChanceToHide: 0.4
 --- !u!114 &769984692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3558,6 +3563,7 @@ TilemapCollider2D:
   m_UseDelaunayMesh: 0
 --- !u!483693784 &1816438914
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3603,6 +3609,7 @@ TilemapRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -3610,7 +3617,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!1839735485 &1816438915
 Tilemap:
   m_ObjectHideFlags: 0
@@ -11684,6 +11690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e731332a04d9c824bbf6a3e06ace7d2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::possiblyHideOnStartBasedOnScore
+  minChanceToHide: 0.4
 --- !u!114 &1860779373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11736,6 +11743,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2095105948704731533, guid: df9e5e2295b9a57429880485069f505a, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2095105948704731533, guid: df9e5e2295b9a57429880485069f505a, type: 3}
       propertyPath: m_DefaultActionMap
       value: 
@@ -11936,6 +11947,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e731332a04d9c824bbf6a3e06ace7d2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::possiblyHideOnStartBasedOnScore
+  minChanceToHide: 0.4
 --- !u!114 &2081733701
 MonoBehaviour:
   m_ObjectHideFlags: 0
