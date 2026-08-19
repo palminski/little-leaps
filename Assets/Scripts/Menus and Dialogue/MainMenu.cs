@@ -552,6 +552,26 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    public void ToggleScanLines()
+    {
+        if (PlayerPrefs.HasKey("ShowScanLines"))
+        {
+            PlayerPrefs.DeleteKey("ShowScanLines");
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            PlayerPrefs.SetInt("ShowScanLines",1);
+            PlayerPrefs.Save();
+        }
+        GameObject scanLineCanvasObj = GameObject.Find("ScanLineCanvas");
+        if(scanLineCanvasObj != null)
+        {
+            ScanLineController slc = scanLineCanvasObj.GetComponent<ScanLineController>();
+            if (slc != null) slc.ToggleScanLines();
+        }
+    }
+
     public void RebindControl(string actionName)
     {
         // print(playerInput.currentControlScheme);

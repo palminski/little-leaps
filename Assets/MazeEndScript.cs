@@ -65,8 +65,8 @@ public class MazeEndScript : MonoBehaviour
         // GameController.Instance.TagObjectStringAsCollectedForSession("lv_15_complete");
 
 
-        GameController.Instance.SetCheckPointBackend("backend_start");
-        GameController.Instance.ChangeScene("backend_start");
+        GameController.Instance.SetCheckPointBackend("backend_start_5");
+        GameController.Instance.ChangeScene("backend_start_5");
     }
 
     private void JustProceed()
