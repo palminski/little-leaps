@@ -38,6 +38,7 @@ public class GameOverMenu : MonoBehaviour
     public void ReturnToMainMenu()
     {
         GameController.Instance.ChangeScene("Main Menu");
+        LevelConnection.ActiveConnection = null;
     }
 
     public void Continue()
